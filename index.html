@@ -1,0 +1,1580 @@
+<!DOCTYPE html><html lang="en"><head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <!-- Dynamic SEO tags — updated by JS router -->
+  <title>UnitFlow — Universal Unit Converter</title>
+  <meta name="description" content="Fast, accurate unit conversions across length, area, volume, weight, and more. 90+ length units supported."/>
+  <link rel="canonical" href="https://unitflow.onspace.ai/" id="canonical-link"/>
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="UnitFlow — Universal Unit Converter" id="og-title"/>
+  <meta property="og:description" content="Fast, accurate unit conversions across 90+ length units and more." id="og-desc"/>
+  <meta property="og:url" content="https://unitflow.onspace.ai/" id="og-url"/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:site_name" content="UnitFlow"/>
+  <meta property="og:image" content="https://cdn-ai.onspace.ai/onspace/project/screenshot/online/pre-site/9bheol.jpg"/>
+  <meta property="og:image:width" content="1200"/>
+  <meta property="og:image:height" content="630"/>
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:title" content="UnitFlow — Universal Unit Converter" id="tw-title"/>
+  <meta name="twitter:description" content="Fast, accurate unit conversions across 90+ length units." id="tw-desc"/>
+  <meta name="twitter:image" content="https://cdn-ai.onspace.ai/onspace/project/screenshot/online/pre-site/9bheol.jpg"/>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            dark: {
+              900: '#0a0a12', 850: '#0f0f1a', 800: '#13131f',
+              750: '#171726', 700: '#1c1c2e', 600: '#242438',
+            }
+          },
+          boxShadow: {
+            'glow-sm': '0 0 20px rgba(99,102,241,0.15)',
+            'glow':    '0 0 40px rgba(99,102,241,0.2)',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body { background-color: #0a0a12; }
+    .orb { position:fixed; border-radius:50%; filter:blur(120px); pointer-events:none; z-index:0; opacity:0.15; }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #13131f; }
+    ::-webkit-scrollbar-thumb { background: #4f46e5; border-radius: 3px; }
+
+    .converter-input:focus { outline:none; box-shadow:0 0 0 2px rgba(99,102,241,0.5), 0 0 20px rgba(99,102,241,0.1); }
+    .nav-item.active { background:linear-gradient(135deg,rgba(99,102,241,0.2),rgba(139,92,246,0.1)); border-color:rgba(99,102,241,0.5); }
+    .nav-item.active .nav-icon { color:#818cf8; }
+    .nav-item.active .nav-label { color:#e0e0ff; }
+    .result-row:hover { background:rgba(99,102,241,0.06); }
+    .sidebar-overlay { background:rgba(0,0,0,0.6); backdrop-filter:blur(4px); }
+    .swap-btn:hover .swap-icon { transform:rotate(180deg); }
+    .swap-icon { transition:transform 0.4s ease; }
+    .search-dropdown { max-height:260px; overflow-y:auto; }
+    .unit-drop-panel { max-height:0; overflow:hidden; transition:max-height 0.3s cubic-bezier(0.4,0,0.2,1); }
+    .unit-drop-panel.open { max-height:320px; }
+    @keyframes pulse-badge { 0%,100%{opacity:0.6} 50%{opacity:1} }
+    .soon-badge { animation:pulse-badge 2s infinite; }
+    @keyframes numShimmer { 0%{opacity:0.4} 100%{opacity:1} }
+    .num-shimmer { animation:numShimmer 0.2s ease; }
+    @keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+    .page-fade { animation:fadeIn 0.25s ease; }
+    .unit-select option { background:#13131f; color:#e2e2ff; }
+    .unit-card:hover { border-color:rgba(99,102,241,0.35); background:rgba(99,102,241,0.05); }
+  </style>
+</head>
+<body class="font-sans text-gray-200 min-h-screen relative overflow-x-hidden">
+
+  <!-- Background orbs -->
+  <div class="orb w-96 h-96 bg-indigo-600 top-[-80px] left-[-60px]"></div>
+  <div class="orb w-80 h-80 bg-violet-500 bottom-[10%] right-[-40px]"></div>
+  <div class="orb w-64 h-64 bg-indigo-500 top-[50%] left-[40%]"></div>
+
+  <!-- ===================== HEADER ===================== -->
+  <header class="relative z-20 border-b border-white/5 bg-dark-850/80 backdrop-blur-xl sticky top-0">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
+      <div class="flex items-center gap-2.5">
+        <button id="sidebar-toggle" class="lg:hidden mr-1 text-gray-400 hover:text-indigo-400 transition-colors p-1">
+          <i class="fa-solid fa-bars text-lg"></i>
+        </button>
+        <a href="#/" onclick="navigate(&#39;/&#39;)" class="flex items-center gap-2.5 hover:opacity-80 transition-opacity">
+          <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center shadow-glow-sm">
+            <i class="fa-solid fa-arrows-rotate text-white text-xs"></i>
+          </div>
+          <span class="font-bold text-white tracking-tight">Unit<span class="text-indigo-400">Flow</span></span>
+        </a>
+        <span class="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-indigo-500/15 text-indigo-400 border border-indigo-500/20 ml-1">v1.0</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <span class="hidden sm:flex items-center gap-1.5 text-xs text-gray-500">
+          <i class="fa-solid fa-circle-check text-emerald-500 text-xs"></i>90+ length units
+        </span>
+        <button onclick="navigate(&#39;/&#39;)" class="text-xs font-medium px-3 py-1.5 rounded-lg bg-indigo-600/20 text-indigo-400 border border-indigo-500/25 hover:bg-indigo-600/30 transition-colors">
+          Convert Now
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===================== LAYOUT ===================== -->
+  <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 flex gap-6 pt-6 pb-16">
+
+    <!-- Mobile overlay -->
+    <div id="sidebar-overlay" class="sidebar-overlay fixed inset-0 z-30 hidden lg:hidden"></div>
+
+    <!-- SIDEBAR -->
+    <aside id="sidebar" class="
+      fixed lg:sticky top-14 lg:top-[calc(56px+24px)] left-0 h-[calc(100vh-56px)] lg:h-[calc(100vh-80px)]
+      w-64 lg:w-56 xl:w-60 z-40 lg:z-auto
+      bg-dark-800 lg:bg-transparent border-r border-white/5 lg:border-none
+      transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out
+      overflow-y-auto flex-shrink-0">
+      <div class="p-4 lg:p-0">
+        <p class="text-xs font-semibold text-gray-600 uppercase tracking-widest mb-3 px-2">Categories</p>
+        <nav class="space-y-1">
+          <button onclick="navigate(&#39;/&#39;);closeSidebar()" data-cat="length" class="nav-item active w-full flex items-center gap-3 px-3 py-2.5 rounded-xl border border-transparent text-left transition-all duration-200 group">
+            <span class="nav-icon w-8 h-8 rounded-lg bg-indigo-500/15 flex items-center justify-center text-indigo-400">
+              <i class="fa-solid fa-ruler-horizontal text-xs"></i>
+            </span>
+            <div class="flex-1 min-w-0">
+              <p class="nav-label text-sm font-medium text-gray-300">Length</p>
+              <p class="text-xs text-gray-600">90+ units</p>
+            </div>
+            <i class="fa-solid fa-chevron-right text-xs text-indigo-400/70"></i>
+          </button>
+
+          <!-- Coming soon -->
+          <button onclick="showComingSoon(&#39;Area&#39;)" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-xl border border-transparent text-left transition-all group hover:bg-white/3">
+            <span class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-gray-600"><i class="fa-solid fa-vector-square text-xs"></i></span>
+            <div class="flex-1"><p class="text-sm font-medium text-gray-500">Area</p><p class="soon-badge text-xs text-indigo-500/70">Coming soon</p></div>
+          </button>
+          <button onclick="showComingSoon(&#39;Volume&#39;)" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-xl border border-transparent text-left transition-all group hover:bg-white/3">
+            <span class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-gray-600"><i class="fa-solid fa-cube text-xs"></i></span>
+            <div class="flex-1"><p class="text-sm font-medium text-gray-500">Volume</p><p class="soon-badge text-xs text-indigo-500/70">Coming soon</p></div>
+          </button>
+          <button onclick="showComingSoon(&#39;Weight / Mass&#39;)" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-xl border border-transparent text-left transition-all group hover:bg-white/3">
+            <span class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-gray-600"><i class="fa-solid fa-weight-hanging text-xs"></i></span>
+            <div class="flex-1"><p class="text-sm font-medium text-gray-500">Weight / Mass</p><p class="soon-badge text-xs text-indigo-500/70">Coming soon</p></div>
+          </button>
+          <button onclick="showComingSoon(&#39;Temperature&#39;)" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-xl border border-transparent text-left transition-all group hover:bg-white/3">
+            <span class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-gray-600"><i class="fa-solid fa-temperature-half text-xs"></i></span>
+            <div class="flex-1"><p class="text-sm font-medium text-gray-500">Temperature</p><p class="soon-badge text-xs text-indigo-500/70">Coming soon</p></div>
+          </button>
+          <button onclick="showComingSoon(&#39;Speed&#39;)" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-xl border border-transparent text-left transition-all group hover:bg-white/3">
+            <span class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-gray-600"><i class="fa-solid fa-gauge-high text-xs"></i></span>
+            <div class="flex-1"><p class="text-sm font-medium text-gray-500">Speed</p><p class="soon-badge text-xs text-indigo-500/70">Coming soon</p></div>
+          </button>
+          <button onclick="showComingSoon(&#39;Time&#39;)" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-xl border border-transparent text-left transition-all group hover:bg-white/3">
+            <span class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-gray-600"><i class="fa-solid fa-clock text-xs"></i></span>
+            <div class="flex-1"><p class="text-sm font-medium text-gray-500">Time</p><p class="soon-badge text-xs text-indigo-500/70">Coming soon</p></div>
+          </button>
+          <button onclick="showComingSoon(&#39;Pressure&#39;)" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-xl border border-transparent text-left transition-all group hover:bg-white/3">
+            <span class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-gray-600"><i class="fa-solid fa-compress-arrows-alt text-xs"></i></span>
+            <div class="flex-1"><p class="text-sm font-medium text-gray-500">Pressure</p><p class="soon-badge text-xs text-indigo-500/70">Coming soon</p></div>
+          </button>
+          <button onclick="showComingSoon(&#39;Energy&#39;)" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-xl border border-transparent text-left transition-all group hover:bg-white/3">
+            <span class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-gray-600"><i class="fa-solid fa-bolt text-xs"></i></span>
+            <div class="flex-1"><p class="text-sm font-medium text-gray-500">Energy</p><p class="soon-badge text-xs text-indigo-500/70">Coming soon</p></div>
+          </button>
+          <button onclick="showComingSoon(&#39;Data Storage&#39;)" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-xl border border-transparent text-left transition-all group hover:bg-white/3">
+            <span class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-gray-600"><i class="fa-solid fa-hard-drive text-xs"></i></span>
+            <div class="flex-1"><p class="text-sm font-medium text-gray-500">Data Storage</p><p class="soon-badge text-xs text-indigo-500/70">Coming soon</p></div>
+          </button>
+        </nav>
+        <div class="mt-6 p-3 rounded-xl bg-indigo-500/8 border border-indigo-500/15">
+          <p class="text-xs text-indigo-300 font-medium mb-1"><i class="fa-solid fa-sparkles mr-1"></i>More coming</p>
+          <p class="text-xs text-gray-500 leading-relaxed">More converter categories will be added in upcoming updates.</p>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT — router target -->
+    <main class="flex-1 min-w-0" id="app-root"></main>
+  </div>
+
+  <!-- TOAST -->
+  <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 hidden pointer-events-none">
+    <div class="flex items-center gap-2 px-4 py-2.5 rounded-full bg-dark-700/95 border border-white/10 shadow-2xl backdrop-blur-xl text-sm font-medium text-white">
+      <i class="fa-solid fa-circle-check text-emerald-400 text-xs"></i>
+      <span id="toast-text">Copied!</span>
+    </div>
+  </div>
+
+  <!-- COMING SOON MODAL -->
+  <div id="modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4">
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeModal()"></div>
+    <div class="relative rounded-2xl border border-white/10 bg-dark-800/95 shadow-2xl p-6 max-w-sm w-full text-center">
+      <div class="w-12 h-12 rounded-2xl bg-indigo-500/15 border border-indigo-500/20 flex items-center justify-center mx-auto mb-4">
+        <i class="fa-solid fa-clock text-indigo-400 text-lg"></i>
+      </div>
+      <h3 class="text-lg font-bold text-white mb-2" id="modal-title">Area Converter</h3>
+      <p class="text-gray-500 text-sm leading-relaxed mb-5">This category is being built and will be available in an upcoming update.</p>
+      <button onclick="closeModal()" class="w-full py-2.5 rounded-xl bg-indigo-600/20 border border-indigo-500/30 text-indigo-400 text-sm font-medium hover:bg-indigo-600/30 transition-colors">Got it</button>
+    </div>
+  </div>
+
+<script>
+// ================================================================
+//  UNIT DATA
+// ================================================================
+const LENGTH_UNITS = [
+  // METRIC
+  { key:'meter',          label:'Meter',                  symbol:'m',      factor:1,                    group:'metric',     altNames:['metre'] },
+  { key:'kilometer',      label:'Kilometer',              symbol:'km',     factor:1000,                 group:'metric',     altNames:['kilometre'] },
+  { key:'decimeter',      label:'Decimeter',              symbol:'dm',     factor:0.1,                  group:'metric',     altNames:['decimetre'] },
+  { key:'centimeter',     label:'Centimeter',             symbol:'cm',     factor:0.01,                 group:'metric',     altNames:['centimetre'] },
+  { key:'millimeter',     label:'Millimeter',             symbol:'mm',     factor:0.001,                group:'metric',     altNames:['millimetre'] },
+  { key:'micrometer',     label:'Micrometer',             symbol:'µm',     factor:1e-6,                 group:'metric',     altNames:['micrometre','micron'] },
+  { key:'nanometer',      label:'Nanometer',              symbol:'nm',     factor:1e-9,                 group:'metric',     altNames:['nanometre'] },
+  { key:'exameter',       label:'Exameter',               symbol:'Em',     factor:1e18,                 group:'metric',     altNames:['exametre'] },
+  { key:'petameter',      label:'Petameter',              symbol:'Pm',     factor:1e15,                 group:'metric',     altNames:['petametre'] },
+  { key:'terameter',      label:'Terameter',              symbol:'Tm',     factor:1e12,                 group:'metric',     altNames:['terametre'] },
+  { key:'gigameter',      label:'Gigameter',              symbol:'Gm',     factor:1e9,                  group:'metric',     altNames:['gigametre'] },
+  { key:'megameter',      label:'Megameter',              symbol:'Mm',     factor:1e6,                  group:'metric',     altNames:['megametre'] },
+  { key:'hectometer',     label:'Hectometer',             symbol:'hm',     factor:100,                  group:'metric',     altNames:['hectometre'] },
+  { key:'dekameter',      label:'Dekameter',              symbol:'dam',    factor:10,                   group:'metric',     altNames:['decametre'] },
+  { key:'micron',         label:'Micron',                 symbol:'µ',      factor:1e-6,                 group:'metric',     altNames:['micrometre'] },
+  { key:'picometer',      label:'Picometer',              symbol:'pm',     factor:1e-12,                group:'metric',     altNames:['picometre'] },
+  { key:'femtometer',     label:'Femtometer',             symbol:'fm',     factor:1e-15,                group:'metric',     altNames:['femtometre'] },
+  { key:'attometer',      label:'Attometer',              symbol:'am',     factor:1e-18,                group:'metric',     altNames:['attometre'] },
+
+  // IMPERIAL / US
+  { key:'mile',           label:'Mile',                   symbol:'mi',     factor:1609.344,             group:'imperial',   altNames:['international mile'] },
+  { key:'yard',           label:'Yard',                   symbol:'yd',     factor:0.9144,               group:'imperial',   altNames:[] },
+  { key:'foot',           label:'Foot',                   symbol:'ft',     factor:0.3048,               group:'imperial',   altNames:['feet'] },
+  { key:'inch',           label:'Inch',                   symbol:'in',     factor:0.0254,               group:'imperial',   altNames:['inches'] },
+  { key:'league',         label:'League',                 symbol:'lea',    factor:4828.032,             group:'imperial',   altNames:[] },
+  { key:'naut_league_uk', label:'Nautical League (UK)',   symbol:'NL(UK)', factor:5559.552,             group:'imperial',   altNames:[] },
+  { key:'naut_league_int',label:'Nautical League (Int.)', symbol:'NL',     factor:5556,                 group:'imperial',   altNames:[] },
+  { key:'league_statute', label:'League (Statute)',       symbol:'st.lea', factor:4828.0416560833,      group:'imperial',   altNames:[] },
+  { key:'naut_mile_uk',   label:'Nautical Mile (UK)',     symbol:'NM(UK)', factor:1853.184,             group:'imperial',   altNames:[] },
+  { key:'naut_mile_int',  label:'Nautical Mile (Int.)',   symbol:'NM',     factor:1852,                 group:'imperial',   altNames:['international nautical mile'] },
+  { key:'mile_statute',   label:'Mile (Statute)',         symbol:'mi',     factor:1609.3472186944,      group:'imperial',   altNames:['US statute mile'] },
+  { key:'mile_us_survey', label:'Mile (US Survey)',       symbol:'mi',     factor:1609.3472186944,      group:'imperial',   altNames:[] },
+  { key:'mile_roman',     label:'Mile (Roman)',           symbol:'',       factor:1479.804,             group:'imperial',   altNames:['mille passuum'] },
+  { key:'kiloyard',       label:'Kiloyard',               symbol:'kyd',    factor:914.4,                group:'imperial',   altNames:[] },
+  { key:'furlong',        label:'Furlong',                symbol:'fur',    factor:201.168,              group:'imperial',   altNames:[] },
+  { key:'furlong_us',     label:'Furlong (US Survey)',    symbol:'fur',    factor:201.1684023368,       group:'imperial',   altNames:[] },
+  { key:'chain',          label:'Chain',                  symbol:'ch',     factor:20.1168,              group:'imperial',   altNames:["Gunter's chain"] },
+  { key:'chain_us',       label:'Chain (US Survey)',      symbol:'ch',     factor:20.1168402337,        group:'imperial',   altNames:[] },
+  { key:'rope',           label:'Rope',                   symbol:'',       factor:6.096,                group:'imperial',   altNames:[] },
+  { key:'rod',            label:'Rod',                    symbol:'rd',     factor:5.0292,               group:'imperial',   altNames:['perch','pole'] },
+  { key:'rod_us',         label:'Rod (US Survey)',        symbol:'rd',     factor:5.0292100584,         group:'imperial',   altNames:[] },
+  { key:'perch',          label:'Perch',                  symbol:'',       factor:5.0292,               group:'imperial',   altNames:['rod','pole'] },
+  { key:'pole',           label:'Pole',                   symbol:'',       factor:5.0292,               group:'imperial',   altNames:['rod','perch'] },
+  { key:'fathom',         label:'Fathom',                 symbol:'fath',   factor:1.8288,               group:'imperial',   altNames:[] },
+  { key:'fathom_us',      label:'Fathom (US Survey)',     symbol:'fath',   factor:1.8288036576,         group:'imperial',   altNames:[] },
+  { key:'ell',            label:'Ell',                    symbol:'',       factor:1.143,                group:'imperial',   altNames:[] },
+  { key:'foot_us',        label:'Foot (US Survey)',       symbol:'ft',     factor:0.3048006096,         group:'imperial',   altNames:[] },
+  { key:'link',           label:'Link',                   symbol:'li',     factor:0.201168,             group:'imperial',   altNames:["Gunter's link"] },
+  { key:'link_us',        label:'Link (US Survey)',       symbol:'li',     factor:0.2011684023,         group:'imperial',   altNames:[] },
+  { key:'cubit_uk',       label:'Cubit (UK)',             symbol:'',       factor:0.4572,               group:'imperial',   altNames:[] },
+  { key:'hand',           label:'Hand',                   symbol:'h',      factor:0.1016,               group:'imperial',   altNames:['hand breadth'] },
+  { key:'span_cloth',     label:'Span (Cloth)',           symbol:'',       factor:0.2286,               group:'imperial',   altNames:[] },
+  { key:'finger_cloth',   label:'Finger (Cloth)',         symbol:'',       factor:0.1143,               group:'imperial',   altNames:[] },
+  { key:'nail_cloth',     label:'Nail (Cloth)',           symbol:'',       factor:0.05715,              group:'imperial',   altNames:[] },
+  { key:'inch_us',        label:'Inch (US Survey)',       symbol:'in',     factor:0.0254000508,         group:'imperial',   altNames:[] },
+  { key:'barleycorn',     label:'Barleycorn',             symbol:'',       factor:0.0084666667,         group:'imperial',   altNames:[] },
+  { key:'mil',            label:'Mil',                    symbol:'mil',    factor:2.54e-5,              group:'imperial',   altNames:['thou','thousandth of an inch'] },
+  { key:'microinch',      label:'Microinch',              symbol:'µin',    factor:2.54e-8,              group:'imperial',   altNames:[] },
+
+  // ASTRONOMICAL
+  { key:'light_year',     label:'Light Year',             symbol:'ly',     factor:9.46073047258e15,     group:'astro',      altNames:['lightyear'] },
+  { key:'megaparsec',     label:'Megaparsec',             symbol:'Mpc',    factor:3.08567758128e22,     group:'astro',      altNames:[] },
+  { key:'kiloparsec',     label:'Kiloparsec',             symbol:'kpc',    factor:3.08567758128e19,     group:'astro',      altNames:[] },
+  { key:'parsec',         label:'Parsec',                 symbol:'pc',     factor:3.08567758128e16,     group:'astro',      altNames:[] },
+  { key:'au',             label:'Astronomical Unit',      symbol:'AU',     factor:149597870691,         group:'astro',      altNames:['AU','UA'] },
+  { key:'earth_eq_r',    label:"Earth's Equatorial Radius",symbol:'R⊕',   factor:6378160,              group:'astro',      altNames:[] },
+  { key:'earth_pol_r',   label:"Earth's Polar Radius",    symbol:'',       factor:6356776.9999999,      group:'astro',      altNames:[] },
+  { key:'earth_sun',     label:"Earth's Distance from Sun",symbol:'',      factor:149600000000,         group:'astro',      altNames:[] },
+  { key:'sun_radius',    label:"Sun's Radius",            symbol:'R☉',     factor:696000000,            group:'astro',      altNames:[] },
+
+  // SCIENTIFIC
+  { key:'angstrom',       label:'Angstrom',               symbol:'Å',      factor:1e-10,                group:'scientific', altNames:['ångström'] },
+  { key:'au_length',      label:'A.U. of Length',         symbol:'a.u.',   factor:5.2917724900001e-11,  group:'scientific', altNames:['atomic unit of length','bohr'] },
+  { key:'x_unit',         label:'X-Unit',                 symbol:'X',      factor:1.00208e-13,          group:'scientific', altNames:['siegbahn'] },
+  { key:'fermi',          label:'Fermi',                  symbol:'F',      factor:1e-15,                group:'scientific', altNames:['femtometre'] },
+  { key:'planck',         label:'Planck Length',          symbol:'lₚ',     factor:1.61605e-35,          group:'scientific', altNames:[] },
+  { key:'electron_r',    label:'Electron Radius',         symbol:'rₑ',     factor:2.81794092e-15,       group:'scientific', altNames:['classical electron radius'] },
+  { key:'bohr_r',        label:'Bohr Radius',             symbol:'a₀',     factor:5.2917724900001e-11,  group:'scientific', altNames:['a.u. of length'] },
+
+  // TYPOGRAPHY
+  { key:'pica',           label:'Pica',                   symbol:'pc',     factor:0.0042333333,         group:'typography', altNames:[] },
+  { key:'point',          label:'Point',                  symbol:'pt',     factor:0.0003527778,         group:'typography', altNames:['typographic point'] },
+  { key:'twip',           label:'Twip',                   symbol:'twp',    factor:1.76389e-5,           group:'typography', altNames:['twentieth of a point'] },
+  { key:'caliber',        label:'Caliber',                symbol:'cl',     factor:0.000254,             group:'typography', altNames:[] },
+  { key:'centiinch',      label:'Centiinch',              symbol:'cin',    factor:0.000254,             group:'typography', altNames:[] },
+
+  // HISTORICAL
+  { key:'arpent',         label:'Arpent',                 symbol:'',       factor:58.5216,              group:'historical', altNames:[] },
+  { key:'aln',            label:'Aln',                    symbol:'',       factor:0.5937777778,         group:'historical', altNames:['alen'] },
+  { key:'famn',           label:'Famn',                   symbol:'',       factor:1.7813333333,         group:'historical', altNames:[] },
+  { key:'ken',            label:'Ken',                    symbol:'',       factor:2.11836,              group:'historical', altNames:[] },
+  { key:'russian_archin', label:'Russian Archin',         symbol:'',       factor:0.7112,               group:'historical', altNames:['arshin'] },
+  { key:'roman_actus',    label:'Roman Actus',            symbol:'',       factor:35.47872,             group:'historical', altNames:['actus'] },
+  { key:'vara_de_tarea',  label:'Vara de Tarea',          symbol:'',       factor:2.505456,             group:'historical', altNames:[] },
+  { key:'vara_conuquera', label:'Vara Conuquera',         symbol:'',       factor:2.505456,             group:'historical', altNames:[] },
+  { key:'vara_castellana',label:'Vara Castellana',        symbol:'',       factor:0.835152,             group:'historical', altNames:[] },
+  { key:'cubit_greek',    label:'Cubit (Greek)',          symbol:'',       factor:0.462788,             group:'historical', altNames:['Greek cubit'] },
+  { key:'long_reed',      label:'Long Reed',              symbol:'',       factor:3.2004,               group:'historical', altNames:[] },
+  { key:'reed',           label:'Reed',                   symbol:'',       factor:2.7432,               group:'historical', altNames:[] },
+  { key:'long_cubit',     label:'Long Cubit',             symbol:'',       factor:0.5334,               group:'historical', altNames:[] },
+  { key:'handbreadth',    label:'Handbreadth',            symbol:'',       factor:0.0762,               group:'historical', altNames:['palm'] },
+  { key:'fingerbreadth',  label:'Fingerbreadth',          symbol:'',       factor:0.01905,              group:'historical', altNames:['digit'] },
+];
+
+// ================================================================
+//  UNIT DESCRIPTIONS  (SEO content for each unit page)
+// ================================================================
+const UNIT_DESC = {
+  meter: { short: 'The SI base unit of length, defined by the speed of light.', long: 'The meter (symbol: m) is the fundamental unit of length in the International System of Units (SI). Since 1983, it has been defined as the distance light travels in a vacuum in exactly 1/299,792,458 of a second. The meter replaced earlier French standards and is now the world\'s most widely used unit of length. It underpins virtually all scientific, engineering, and everyday measurement globally.' },
+  kilometer: { short: 'Equal to 1,000 meters; the standard unit for road distances worldwide.', long: 'The kilometer (symbol: km) is a unit of length in the SI system equal to 1,000 meters. It is the standard measure for road distances, geographic extents, and large-scale mapping in most countries. A kilometer is approximately 0.621 miles and 1,093.6 yards. The prefix "kilo-" derives from the Greek word χίλιοι (chílioi), meaning "thousand."' },
+  decimeter: { short: 'One tenth of a meter; used in volume calculations (1 dm³ = 1 liter).', long: 'The decimeter (symbol: dm) equals one tenth (0.1) of a meter. While not commonly used in everyday speech, it plays an important role in cubic measure — 1 cubic decimeter is exactly 1 liter of volume. The prefix "deci-" comes from the Latin decimus, meaning "tenth."' },
+  centimeter: { short: 'One hundredth of a meter; used for clothing sizes and small measurements.', long: 'The centimeter (symbol: cm) is one hundredth (0.01) of a meter. It is extensively used in everyday life for measuring body height, clothing dimensions, room sizes, and small objects. 1 inch equals exactly 2.54 centimeters. The centimeter is part of the CGS (centimeter-gram-second) system that preceded modern SI units.' },
+  millimeter: { short: 'One thousandth of a meter; standard in engineering and manufacturing.', long: 'The millimeter (symbol: mm) equals one thousandth (0.001) of a meter. It is widely used in engineering, manufacturing, medicine, and machining where precision measurements are critical. Rainfall is measured in millimeters, and it is the standard unit in technical drawings and blueprints worldwide.' },
+  micrometer: { short: 'One millionth of a meter; used to measure bacteria and microscopic structures.', long: 'The micrometer (symbol: µm), also called a micron, equals one millionth (10⁻⁶) of a meter. It is used in science and engineering to measure wavelengths of infrared radiation, bacteria (1–10 µm), cells, and precision machine parts. The human hair is approximately 70 µm in diameter.' },
+  nanometer: { short: 'One billionth of a meter; the scale of atoms and molecules.', long: 'The nanometer (symbol: nm) equals one billionth (10⁻⁹) of a meter. It is the standard unit for measuring wavelengths of visible light (400–700 nm), atomic structures, semiconductor features, and nanotechnology. The diameter of a DNA double helix is roughly 2 nm, and modern CPU transistors are measured in nanometers.' },
+  exameter: { short: 'One quintillion meters; used in astrophysics for very large distances.', long: 'The exameter (symbol: Em) equals 10¹⁸ meters, or one quintillion meters. This enormous unit is used in astrophysics to describe large-scale cosmic distances. For reference, 1 exameter is approximately 105.7 light-years. The prefix "exa-" denotes 10¹⁸ in the SI system.' },
+  petameter: { short: 'One quadrillion meters; roughly 105 light-years.', long: 'The petameter (symbol: Pm) equals 10¹⁵ meters. It is used in astronomy and astrophysics to express very large distances. 1 petameter ≈ 105.7 light-years. The prefix "peta-" derives from the Greek word for five (the fifth power of 1,000).' },
+  terameter: { short: 'One trillion meters; roughly 6.7 AU, close to Saturn\'s orbit.', long: 'The terameter (symbol: Tm) equals 10¹² meters (one trillion meters). In astronomy, 1 terameter is about 6.685 astronomical units — close to the orbital radius of Saturn. It is a convenient unit for describing distances within the solar system at large scales.' },
+  gigameter: { short: 'One billion meters; roughly the diameter of the Sun.', long: 'The gigameter (symbol: Gm) equals 10⁹ meters (one billion meters). This is approximately the diameter of the Sun, which is about 1.392 Gm. It is a useful scale for expressing sizes of stars, planetary orbits within a solar system, and large astronomical bodies.' },
+  megameter: { short: 'One million meters; roughly the radius of Earth.', long: 'The megameter (symbol: Mm) equals 10⁶ meters (one million meters). Earth\'s mean radius is about 6.371 Mm, making this unit a practical reference for planetary-scale distances. The circumference of Earth is approximately 40.075 Mm.' },
+  hectometer: { short: 'One hundred meters; the length of a football field.', long: 'The hectometer (symbol: hm) equals 100 meters. While rarely used in everyday speech, it is a convenient reference — a standard American football field (end zone to end zone) is approximately 1 hectometer long. It features in some agricultural and historical contexts.' },
+  dekameter: { short: 'Ten meters; about the height of a three-story building.', long: 'The dekameter (also spelled decameter, symbol: dam) equals 10 meters. It is seldom used in practice but appears in the metric system as the unit between the meter and hectometer. A three-story building is roughly 1 dekameter tall.' },
+  micron: { short: 'Synonym for micrometer; one millionth of a meter.', long: 'The micron is an informal name and symbol (µ) for the micrometer (10⁻⁶ m). It is widely used in biology, materials science, and optics. The unit became popular in the 19th century and is still common in many fields despite the official SI preference for "micrometer."' },
+  picometer: { short: 'One trillionth of a meter; used to measure atomic radii and bond lengths.', long: 'The picometer (symbol: pm) equals 10⁻¹² meters. It is the standard unit for expressing atomic radii (hydrogen: ~53 pm), covalent bond lengths, and X-ray wavelengths. The angstrom (100 pm) was historically preferred in crystallography, but the picometer is the SI-preferred unit at this scale.' },
+  femtometer: { short: 'One quadrillionth of a meter; the scale of atomic nuclei.', long: 'The femtometer (symbol: fm) equals 10⁻¹⁵ meters, also known as a fermi. It is the characteristic scale of atomic nuclei — a proton has a charge radius of about 0.87 fm. The femtometer is used in nuclear and particle physics.' },
+  attometer: { short: 'One quintillionth of a meter; relevant in high-energy particle physics.', long: 'The attometer (symbol: am) equals 10⁻¹⁸ meters. At this scale, physicists study quark interactions and high-energy scattering events. It is among the smallest units of length with direct experimental relevance in particle physics.' },
+  mile: { short: 'The standard imperial unit for long distances; equals 1,609.344 meters.', long: 'The mile (symbol: mi) is defined internationally as exactly 1,609.344 meters. It originates from the Roman "mille passuum" (a thousand paces of two steps each). Today it is the standard unit for road distances in the United States, United Kingdom, and a few other countries. 1 mile = 1.609 km = 5,280 feet = 1,760 yards.' },
+  yard: { short: 'Exactly 0.9144 meters; standard in American football and fabrics.', long: 'The yard (symbol: yd) is defined as exactly 0.9144 meters by international agreement since 1959. It equals 3 feet or 36 inches. The yard is the standard unit for American football field measurements and is widely used in the textile industry. Its name may derive from the Old English "gerd" (rod or stick).' },
+  foot: { short: 'Exactly 0.3048 meters; one of the most widely used imperial units.', long: 'The foot (symbol: ft) is defined as exactly 0.3048 meters (12 inches) since 1959. It is widely used in the United States, UK, and Canada for everyday measurements such as height, altitude in aviation, and architectural dimensions. The unit traces back to the length of a human foot.' },
+  inch: { short: 'Exactly 2.54 centimeters; the smallest common US/UK length unit.', long: 'The inch (symbol: in or ″) is defined as exactly 2.54 centimeters. It equals 1/12 of a foot and 1/36 of a yard. The inch is used extensively in the US, UK, and Canada for screen sizes, tire pressures, pipe sizes, and everyday small measurements. It derives from the Latin "uncia" (one-twelfth).' },
+  league: { short: 'An old unit of about 4.8 km; the distance a person could walk in an hour.', long: 'The league (symbol: lea) equals exactly 4,828.032 meters (about 3 miles). It was a common unit in Europe for road distances before metrication and famously appears in Jules Verne\'s "Twenty Thousand Leagues Under the Sea." The league varied significantly by country and era.' },
+  naut_league_uk: { short: 'UK nautical league; equals 3 UK nautical miles (5,559.552 m).', long: 'The nautical league (UK) equals 3 UK nautical miles, or 5,559.552 meters. It was used in British maritime navigation before the adoption of the international nautical mile. Nautical leagues are no longer in official use but appear in historical navigation documents.' },
+  naut_league_int: { short: 'International nautical league; equals 3 nautical miles (5,556 m).', long: 'The international nautical league equals exactly 3 international nautical miles, or 5,556 meters. This unit was used historically in maritime navigation and charts but has been largely superseded by the nautical mile.' },
+  league_statute: { short: 'Statute league used in the United States; ~4,828 m.', long: 'The statute league equals 3 statute miles, or approximately 4,828.0416560833 meters. It was used in official American measurements during the colonial and post-colonial period. The statute league is rarely used today but remains in legal and historical documents.' },
+  naut_mile_uk: { short: 'UK nautical mile; 1/60 of a degree of latitude (1,853.184 m).', long: 'The UK nautical mile equals 6,080 feet or 1,853.184 meters. It was historically defined as 1/60 of one degree of latitude as measured at the British Admiralty\'s standard latitude. It was replaced by the international nautical mile in 1970 for most purposes.' },
+  naut_mile_int: { short: 'International nautical mile; exactly 1,852 m; used in aviation and navigation.', long: 'The international nautical mile is defined as exactly 1,852 meters. It is based on one minute of arc along a meridian of the Earth. It is the standard unit for maritime and aerial navigation worldwide, used to measure nautical distances and define knots (1 knot = 1 NM/hour).' },
+  mile_statute: { short: 'US statute mile; slightly longer than the international mile at ~1,609.347 m.', long: 'The US statute mile equals approximately 1,609.3472186944 meters, slightly differing from the international mile due to its derivation from the US survey foot. It is the legal definition for US land measurements under the Public Land Survey System.' },
+  mile_us_survey: { short: 'US survey mile; based on the US survey foot; used in land surveys.', long: 'The US survey mile equals 5,280 survey feet or approximately 1,609.3472186944 meters. It was the standard for official US land surveys until the US survey foot was officially deprecated in favor of the international foot in 2023.' },
+  mile_roman: { short: 'Roman mile (mille passuum); the origin of the modern mile at 1,479.8 m.', long: 'The Roman mile (mille passuum, meaning "a thousand paces") equals 1,479.804 meters. A Roman pace was two steps — roughly 1.48 meters. This ancient unit formed the basis for many European miles, including the modern international mile, though the exact value varied by era and region.' },
+  kiloyard: { short: 'One thousand yards; 914.4 meters; used in military gunnery.', long: 'The kiloyard (symbol: kyd) equals 1,000 yards or 914.4 meters. It was used in military contexts, particularly in naval gunnery and artillery range calculations, where distances of thousands of yards were common. It is rarely encountered outside historical military documents.' },
+  furlong: { short: 'One eighth of a mile; standard unit for horse racing distances.', long: 'The furlong (symbol: fur) equals 220 yards, 660 feet, or 201.168 meters. It is exactly 1/8 of a mile. The furlong is still the standard unit for horse racing distances in English-speaking countries. Its name derives from "furrow long" — the length of a furrow in a medieval open field.' },
+  furlong_us: { short: 'US survey furlong; very slightly longer than the standard furlong.', long: 'The US survey furlong equals 220 US survey feet, or approximately 201.1684023368 meters. It differs from the international furlong by less than 1 mm but was used in official US land survey documents until the US survey foot was deprecated.' },
+  chain: { short: "Gunter's chain; 20.1168 m; the basis of US land survey grids.", long: "The chain (symbol: ch), or Gunter's chain, equals 66 feet or 20.1168 meters. Invented by Edmund Gunter around 1620, it was the foundational measurement tool of the US Public Land Survey System. Ten chains equal one furlong; eighty chains equal one mile. One square chain equals 1/10 of an acre." },
+  chain_us: { short: 'US survey chain; used in official US land surveys.', long: 'The US survey chain equals 66 US survey feet or approximately 20.1168402337 meters. It is the version of the chain used in official American land surveys and PLSS (Public Land Survey System) documentation.' },
+  rope: { short: 'An old English unit equal to 20 feet (6.096 m).', long: 'The rope is an archaic English unit of length equal to 20 feet or 6.096 meters. It was used in land measurement and construction. The term "rope" referred to the actual measuring rope used by surveyors, which was typically 20 feet long.' },
+  rod: { short: 'Equals 5.0292 m (16.5 feet); same as a perch or pole.', long: 'The rod (symbol: rd), also called a perch or pole, equals exactly 16.5 feet or 5.0292 meters. It is 1/4 of a chain and 1/320 of a mile. Historically used in land measurement throughout the British Empire, 160 square rods equal one acre.' },
+  rod_us: { short: 'US survey rod; used in American public land surveys.', long: 'The US survey rod equals 16.5 US survey feet or approximately 5.0292100584 meters. It differs from the international rod by a tiny amount due to the difference between the US survey foot and the international foot.' },
+  perch: { short: 'Identical to the rod; 5.0292 m; an old surveying unit.', long: 'The perch equals exactly 5.0292 meters and is synonymous with the rod and pole. It was widely used in medieval and early modern land measurement. "Perch" was the common term in France and many parts of the British Isles for this unit.' },
+  pole: { short: 'Same as rod and perch; 5.0292 m; used in medieval land measurement.', long: 'The pole is identical to the rod and perch at 5.0292 meters. It was the standard surveying unit across much of medieval Europe. The word derives from the actual measuring pole used by surveyors and land agents.' },
+  fathom: { short: 'Six feet (1.8288 m); the traditional unit for measuring water depth.', long: 'The fathom (symbol: fath) equals 6 feet or 1.8288 meters. It is the traditional unit for measuring sea depth and cable/rope length in marine contexts. The word derives from the Old English "fæthm," meaning the outstretched arms — the distance from fingertip to fingertip.' },
+  fathom_us: { short: 'US survey fathom; very slightly longer than the standard fathom.', long: 'The US survey fathom equals 6 US survey feet or approximately 1.8288036576 meters. Like other US survey units, it differs from the international fathom by a tiny amount attributable to the difference between the US survey foot and the international foot.' },
+  ell: { short: 'A cloth-measuring unit; the English ell equals 45 inches (1.143 m).', long: 'The ell equals 45 inches or 1.143 meters in the English system. It was widely used for measuring fabric and cloth in trade. Different countries had different ells — the Scottish ell was about 37 inches, while the Flemish ell was about 27 inches. The name derives from the Latin "ulna" (elbow).' },
+  foot_us: { short: 'US survey foot; very slightly longer than the standard foot.', long: 'The US survey foot equals approximately 0.3048006096 meters, differing from the international foot (0.3048 m exactly) by about 2 parts per million. It was defined in the 1890s for use in US geodetic and land surveys and was officially deprecated in 2023 in favor of the international foot.' },
+  link: { short: "1/100 of a Gunter's chain; 0.201168 m; a surveying unit.", long: "The link (symbol: li) equals 1/100 of a Gunter's chain, or 0.201168 meters. It was used as a subdivision of the chain in British and American land surveys. 100 links = 1 chain = 66 feet." },
+  link_us: { short: 'US survey link; used in American land survey records.', long: 'The US survey link equals 1/100 of a US survey chain, or approximately 0.2011684023 meters. It appears extensively in historic US land grant documents, PLSS plats, and deed descriptions.' },
+  cubit_uk: { short: 'The British cubit; 18 inches (0.4572 m); an ancient body-based unit.', long: 'The UK cubit equals 18 inches or 0.4572 meters. The cubit is one of the oldest known units of measurement, based on the length of the forearm from elbow to fingertip. The Great Pyramid of Giza was built using Egyptian cubits of about 52.4 cm. The English cubit was standardized at 18 inches.' },
+  hand: { short: '4 inches (0.1016 m); still used to measure horse height.', long: 'The hand (symbol: h) equals 4 inches or 0.1016 meters. It is the standard unit for measuring the height of horses in the United States, United Kingdom, Canada, and Australia. A horse is measured from the ground to the highest point of its withers. "Hands" as a measurement dates back to ancient Egypt.' },
+  span_cloth: { short: 'The width of the outstretched hand; 9 inches (0.2286 m).', long: 'The cloth span equals 9 inches or 0.2286 meters, representing the distance between the tip of the thumb and the tip of the little finger when the hand is spread. It was commonly used in the cloth trade as a convenient body-based measure.' },
+  finger_cloth: { short: 'One-sixteenth of a yard; 4.5 inches (0.1143 m); a cloth measure.', long: 'The finger (cloth) equals 4.5 inches or 0.1143 meters. It is 1/16 of a yard and was used in the textile trade to measure fabric. Not to be confused with the finger of liquid measure.' },
+  nail_cloth: { short: '1/16 of a foot; 2.25 inches (0.05715 m); a textile measure.', long: 'The nail (cloth) equals 2.25 inches or 0.05715 meters (1/16 of a foot). It was a unit of cloth measurement used in the textile industry, particularly for measuring fabric and ribbon. The nail is 1/4 of a span.' },
+  inch_us: { short: 'US survey inch; 0.0254000508 m; fractionally longer than the standard inch.', long: 'The US survey inch equals 1/12 of a US survey foot, or approximately 0.0254000508 meters. It is fractionally larger than the international inch (0.0254 m exactly). The difference was negligible for most purposes but significant over large geodetic distances.' },
+  barleycorn: { short: '1/3 inch (0.00847 m); the origin of the UK shoe size system.', long: 'The barleycorn equals 1/3 of an inch or approximately 0.0084666667 meters. It is the basis for UK and US shoe sizing — each shoe size is one barleycorn (1/3 inch) different from the next. The unit derives from the average width of a grain of barley.' },
+  mil: { short: 'One thousandth of an inch; used in engineering and film thickness.', long: 'The mil (symbol: mil or thou) equals one thousandth of an inch (0.001 in) or 2.54 × 10⁻⁵ meters. It is widely used in engineering for tolerances, plastic film thickness, wire gauges, and paint thickness. Not to be confused with the millimeter (mm).' },
+  microinch: { short: 'One millionth of an inch; used in precision surface finish measurement.', long: 'The microinch equals one millionth of an inch (0.000001 in) or 2.54 × 10⁻⁸ meters. It is used in precision manufacturing and surface metrology to specify surface roughness and tolerances in very fine machined or polished parts.' },
+  light_year: { short: 'Distance light travels in one year; ~9.46 × 10¹⁵ m.', long: 'A light-year (symbol: ly) is the distance light travels in a vacuum in one Julian year (365.25 days), equal to approximately 9.461 × 10¹⁵ meters or about 63,241 astronomical units. It is the standard unit for expressing the distances between stars and galaxies in popular science and many astronomical contexts.' },
+  megaparsec: { short: 'One million parsecs; ~3.09 × 10²² m; used for galaxy-cluster distances.', long: 'A megaparsec (symbol: Mpc) equals one million parsecs or about 3.086 × 10²² meters (~3.26 million light-years). It is the standard unit for measuring distances between galaxy clusters and superclusters, and is used extensively in cosmology and the study of large-scale cosmic structure.' },
+  kiloparsec: { short: 'One thousand parsecs; ~3.09 × 10¹⁹ m; used for galactic-scale distances.', long: 'A kiloparsec (symbol: kpc) equals 1,000 parsecs or approximately 3.086 × 10¹⁹ meters (~3,260 light-years). It is commonly used in astronomy to describe distances within and between nearby galaxies. The Milky Way galaxy has a radius of about 15 kpc.' },
+  parsec: { short: 'The parallax of one arcsecond; ~3.086 × 10¹⁶ m or 3.26 light-years.', long: 'The parsec (symbol: pc) is the distance at which one astronomical unit subtends an angle of one arcsecond. It equals approximately 3.0857 × 10¹⁶ meters, or about 3.26 light-years. The closest star to Earth, Proxima Centauri, is about 1.30 parsecs away. Parsecs are the preferred unit in professional astronomy.' },
+  au: { short: 'The mean Earth–Sun distance; ~149.6 million km.', long: 'The astronomical unit (symbol: AU) is defined as exactly 149,597,870,700 meters — approximately the average distance between Earth and the Sun. It is used to conveniently express distances within the solar system. The gas giant Neptune orbits at about 30 AU from the Sun.' },
+  earth_eq_r: { short: "Earth's equatorial radius; 6,378.16 km.', long: 'Earth's equatorial radius measures approximately 6,378,160 meters (6,378.16 km). Earth is not a perfect sphere — it bulges at the equator due to rotation, making the equatorial radius about 21 km larger than the polar radius. This measurement is fundamental in geodesy and satellite orbit calculations." },
+  earth_pol_r: { short: "Earth's polar radius; 6,356.777 km; shorter than the equatorial radius.", long: "Earth's polar radius is approximately 6,356,777 meters (6,356.777 km), about 21 km shorter than the equatorial radius. This difference is caused by Earth's rotation creating an equatorial bulge. Together, these radii define Earth's reference ellipsoid used in GPS and mapping." },
+  earth_sun: { short: "Earth's mean distance from the Sun; ~149.6 billion meters (1 AU).", long: "Earth's mean distance from the Sun is approximately 149,600,000,000 meters, very close to the definition of the astronomical unit (AU). This distance varies between ~147.1 million km (perihelion, January) and ~152.1 million km (aphelion, July) due to Earth's slightly elliptical orbit." },
+  sun_radius: { short: "The Sun's mean radius; ~696,000 km; about 109 Earth diameters.", long: "The Sun's mean radius is approximately 696,000,000 meters (696,000 km). This is about 109 times the radius of Earth. The Sun's photosphere radius is the standard reference, though the Sun's extent varies with the definition (corona, heliosphere). Nearly 1.3 million Earths could fit inside the Sun." },
+  angstrom: { short: '10⁻¹⁰ m; traditionally used for atomic and molecular sizes.', long: 'The angstrom (symbol: Å, named after physicist Anders Jonas Ångström) equals 10⁻¹⁰ meters. It was the traditional unit for expressing atomic and molecular dimensions, crystal lattice spacings, and UV/X-ray wavelengths. While not an SI unit, it remains widely used in chemistry, crystallography, and atomic physics. The radius of a hydrogen atom is about 0.53 Å.' },
+  au_length: { short: 'Atomic unit of length; the Bohr radius (~5.29 × 10⁻¹¹ m).', long: 'The atomic unit of length, also called the bohr, equals approximately 5.2917724900001 × 10⁻¹¹ meters. It is the most probable distance between the electron and nucleus in a ground-state hydrogen atom. It is the natural length unit of the Hartree atomic unit system used in quantum chemistry.' },
+  x_unit: { short: 'A unit for X-ray wavelengths; ~1.002 × 10⁻¹³ m.', long: 'The X-unit (symbol: X or xu, also called Siegbahn unit after physicist Manne Siegbahn) equals approximately 1.00208 × 10⁻¹³ meters. It was used in the early 20th century to express X-ray wavelengths measured by crystal diffraction. It has largely been replaced by the picometer in modern usage.' },
+  fermi: { short: 'Synonym for femtometer; 10⁻¹⁵ m; the scale of atomic nuclei.', long: 'The fermi (symbol: F or f, named after physicist Enrico Fermi) equals 10⁻¹⁵ meters — exactly one femtometer. It is the characteristic scale of atomic nuclei. A proton has a radius of about 0.87 fermis. The unit is used in nuclear and particle physics to describe subatomic structures.' },
+  planck: { short: 'The Planck length (~1.616 × 10⁻³⁵ m); the smallest meaningful length.', long: 'The Planck length (symbol: lₚ) equals approximately 1.61605 × 10⁻³⁵ meters. It is derived from fundamental physical constants (the gravitational constant, Planck constant, and speed of light). In some theories of quantum gravity, it is the smallest length at which the notion of space-time has meaning. It is 10²⁰ times smaller than a proton.' },
+  electron_r: { short: 'Classical electron radius; ~2.818 × 10⁻¹⁵ m.', long: 'The classical electron radius (symbol: rₑ) equals approximately 2.81794 × 10⁻¹⁵ meters. It is derived by equating the electrostatic self-energy of a uniformly charged sphere to the rest mass energy of the electron. It appears in formulas for Thomson scattering and represents the effective electromagnetic size of the electron.' },
+  bohr_r: { short: 'Most probable electron-nucleus distance in hydrogen; ~5.29 × 10⁻¹¹ m.', long: 'The Bohr radius (symbol: a₀, named after Niels Bohr) equals approximately 5.29177 × 10⁻¹¹ meters. It is the most probable distance between the proton and electron in a ground-state hydrogen atom. It serves as the natural length scale in atomic physics and quantum chemistry, and defines the atomic unit of length.' },
+  pica: { short: '1/6 of an inch; the standard typographic unit larger than a point.', long: 'The pica equals 1/6 of an inch or approximately 4.2333 mm. It is a typographic unit used in typography and desktop publishing, equal to 12 points. Picas are used to measure column widths, margins, and other page layout dimensions in professional publishing. The term derives from Latin "pica" (magpie), referencing a medieval type specimen book.' },
+  point: { short: '1/72 of an inch; the smallest standard typographic unit.', long: 'The typographic point (symbol: pt) is defined as 1/72 of an inch or approximately 0.3528 mm. It is the fundamental unit of typography used worldwide in word processors, design software, and professional publishing. Font sizes are expressed in points — 12pt is standard body text, 72pt is one inch tall.' },
+  twip: { short: '1/1440 of an inch; 1/20 of a typographic point.', long: 'The twip (twentieth of a point) equals 1/20 of a typographic point or 1/1440 of an inch (approximately 17.6 µm). It was used internally by Microsoft applications such as Word and Excel for precise layout measurements. The name is a portmanteau of "twentieth" and "point."' },
+  caliber: { short: '0.01 inches (0.254 mm); used to express firearm bore diameters.', long: 'The caliber (symbol: cl) equals exactly 0.01 inches or 0.000254 meters (0.254 mm). In firearms, caliber refers to the internal diameter of a gun barrel. Common calibers include .22, .45, and 9mm. The term derives from the Arabic "qālib" (mold or template).' },
+  centiinch: { short: 'One hundredth of an inch; 0.254 mm; same as caliber.', long: 'The centiinch (symbol: cin) equals one hundredth of an inch or 0.000254 meters (0.254 mm). It is numerically identical to the caliber. The centiinch is occasionally encountered in engineering contexts as a subdivision of the inch.' },
+  arpent: { short: 'A French unit equal to ~58.5 m; still used in Quebec land law.', long: 'The arpent equals approximately 58.5216 meters. It was a French unit of length used in land measurement, particularly in France, Louisiana, and Quebec. Arpents remain relevant in Quebec property law, where land area is sometimes still described in arpents. The arpent\'s length varied by region but the "arpent de Paris" is most commonly used.' },
+  aln: { short: 'A Scandinavian ell; ~59.4 cm; used in Sweden and Norway.', long: 'The aln (also spelled alen) equals approximately 0.5937777778 meters. It was the traditional unit of length used in Scandinavia (Sweden, Norway, Denmark) for measuring cloth and textiles. The Swedish aln was set at exactly 2 feet (Swedish feet) in the 19th century before metrication.' },
+  famn: { short: 'A Scandinavian fathom; ~1.78 m; 3 alns.', long: 'The famn equals approximately 1.7813333333 meters. It is the Scandinavian equivalent of the fathom, historically used in Sweden and Norway. One famn equals 3 alns. Like many old Scandinavian units, it was replaced by metric units during the 19th century standardization.' },
+  ken: { short: 'A Japanese unit of ~2.12 m; used in traditional architecture.', long: 'The ken (間) equals approximately 2.11836 meters. It is a traditional Japanese unit of length used primarily in architecture and carpentry. The ken defines the spacing between pillars in traditional Japanese buildings and is the basis of the tatami mat system. Standard tatami mats are half a ken wide and one ken long.' },
+  russian_archin: { short: 'Russian archin (arshin); 28 inches (0.7112 m).', long: 'The Russian archin (also spelled arshin) equals 28 inches or 0.7112 meters. It was the standard unit of length in the Russian Empire for measuring cloth and general distances. Three archins equal one sazhen (the Russian fathom). The archin remained in common use until the Soviet Union adopted the metric system in 1922.' },
+  roman_actus: { short: 'Roman land measurement unit; 120 Roman feet (~35.5 m).', long: 'The Roman actus equals 120 Roman feet or approximately 35.47872 meters. It was used in ancient Roman land surveying, particularly for measuring the length of fields. Two actus (an actus duplex) formed the basis of the Roman square land measure. The word "actus" referred to the distance a yoke of oxen could plow without resting.' },
+  vara_de_tarea: { short: 'A Spanish/Latin American vara; ~2.505 m.', long: 'The vara de tarea equals approximately 2.505456 meters. It is one of several Spanish vara measurements used in Latin America for land surveys and everyday measurement. Vara measurements were introduced by Spanish colonizers and varied by region. They appear in historical land grants throughout the Americas.' },
+  vara_conuquera: { short: 'Venezuelan land measure vara; ~2.505 m.', long: 'The vara conuquera equals approximately 2.505456 meters. It is a traditional Venezuelan unit of measurement, particularly used in the measurement of conucos (small agricultural plots). Like other vara units, it derives from the Spanish system of measurement.' },
+  vara_castellana: { short: 'Spanish vara from Castile; ~83.5 cm.', long: 'The vara castellana equals approximately 0.835152 meters. It was the standard vara used in Castile, Spain, and by extension in much of Spanish Latin America. The vara castellana is defined as 3 pies castellanos (Castilian feet) and was widely used in colonial land surveys throughout the Americas.' },
+  cubit_greek: { short: 'Ancient Greek cubit; ~46.3 cm; the pēchys.', long: 'The Greek cubit (pēchys, πῆχυς) equals approximately 0.462788 meters. It was the standard unit of length in ancient Greece for construction and trade. The Parthenon\'s proportions were designed using the Greek cubit. The Greek cubit was divided into 6 palms or 24 fingers.' },
+  long_reed: { short: 'Biblical unit of 6 long cubits; ~3.2 m.', long: 'The long reed equals approximately 3.2004 meters. It is a biblical unit of length, equal to 6 long cubits. Long reeds are mentioned in the Book of Ezekiel for measuring the Temple dimensions. It corresponds to the Egyptian royal cubit system used in ancient Near Eastern architecture.' },
+  reed: { short: 'A biblical measurement unit of 6 cubits; ~2.74 m.', long: 'The reed equals approximately 2.7432 meters, corresponding to 6 standard cubits or 3 yards. It was used in ancient Mesopotamia and the biblical world for measuring buildings and land. The Hebrew "qaneh" (reed) appears numerous times in the Bible as a surveying unit.' },
+  long_cubit: { short: 'Ancient Near Eastern long cubit; 21 inches (~0.533 m).', long: 'The long cubit equals approximately 0.5334 meters (about 21 inches). It was used in ancient Mesopotamia and Egypt, and appears in the description of the Tabernacle and Temple in the Hebrew Bible. The long cubit equals a standard cubit plus one hand-breadth (7 palm-widths instead of the standard 6).' },
+  handbreadth: { short: 'The width of four fingers; 3 inches (0.0762 m).', long: 'The handbreadth equals approximately 0.0762 meters (3 inches or 4 finger-widths). It was used in ancient measurement systems throughout the Near East, Egypt, and the Mediterranean world. The handbreadth was typically 1/6 of a cubit and appears frequently in biblical and ancient architectural descriptions.' },
+  fingerbreadth: { short: 'The width of one finger; ~1.905 cm; the smallest ancient body unit.', long: 'The fingerbreadth (also called a digit) equals approximately 0.01905 meters (about 3/4 of an inch). It was the smallest common unit in ancient measurement systems across Egypt, Greece, Rome, and the Near East. 4 fingerbreadths = 1 handbreadth; 24 fingerbreadths = 1 cubit in most systems.' },
+};
+
+// Group metadata
+const GROUP_META = {
+  metric:     { label:'Metric',       color:'bg-blue-500/15 text-blue-400',    icon:'fa-flask' },
+  imperial:   { label:'Imperial',     color:'bg-amber-500/15 text-amber-400',  icon:'fa-flag' },
+  astro:      { label:'Astronomical', color:'bg-violet-500/15 text-violet-400',icon:'fa-star' },
+  scientific: { label:'Scientific',   color:'bg-rose-500/15 text-rose-400',    icon:'fa-atom' },
+  typography: { label:'Typography',   color:'bg-cyan-500/15 text-cyan-400',    icon:'fa-font' },
+  historical: { label:'Historical',   color:'bg-emerald-500/15 text-emerald-400',icon:'fa-scroll' },
+};
+
+// ================================================================
+//  HELPERS
+// ================================================================
+function getUnit(key) { return LENGTH_UNITS.find(u => u.key === key); }
+
+function convert(value, fromKey, toKey) {
+  const from = getUnit(fromKey);
+  const to   = getUnit(toKey);
+  if (!from || !to || !isFinite(value)) return NaN;
+  return (value * from.factor) / to.factor;
+}
+
+function fmtNum(n) {
+  if (!isFinite(n)) return '—';
+  if (n === 0) return '0';
+  const abs = Math.abs(n);
+  if (abs >= 1e15 || (abs < 1e-10 && abs > 0)) return n.toExponential(6).replace(/\.?0+e/, 'e');
+  if (abs >= 1000) return parseFloat(n.toPrecision(10)).toLocaleString('en-US', {maximumSignificantDigits:10});
+  if (abs >= 1)    return parseFloat(n.toPrecision(10)).toString();
+  return parseFloat(n.toPrecision(8)).toString();
+}
+
+function slug(key) { return key.replace(/_/g, '-'); }
+function keyFromSlug(s) { return s.replace(/-/g, '_'); }
+
+// SEO meta updater
+function updateSEO({ title, description, url }) {
+  document.title = title;
+  document.querySelector('meta[name="description"]').content = description;
+  document.getElementById('og-title').content = title;
+  document.getElementById('og-desc').content = description;
+  document.getElementById('og-url').content = url;
+  document.getElementById('tw-title').content = title;
+  document.getElementById('tw-desc').content = description;
+  document.getElementById('canonical-link').href = url;
+}
+
+let toastTimer;
+function showToast(msg) {
+  clearTimeout(toastTimer);
+  document.getElementById('toast-text').textContent = msg;
+  const t = document.getElementById('toast');
+  t.classList.remove('hidden');
+  toastTimer = setTimeout(() => t.classList.add('hidden'), 2500);
+}
+
+function showComingSoon(name) {
+  document.getElementById('modal-title').textContent = name + ' Converter';
+  const m = document.getElementById('modal');
+  m.classList.remove('hidden');
+  m.style.display = 'flex';
+}
+function closeModal() {
+  const m = document.getElementById('modal');
+  m.classList.add('hidden');
+  m.style.display = '';
+}
+
+function closeSidebar() {
+  document.getElementById('sidebar').classList.add('-translate-x-full');
+  document.getElementById('sidebar-overlay').classList.add('hidden');
+}
+
+// ================================================================
+//  ROUTER
+// ================================================================
+function navigate(path) {
+  window.location.hash = '#' + path;
+}
+
+function getRoute() {
+  const hash = window.location.hash || '#/';
+  const path = hash.replace(/^#/, '') || '/';
+  const parts = path.split('/').filter(Boolean);
+  if (parts.length === 0) return { view: 'home' };
+  // /length/meter/to/kilometer
+  if (parts[0] === 'length' && parts[1] && parts[2] === 'to' && parts[3])
+    return { view: 'conv', fromKey: keyFromSlug(parts[1]), toKey: keyFromSlug(parts[3]) };
+  if (parts[0] === 'length' && parts[1]) return { view: 'unit', category: 'length', key: keyFromSlug(parts[1]) };
+  if (parts[0] === 'length') return { view: 'home' };
+  return { view: 'home' };
+}
+
+function router() {
+  const route = getRoute();
+  window.scrollTo(0, 0);
+  if (route.view === 'conv' && route.fromKey && route.toKey) {
+    const from = getUnit(route.fromKey);
+    const to   = getUnit(route.toKey);
+    if (from && to) { renderConversionPage(route.fromKey, route.toKey); return; }
+  }
+  if (route.view === 'unit' && route.key) {
+    const unit = getUnit(route.key);
+    if (unit) { renderUnitPage(route.key); return; }
+  }
+  renderHomePage();
+}
+
+window.addEventListener('hashchange', router);
+
+// ================================================================
+//  HOME PAGE
+// ================================================================
+let homeFromKey = 'meter';
+let homeToKey   = 'kilometer';
+let homeGroup   = 'all';
+let homeTableQ  = '';
+
+function renderHomePage() {
+  updateSEO({
+    title: 'Length Converter — 90+ Units | UnitFlow',
+    description: 'Free online length converter. Convert between 90+ units including metric, imperial, astronomical, and historical units. Instant results.',
+    url: 'https://unitflow.onspace.ai/#/length'
+  });
+
+  const root = document.getElementById('app-root');
+  root.innerHTML = `
+    <div class="page-fade">
+      <!-- Page header -->
+      <div class="mb-6">
+        <div class="flex items-center gap-2 mb-2">
+          <span class="inline-flex items-center gap-1.5 text-xs font-medium text-indigo-400 bg-indigo-500/10 border border-indigo-500/20 px-2 py-0.5 rounded-full">
+            <i class="fa-solid fa-ruler-horizontal text-xs"></i> Length
+          </span>
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">Length Converter</h1>
+        <p class="text-gray-500 text-sm mt-1">Convert between 90+ units — metric, imperial, astronomical, historical &amp; more.</p>
+      </div>
+
+      <!-- CONVERTER CARD -->
+      <div class="rounded-2xl border border-white/8 bg-dark-700/60 backdrop-blur-sm shadow-glow p-4 sm:p-6 mb-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-3">
+          <div>
+            <label class="block text-xs font-medium text-gray-500 mb-1.5 uppercase tracking-wider">From</label>
+            <div class="relative">
+              <input id="from-value" type="number" value="1" step="any"
+                class="converter-input w-full bg-dark-800 border border-white/10 rounded-xl px-4 py-3 text-xl font-semibold text-white font-mono transition-all hover:border-indigo-500/30"
+                placeholder="Enter value" oninput="homeConvert()" />
+              <button onclick="homeClear()" id="clear-btn"
+                class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 hover:text-gray-400 transition-colors hidden">
+                <i class="fa-solid fa-xmark text-sm"></i>
+              </button>
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-gray-500 mb-1.5 uppercase tracking-wider">From Unit</label>
+            <div id="from-wrap">
+              <button id="from-btn" onclick="homeToggleDrop('from')"
+                class="w-full bg-dark-800 border border-white/10 rounded-xl px-4 py-3 text-sm font-medium text-white text-left flex items-center justify-between hover:border-indigo-500/30 transition-all">
+                <span id="from-label"></span>
+                <i class="fa-solid fa-chevron-down text-indigo-400 text-xs transition-transform duration-200" id="from-chev"></i>
+              </button>
+              <div id="from-drop" class="unit-drop-panel mt-1 rounded-xl border border-white/10 bg-dark-800/98 backdrop-blur-xl shadow-xl overflow-hidden">
+                <div class="p-2 border-b border-white/5">
+                  <input id="from-search" type="text" placeholder="Search units…"
+                    class="w-full bg-dark-700 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-600 border border-white/5 focus:outline-none focus:border-indigo-500/40"
+                    oninput="homeBuildList('from')" />
+                </div>
+                <div id="from-list" class="search-dropdown py-1"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-center my-4">
+          <button onclick="homeSwap()" class="swap-btn group flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-600/15 border border-indigo-500/25 text-indigo-400 text-sm font-medium hover:bg-indigo-600/25 hover:border-indigo-500/50 transition-all">
+            <i class="fa-solid fa-arrow-right-arrow-left swap-icon text-xs"></i>Swap Units
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+          <div>
+            <label class="block text-xs font-medium text-gray-500 mb-1.5 uppercase tracking-wider">To</label>
+            <div class="relative">
+              <input id="to-value" type="number" step="any" readonly
+                class="converter-input w-full bg-dark-800/60 border border-white/8 rounded-xl px-4 py-3 text-xl font-semibold text-indigo-300 font-mono cursor-default"
+                placeholder="Result" />
+              <button onclick="homeCopy()" title="Copy result"
+                class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 hover:text-indigo-400 transition-colors">
+                <i class="fa-regular fa-copy text-sm" id="copy-icon"></i>
+              </button>
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-gray-500 mb-1.5 uppercase tracking-wider">To Unit</label>
+            <div id="to-wrap">
+              <button id="to-btn" onclick="homeToggleDrop('to')"
+                class="w-full bg-dark-800 border border-white/10 rounded-xl px-4 py-3 text-sm font-medium text-white text-left flex items-center justify-between hover:border-indigo-500/30 transition-all">
+                <span id="to-label"></span>
+                <i class="fa-solid fa-chevron-down text-indigo-400 text-xs transition-transform duration-200" id="to-chev"></i>
+              </button>
+              <div id="to-drop" class="unit-drop-panel mt-1 rounded-xl border border-white/10 bg-dark-800/98 backdrop-blur-xl shadow-xl overflow-hidden">
+                <div class="p-2 border-b border-white/5">
+                  <input id="to-search" type="text" placeholder="Search units…"
+                    class="w-full bg-dark-700 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-600 border border-white/5 focus:outline-none focus:border-indigo-500/40"
+                    oninput="homeBuildList('to')" />
+                </div>
+                <div id="to-list" class="search-dropdown py-1"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="formula-bar" class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-dark-800/80 border border-white/5 text-xs text-gray-500">
+          <i class="fa-solid fa-function text-indigo-500/60 flex-shrink-0"></i>
+          <span id="formula-text" class="font-mono truncate"></span>
+        </div>
+      </div>
+
+      <!-- ALL UNITS GRID -->
+      <div class="rounded-2xl border border-white/8 bg-dark-700/40 backdrop-blur-sm overflow-hidden mb-6">
+        <div class="p-4 sm:p-5 border-b border-white/5 flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h2 class="text-base font-semibold text-white">All Length Units</h2>
+            <p class="text-xs text-gray-600 mt-0.5">Click any unit to open its dedicated converter page</p>
+          </div>
+          <div class="flex flex-wrap gap-1.5" id="group-tabs">
+            <button onclick="homeFilterGroup('all')" data-group="all" class="gtab active text-xs font-medium px-3 py-1.5 rounded-lg bg-indigo-600/20 text-indigo-400 border border-indigo-500/30 transition-all">All</button>
+            <button onclick="homeFilterGroup('metric')" data-group="metric" class="gtab text-xs font-medium px-3 py-1.5 rounded-lg bg-dark-800/80 text-gray-500 border border-white/5 hover:text-gray-300 hover:border-white/10 transition-all">Metric</button>
+            <button onclick="homeFilterGroup('imperial')" data-group="imperial" class="gtab text-xs font-medium px-3 py-1.5 rounded-lg bg-dark-800/80 text-gray-500 border border-white/5 hover:text-gray-300 hover:border-white/10 transition-all">Imperial</button>
+            <button onclick="homeFilterGroup('astro')" data-group="astro" class="gtab text-xs font-medium px-3 py-1.5 rounded-lg bg-dark-800/80 text-gray-500 border border-white/5 hover:text-gray-300 hover:border-white/10 transition-all">Astronomical</button>
+            <button onclick="homeFilterGroup('historical')" data-group="historical" class="gtab text-xs font-medium px-3 py-1.5 rounded-lg bg-dark-800/80 text-gray-500 border border-white/5 hover:text-gray-300 hover:border-white/10 transition-all">Historical</button>
+            <button onclick="homeFilterGroup('scientific')" data-group="scientific" class="gtab text-xs font-medium px-3 py-1.5 rounded-lg bg-dark-800/80 text-gray-500 border border-white/5 hover:text-gray-300 hover:border-white/10 transition-all">Scientific</button>
+          </div>
+        </div>
+        <div class="px-4 sm:px-5 py-3 border-b border-white/5">
+          <div class="relative">
+            <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-600 text-xs"></i>
+            <input id="unit-grid-search" type="text" placeholder="Search units…"
+              class="w-full bg-dark-800/60 rounded-lg pl-8 pr-4 py-2 text-sm text-white placeholder-gray-600 border border-white/5 focus:outline-none focus:border-indigo-500/30 transition-colors"
+              oninput="homeRenderGrid()" />
+          </div>
+        </div>
+        <div class="p-4 sm:p-5">
+          <div id="unit-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2"></div>
+          <p class="text-xs text-gray-600 mt-3" id="grid-count"></p>
+        </div>
+      </div>
+
+      <!-- QUICK REF TABLE -->
+      <div class="rounded-2xl border border-white/8 bg-dark-700/40 backdrop-blur-sm overflow-hidden mb-6">
+        <div class="p-4 sm:p-5 border-b border-white/5">
+          <h2 class="text-base font-semibold text-white">Quick Reference Table</h2>
+          <p class="text-xs text-gray-600 mt-0.5">All conversions relative to your current input value</p>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b border-white/5">
+                <th class="text-left px-4 sm:px-5 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">Unit</th>
+                <th class="text-left px-3 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider hidden sm:table-cell">Group</th>
+                <th class="text-right px-4 sm:px-5 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">Value</th>
+                <th class="px-3 py-3 w-10"></th>
+              </tr>
+            </thead>
+            <tbody id="ref-table"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>`;
+
+  // Set initial labels
+  document.getElementById('from-label').textContent = getUnit(homeFromKey).label + (getUnit(homeFromKey).symbol ? ' [' + getUnit(homeFromKey).symbol + ']' : '');
+  document.getElementById('to-label').textContent   = getUnit(homeToKey).label   + (getUnit(homeToKey).symbol   ? ' [' + getUnit(homeToKey).symbol   + ']' : '');
+
+  homeConvert();
+  homeRenderGrid();
+  homeRenderTable();
+  homeInitOutsideClick();
+}
+
+function unitDisplayLabel(u) {
+  return u.label + (u.symbol ? ' [' + u.symbol + ']' : '');
+}
+
+function homeConvert() {
+  const raw = parseFloat(document.getElementById('from-value').value);
+  const val = isNaN(raw) ? 0 : raw;
+  const result = convert(val, homeFromKey, homeToKey);
+  document.getElementById('to-value').value = fmtNum(result);
+  const formula1 = convert(1, homeFromKey, homeToKey);
+  document.getElementById('formula-text').textContent =
+    `1 ${getUnit(homeFromKey).label} = ${fmtNum(formula1)} ${getUnit(homeToKey).label}`;
+  const clearBtn = document.getElementById('clear-btn');
+  if (clearBtn) clearBtn.classList.toggle('hidden', !document.getElementById('from-value').value);
+  homeRenderTable();
+}
+
+function homeClear() {
+  document.getElementById('from-value').value = '';
+  document.getElementById('from-value').focus();
+  homeConvert();
+}
+
+function homeCopy() {
+  const val = document.getElementById('to-value').value;
+  if (!val || val === '—') return;
+  navigator.clipboard.writeText(val).catch(()=>{});
+  const icon = document.getElementById('copy-icon');
+  icon.className = 'fa-solid fa-circle-check text-emerald-400 text-sm';
+  showToast('Result copied to clipboard');
+  setTimeout(() => { icon.className = 'fa-regular fa-copy text-sm'; }, 2000);
+}
+
+function homeSwap() {
+  const tmp = homeFromKey; homeFromKey = homeToKey; homeToKey = tmp;
+  document.getElementById('from-label').textContent = unitDisplayLabel(getUnit(homeFromKey));
+  document.getElementById('to-label').textContent   = unitDisplayLabel(getUnit(homeToKey));
+  const fv = document.getElementById('from-value').value;
+  const tv = document.getElementById('to-value').value;
+  if (tv && tv !== '—') document.getElementById('from-value').value = tv;
+  homeConvert();
+  homeRenderGrid();
+}
+
+function homeToggleDrop(side) {
+  const drop  = document.getElementById(side + '-drop');
+  const chev  = document.getElementById(side + '-chev');
+  const isOpen = drop.classList.contains('open');
+  ['from','to'].forEach(s => {
+    document.getElementById(s+'-drop').classList.remove('open');
+    document.getElementById(s+'-chev').classList.remove('rotate-180');
+    const si = document.getElementById(s+'-search');
+    if (si) si.value = '';
+  });
+  if (!isOpen) {
+    drop.classList.add('open');
+    chev.classList.add('rotate-180');
+    homeBuildList(side);
+    setTimeout(() => document.getElementById(side+'-search').focus(), 50);
+  }
+}
+
+function homeBuildList(side) {
+  const q   = (document.getElementById(side+'-search').value || '').toLowerCase();
+  const con = document.getElementById(side+'-list');
+  con.innerHTML = '';
+  const groups = ['metric','imperial','astro','scientific','typography','historical'];
+  const grouped = {};
+  groups.forEach(g => grouped[g]=[]);
+  LENGTH_UNITS.filter(u => !q || u.label.toLowerCase().includes(q) || (u.altNames||[]).some(n=>n.toLowerCase().includes(q))).forEach(u=>{ if(grouped[u.group]) grouped[u.group].push(u); });
+  let any=false;
+  groups.forEach(g=>{
+    if(!grouped[g].length) return; any=true;
+    const meta=GROUP_META[g];
+    const hd=document.createElement('div');
+    hd.className='px-3 pt-2 pb-1';
+    hd.innerHTML=`<span class="text-xs font-semibold uppercase tracking-widest ${meta.color.split(' ')[1]} opacity-70">${meta.label}</span>`;
+    con.appendChild(hd);
+    grouped[g].forEach(u=>{
+      const cur=(side==='from'?homeFromKey:homeToKey)===u.key;
+      const btn=document.createElement('button');
+      btn.className=`w-full text-left px-3 py-2 text-sm transition-colors hover:bg-indigo-500/10 ${cur?'text-indigo-400 bg-indigo-500/8 font-medium':'text-gray-300'}`;
+      btn.textContent=unitDisplayLabel(u);
+      btn.onclick=()=>homeSelectUnit(side,u.key);
+      con.appendChild(btn);
+    });
+  });
+  if(!any) con.innerHTML='<div class="px-3 py-4 text-sm text-gray-600 text-center">No units found</div>';
+}
+
+function homeSelectUnit(side, key) {
+  if (side==='from') { homeFromKey=key; document.getElementById('from-label').textContent=unitDisplayLabel(getUnit(key)); }
+  else               { homeToKey=key;   document.getElementById('to-label').textContent=unitDisplayLabel(getUnit(key)); }
+  document.getElementById(side+'-drop').classList.remove('open');
+  document.getElementById(side+'-chev').classList.remove('rotate-180');
+  homeConvert();
+  homeRenderGrid();
+}
+
+function homeFilterGroup(g) {
+  homeGroup = g;
+  document.querySelectorAll('.gtab').forEach(b=>{
+    const active=b.dataset.group===g;
+    b.className=active
+      ?'gtab text-xs font-medium px-3 py-1.5 rounded-lg bg-indigo-600/20 text-indigo-400 border border-indigo-500/30 transition-all'
+      :'gtab text-xs font-medium px-3 py-1.5 rounded-lg bg-dark-800/80 text-gray-500 border border-white/5 hover:text-gray-300 hover:border-white/10 transition-all';
+  });
+  homeRenderGrid();
+}
+
+function homeRenderGrid() {
+  const q = (document.getElementById('unit-grid-search')?.value || '').toLowerCase();
+  const units = LENGTH_UNITS.filter(u=>{
+    const mg = homeGroup==='all' || u.group===homeGroup;
+    const mq = !q || u.label.toLowerCase().includes(q) || (u.altNames||[]).some(n=>n.toLowerCase().includes(q));
+    return mg && mq;
+  });
+  const grid = document.getElementById('unit-grid');
+  const val = parseFloat(document.getElementById('from-value')?.value) || 1;
+  grid.innerHTML = units.map(u=>{
+    const meta = GROUP_META[u.group];
+    const result = convert(val, homeFromKey, u.key);
+    const desc = UNIT_DESC[u.key];
+    return `
+      <button onclick="navigate('/length/${slug(u.key)}')"
+        class="unit-card text-left p-3 rounded-xl border border-white/6 bg-dark-800/40 transition-all duration-200 group">
+        <div class="flex items-start justify-between mb-1.5">
+          <span class="text-sm font-medium text-gray-200 group-hover:text-white transition-colors leading-tight">${u.label}</span>
+          <span class="inline-flex items-center px-1.5 py-0.5 rounded-md text-xs ${meta.color} ml-2 flex-shrink-0">${u.symbol||meta.label.slice(0,3)}</span>
+        </div>
+        <p class="text-xs text-gray-600 leading-relaxed mb-2 line-clamp-1">${desc ? desc.short : ''}</p>
+        <div class="flex items-center justify-between">
+          <span class="font-mono text-xs text-indigo-300">${fmtNum(result)} ${u.symbol||''}</span>
+          <span class="text-xs text-indigo-500/60 group-hover:text-indigo-400 transition-colors">View page <i class="fa-solid fa-arrow-right text-xs ml-0.5"></i></span>
+        </div>
+      </button>`;
+  }).join('');
+  const cnt = document.getElementById('grid-count');
+  if (cnt) cnt.textContent = `Showing ${units.length} unit${units.length!==1?'s':''}`;
+}
+
+function homeRenderTable() {
+  const val = parseFloat(document.getElementById('from-value')?.value) || 0;
+  const tbody = document.getElementById('ref-table');
+  if (!tbody) return;
+  tbody.innerHTML = LENGTH_UNITS.map(u=>{
+    const result = convert(val, homeFromKey, u.key);
+    const meta   = GROUP_META[u.group];
+    const isFrom = u.key === homeFromKey;
+    return `
+      <tr class="result-row border-b border-white/3 transition-colors cursor-pointer" onclick="navigate('/length/${slug(u.key)}')">
+        <td class="px-4 sm:px-5 py-2.5">
+          <div class="flex items-center gap-2">
+            ${isFrom?'<i class="fa-solid fa-arrow-right text-indigo-400 text-xs"></i>':''}
+            <span class="text-sm text-gray-200 ${isFrom?'font-semibold text-indigo-300':''}">${u.label}${u.symbol?' ['+u.symbol+']':''}</span>
+          </div>
+        </td>
+        <td class="px-3 py-2.5 hidden sm:table-cell">
+          <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${meta.color}">${meta.label}</span>
+        </td>
+        <td class="px-4 sm:px-5 py-2.5 text-right">
+          <span class="font-mono text-sm ${isFrom?'text-indigo-300 font-semibold':'text-gray-300'}">${fmtNum(result)}</span>
+        </td>
+        <td class="px-3 py-2.5">
+          <i class="fa-solid fa-arrow-up-right-from-square text-xs text-gray-700 hover:text-indigo-400 transition-colors"></i>
+        </td>
+      </tr>`;
+  }).join('');
+}
+
+function homeInitOutsideClick() {
+  document.addEventListener('click', function handler(e) {
+    if (!document.getElementById('from-wrap') && !document.getElementById('to-wrap')) {
+      document.removeEventListener('click', handler); return;
+    }
+    ['from','to'].forEach(s=>{
+      const wrap = document.getElementById(s+'-wrap');
+      const drop = document.getElementById(s+'-drop');
+      if (wrap && drop && !wrap.contains(e.target)) {
+        drop.classList.remove('open');
+        const chev = document.getElementById(s+'-chev');
+        if (chev) chev.classList.remove('rotate-180');
+      }
+    });
+  });
+}
+
+// ================================================================
+//  UNIT DETAIL PAGE
+// ================================================================
+let unitFromKey = '';
+let unitToKey   = '';
+
+function renderUnitPage(key) {
+  const unit = getUnit(key);
+  if (!unit) { navigate('/'); return; }
+
+  const desc  = UNIT_DESC[key] || { short: `Unit of length: ${unit.label}`, long: `The ${unit.label} is a unit of length.` };
+  const meta  = GROUP_META[unit.group];
+
+  // Related units: same group, excluding self
+  const related = LENGTH_UNITS.filter(u => u.group === unit.group && u.key !== key).slice(0, 6);
+
+  unitFromKey = key;
+  unitToKey   = LENGTH_UNITS.find(u => u.key !== key)?.key || 'meter';
+
+  const seoTitle = `${unit.label} Converter — Convert ${unit.label}${unit.symbol?' ('+unit.symbol+')':''} | UnitFlow`;
+  const seoDesc  = `Convert ${unit.label}${unit.symbol?' ('+unit.symbol+')':''} to meters, kilometers, miles, feet and 90+ other length units. ${desc.short}`;
+
+  updateSEO({
+    title: seoTitle,
+    description: seoDesc,
+    url: `https://unitflow.onspace.ai/#/length/${slug(key)}`
+  });
+
+  const root = document.getElementById('app-root');
+  root.innerHTML = `
+    <div class="page-fade">
+      <!-- Breadcrumb -->
+      <nav class="flex items-center gap-2 text-xs text-gray-600 mb-5">
+        <button onclick="navigate('/')" class="hover:text-indigo-400 transition-colors">UnitFlow</button>
+        <i class="fa-solid fa-chevron-right text-gray-700 text-xs"></i>
+        <button onclick="navigate('/')" class="hover:text-indigo-400 transition-colors">Length</button>
+        <i class="fa-solid fa-chevron-right text-gray-700 text-xs"></i>
+        <span class="text-gray-400">${unit.label}</span>
+      </nav>
+
+      <!-- Hero -->
+      <div class="rounded-2xl border border-white/8 bg-dark-700/50 backdrop-blur-sm p-5 sm:p-7 mb-6">
+        <div class="flex flex-wrap items-start justify-between gap-4 mb-4">
+          <div>
+            <div class="flex items-center gap-2 mb-2">
+              <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${meta.color} border border-current/20">
+                <i class="fa-solid ${meta.icon} mr-1.5 text-xs"></i>${meta.label}
+              </span>
+              ${unit.symbol ? `<span class="font-mono text-xs text-indigo-400 bg-indigo-500/10 border border-indigo-500/20 px-2 py-0.5 rounded">${unit.symbol}</span>` : ''}
+            </div>
+            <h1 class="text-2xl sm:text-4xl font-bold text-white tracking-tight mb-1">${unit.label} Converter</h1>
+            <p class="text-gray-400 text-sm sm:text-base leading-relaxed max-w-xl">${desc.short}</p>
+          </div>
+          <div class="text-right">
+            <p class="text-xs text-gray-600 mb-1">Base value in meters</p>
+            <p class="font-mono text-lg text-indigo-300 font-semibold">${unit.factor < 1e-10 || unit.factor > 1e12 ? unit.factor.toExponential(6) : unit.factor} m</p>
+          </div>
+        </div>
+        <!-- Key facts row -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-4 border-t border-white/5">
+          <div class="bg-dark-800/60 rounded-xl p-3">
+            <p class="text-xs text-gray-600 mb-1">SI Base (m)</p>
+            <p class="font-mono text-xs text-white truncate">${unit.factor < 1e-10 || unit.factor > 1e12 ? unit.factor.toExponential(4) : unit.factor}</p>
+          </div>
+          <div class="bg-dark-800/60 rounded-xl p-3">
+            <p class="text-xs text-gray-600 mb-1">Category</p>
+            <p class="text-xs text-white">${meta.label}</p>
+          </div>
+          <div class="bg-dark-800/60 rounded-xl p-3">
+            <p class="text-xs text-gray-600 mb-1">Symbol</p>
+            <p class="font-mono text-xs text-white">${unit.symbol || '—'}</p>
+          </div>
+          <div class="bg-dark-800/60 rounded-xl p-3">
+            <p class="text-xs text-gray-600 mb-1">Also known as</p>
+            <p class="text-xs text-white truncate">${(unit.altNames||[]).length ? unit.altNames.join(', ') : '—'}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Converter -->
+      <div class="rounded-2xl border border-white/8 bg-dark-700/60 backdrop-blur-sm shadow-glow p-4 sm:p-6 mb-6">
+        <h2 class="text-base font-semibold text-white mb-4">
+          <i class="fa-solid fa-arrows-rotate text-indigo-400 mr-2"></i>Quick Converter
+        </h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-3">
+          <div>
+            <label class="block text-xs font-medium text-gray-500 mb-1.5 uppercase tracking-wider">From (${unit.label})</label>
+            <div class="relative">
+              <input id="unit-from-val" type="number" value="1" step="any"
+                class="converter-input w-full bg-dark-800 border border-white/10 rounded-xl px-4 py-3 text-xl font-semibold text-white font-mono transition-all hover:border-indigo-500/30"
+                placeholder="Enter value" oninput="unitConvert()" />
+              ${unit.symbol ? `<span class="absolute right-4 top-1/2 -translate-y-1/2 text-indigo-400 font-mono text-sm">${unit.symbol}</span>` : ''}
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-gray-500 mb-1.5 uppercase tracking-wider">To Unit</label>
+            <div id="unit-to-wrap">
+              <button id="unit-to-btn" onclick="unitToggleDrop()"
+                class="w-full bg-dark-800 border border-white/10 rounded-xl px-4 py-3 text-sm font-medium text-white text-left flex items-center justify-between hover:border-indigo-500/30 transition-all">
+                <span id="unit-to-label"></span>
+                <i class="fa-solid fa-chevron-down text-indigo-400 text-xs transition-transform duration-200" id="unit-to-chev"></i>
+              </button>
+              <div id="unit-to-drop" class="unit-drop-panel mt-1 rounded-xl border border-white/10 bg-dark-800/98 backdrop-blur-xl shadow-xl overflow-hidden">
+                <div class="p-2 border-b border-white/5">
+                  <input id="unit-to-search" type="text" placeholder="Search units…"
+                    class="w-full bg-dark-700 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-600 border border-white/5 focus:outline-none focus:border-indigo-500/40"
+                    oninput="unitBuildList()" />
+                </div>
+                <div id="unit-to-list" class="search-dropdown py-1"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Result display -->
+        <div class="bg-dark-800/70 border border-white/8 rounded-xl p-4 mb-3">
+          <div class="flex items-center justify-between mb-1">
+            <span class="text-xs text-gray-600 uppercase tracking-wider">Result</span>
+            <button onclick="unitCopy()" class="text-xs text-gray-600 hover:text-indigo-400 transition-colors flex items-center gap-1">
+              <i class="fa-regular fa-copy text-xs" id="unit-copy-icon"></i> Copy
+            </button>
+          </div>
+          <div class="flex items-baseline gap-2 flex-wrap">
+            <span id="unit-result" class="font-mono text-3xl font-bold text-indigo-300 num-shimmer"></span>
+            <span id="unit-result-sym" class="font-mono text-lg text-indigo-400/60"></span>
+          </div>
+          <p id="unit-formula" class="text-xs text-gray-600 font-mono mt-2"></p>
+        </div>
+
+        <div class="flex items-center justify-between">
+          <button onclick="unitSwap()" class="swap-btn group flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-600/15 border border-indigo-500/25 text-indigo-400 text-sm font-medium hover:bg-indigo-600/25 transition-all">
+            <i class="fa-solid fa-arrow-right-arrow-left swap-icon text-xs"></i>Swap
+          </button>
+          <button onclick="navigate('/')" class="flex items-center gap-1.5 text-xs text-gray-600 hover:text-indigo-400 transition-colors">
+            <i class="fa-solid fa-table text-xs"></i>All units
+          </button>
+        </div>
+      </div>
+
+      <!-- Description -->
+      <div class="rounded-2xl border border-white/8 bg-dark-700/40 p-5 sm:p-6 mb-6">
+        <h2 class="text-base font-semibold text-white mb-3">
+          <i class="fa-solid fa-circle-info text-indigo-400 mr-2"></i>About the ${unit.label}
+        </h2>
+        <p class="text-gray-400 text-sm leading-relaxed">${desc.long}</p>
+      </div>
+
+      <!-- Full Conversion Table -->
+      <div class="rounded-2xl border border-white/8 bg-dark-700/40 backdrop-blur-sm overflow-hidden mb-6">
+        <div class="p-4 sm:p-5 border-b border-white/5 flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h2 class="text-base font-semibold text-white">1 ${unit.label} Equals…</h2>
+            <p class="text-xs text-gray-600 mt-0.5">Complete conversion table for the ${unit.label}</p>
+          </div>
+          <div class="flex flex-wrap gap-1.5" id="ct-tabs">
+            <button onclick="unitFilterGroup('all')" data-group="all" class="ctab active text-xs font-medium px-3 py-1.5 rounded-lg bg-indigo-600/20 text-indigo-400 border border-indigo-500/30 transition-all">All</button>
+            <button onclick="unitFilterGroup('metric')" data-group="metric" class="ctab text-xs font-medium px-3 py-1.5 rounded-lg bg-dark-800/80 text-gray-500 border border-white/5 hover:text-gray-300 hover:border-white/10 transition-all">Metric</button>
+            <button onclick="unitFilterGroup('imperial')" data-group="imperial" class="ctab text-xs font-medium px-3 py-1.5 rounded-lg bg-dark-800/80 text-gray-500 border border-white/5 hover:text-gray-300 hover:border-white/10 transition-all">Imperial</button>
+            <button onclick="unitFilterGroup('astro')" data-group="astro" class="ctab text-xs font-medium px-3 py-1.5 rounded-lg bg-dark-800/80 text-gray-500 border border-white/5 hover:text-gray-300 hover:border-white/10 transition-all">Astro</button>
+            <button onclick="unitFilterGroup('historical')" data-group="historical" class="ctab text-xs font-medium px-3 py-1.5 rounded-lg bg-dark-800/80 text-gray-500 border border-white/5 hover:text-gray-300 hover:border-white/10 transition-all">Historical</button>
+            <button onclick="unitFilterGroup('scientific')" data-group="scientific" class="ctab text-xs font-medium px-3 py-1.5 rounded-lg bg-dark-800/80 text-gray-500 border border-white/5 hover:text-gray-300 hover:border-white/10 transition-all">Scientific</button>
+          </div>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b border-white/5">
+                <th class="text-left px-4 sm:px-5 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">Unit</th>
+                <th class="text-left px-3 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider hidden sm:table-cell">Symbol</th>
+                <th class="text-right px-4 sm:px-5 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">1 ${unit.symbol || unit.label} =</th>
+                <th class="px-3 py-3 w-10"></th>
+              </tr>
+            </thead>
+            <tbody id="conv-table"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Related Units -->
+      ${related.length > 0 ? `
+      <div class="mb-6">
+        <h2 class="text-base font-semibold text-white mb-3">
+          <i class="fa-solid fa-link text-indigo-400 mr-2"></i>Related ${meta.label} Units
+        </h2>
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
+          ${related.map(u=>{
+            const d=UNIT_DESC[u.key];
+            const r=convert(1, key, u.key);
+            return `<button onclick="navigate('/length/${slug(u.key)}')"
+              class="unit-card text-left p-3 rounded-xl border border-white/6 bg-dark-800/40 transition-all duration-200 group">
+              <p class="text-xs font-medium text-gray-300 group-hover:text-white transition-colors mb-1 truncate">${u.label}</p>
+              ${u.symbol?`<p class="font-mono text-xs text-indigo-400 mb-1">${u.symbol}</p>`:''}
+              <p class="font-mono text-xs text-gray-600">${fmtNum(r)}</p>
+            </button>`;
+          }).join('')}
+        </div>
+      </div>` : ''}
+
+      <!-- SEO structured list: A to Z conversion pair links -->
+      <div class="rounded-2xl border border-white/8 bg-dark-700/30 p-5 sm:p-6">
+        <h2 class="text-base font-semibold text-white mb-1">Convert ${unit.label} to Other Units</h2>
+        <p class="text-xs text-gray-600 mb-4">Each link opens a dedicated converter page optimised for that specific conversion</p>
+        <div class="flex flex-wrap gap-2">
+          ${LENGTH_UNITS.filter(u=>u.key!==key).sort((a,b)=>a.label.localeCompare(b.label)).map(u=>`
+            <a href="#/length/${slug(key)}/to/${slug(u.key)}" onclick="navigate('/length/${slug(key)}/to/${slug(u.key)}');return false;"
+              class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-dark-800/60 border border-white/5 text-xs text-gray-400 hover:text-indigo-400 hover:border-indigo-500/30 transition-all">
+              ${unit.label} → ${u.label}${u.symbol?' <span class="text-gray-600">('+u.symbol+')</span>':''}
+            </a>`).join('')}
+        </div>
+      </div>
+    </div>`;
+
+  // Init unit page state
+  document.getElementById('unit-to-label').textContent = unitDisplayLabel(getUnit(unitToKey));
+  unitRenderConvTable('all');
+  unitConvert();
+  unitInitOutsideClick();
+}
+
+let unitConvGroup = 'all';
+
+function unitConvert() {
+  const raw = parseFloat(document.getElementById('unit-from-val').value);
+  const val = isNaN(raw) ? 0 : raw;
+  const result = convert(val, unitFromKey, unitToKey);
+  const toUnit = getUnit(unitToKey);
+  document.getElementById('unit-result').textContent = fmtNum(result);
+  document.getElementById('unit-result-sym').textContent = toUnit.symbol || toUnit.label;
+  const f1 = convert(1, unitFromKey, unitToKey);
+  const fromUnit = getUnit(unitFromKey);
+  document.getElementById('unit-formula').textContent = `1 ${fromUnit.label} = ${fmtNum(f1)} ${toUnit.label}`;
+}
+
+function unitCopy() {
+  const val = document.getElementById('unit-result').textContent;
+  if (!val || val==='—') return;
+  navigator.clipboard.writeText(val).catch(()=>{});
+  const icon=document.getElementById('unit-copy-icon');
+  icon.className='fa-solid fa-circle-check text-emerald-400 text-xs';
+  showToast('Copied!');
+  setTimeout(()=>{ icon.className='fa-regular fa-copy text-xs'; },2000);
+}
+
+function unitSwap() {
+  const tmp = unitFromKey; unitFromKey = unitToKey; unitToKey = tmp;
+  const fv = document.getElementById('unit-from-val').value;
+  const rv = document.getElementById('unit-result').textContent;
+  if (rv && rv !== '—') document.getElementById('unit-from-val').value = rv;
+  document.getElementById('unit-to-label').textContent = unitDisplayLabel(getUnit(unitToKey));
+  unitConvert();
+  unitRenderConvTable(unitConvGroup);
+}
+
+function unitToggleDrop() {
+  const drop = document.getElementById('unit-to-drop');
+  const chev = document.getElementById('unit-to-chev');
+  const isOpen = drop.classList.contains('open');
+  if (!isOpen) {
+    drop.classList.add('open'); chev.classList.add('rotate-180');
+    unitBuildList();
+    setTimeout(()=>document.getElementById('unit-to-search').focus(),50);
+  } else {
+    drop.classList.remove('open'); chev.classList.remove('rotate-180');
+  }
+}
+
+function unitBuildList() {
+  const q = (document.getElementById('unit-to-search').value||'').toLowerCase();
+  const con = document.getElementById('unit-to-list');
+  con.innerHTML='';
+  const groups=['metric','imperial','astro','scientific','typography','historical'];
+  const grouped={};groups.forEach(g=>grouped[g]=[]);
+  LENGTH_UNITS.filter(u=>!q||u.label.toLowerCase().includes(q)||(u.altNames||[]).some(n=>n.toLowerCase().includes(q))).forEach(u=>{if(grouped[u.group])grouped[u.group].push(u);});
+  let any=false;
+  groups.forEach(g=>{
+    if(!grouped[g].length)return;any=true;
+    const meta=GROUP_META[g];
+    const hd=document.createElement('div');hd.className='px-3 pt-2 pb-1';
+    hd.innerHTML=`<span class="text-xs font-semibold uppercase tracking-widest ${meta.color.split(' ')[1]} opacity-70">${meta.label}</span>`;
+    con.appendChild(hd);
+    grouped[g].forEach(u=>{
+      const cur=unitToKey===u.key;
+      const btn=document.createElement('button');
+      btn.className=`w-full text-left px-3 py-2 text-sm transition-colors hover:bg-indigo-500/10 ${cur?'text-indigo-400 bg-indigo-500/8 font-medium':'text-gray-300'}`;
+      btn.textContent=unitDisplayLabel(u);
+      btn.onclick=()=>{
+        unitToKey=u.key;
+        document.getElementById('unit-to-label').textContent=unitDisplayLabel(u);
+        document.getElementById('unit-to-drop').classList.add('hidden');
+        document.getElementById('unit-to-chev').classList.remove('rotate-180');
+        unitConvert();
+      };
+      con.appendChild(btn);
+    });
+  });
+  if(!any)con.innerHTML='<div class="px-3 py-4 text-sm text-gray-600 text-center">No units found</div>';
+}
+
+function unitFilterGroup(g) {
+  unitConvGroup=g;
+  document.querySelectorAll('.ctab').forEach(b=>{
+    const a=b.dataset.group===g;
+    b.className=a?'ctab text-xs font-medium px-3 py-1.5 rounded-lg bg-indigo-600/20 text-indigo-400 border border-indigo-500/30 transition-all'
+                 :'ctab text-xs font-medium px-3 py-1.5 rounded-lg bg-dark-800/80 text-gray-500 border border-white/5 hover:text-gray-300 hover:border-white/10 transition-all';
+  });
+  unitRenderConvTable(g);
+}
+
+function unitRenderConvTable(group) {
+  const tbody = document.getElementById('conv-table');
+  if (!tbody) return;
+  const units = LENGTH_UNITS.filter(u=>u.key!==unitFromKey && (group==='all'||u.group===group));
+  tbody.innerHTML = units.map(u=>{
+    const meta=GROUP_META[u.group];
+    const result=convert(1, unitFromKey, u.key);
+    return `
+      <tr class="result-row border-b border-white/3 cursor-pointer" onclick="navigate('/length/${slug(u.key)}')">
+        <td class="px-4 sm:px-5 py-2.5">
+          <span class="text-sm text-gray-200">${u.label}</span>
+          <span class="hidden sm:inline ml-2 text-xs text-gray-600">${(u.altNames||[]).slice(0,1).join('')}</span>
+        </td>
+        <td class="px-3 py-2.5 hidden sm:table-cell">
+          <span class="font-mono text-xs text-gray-500">${u.symbol||'—'}</span>
+        </td>
+        <td class="px-4 sm:px-5 py-2.5 text-right">
+          <span class="font-mono text-sm text-gray-300">${fmtNum(result)}</span>
+        </td>
+        <td class="px-3 py-2.5">
+          <span class="inline-flex items-center px-1.5 py-0.5 rounded-md text-xs ${meta.color}">${meta.label.slice(0,3)}</span>
+        </td>
+      </tr>`;
+  }).join('');
+}
+
+function unitInitOutsideClick() {
+  document.addEventListener('click', function handler(e) {
+    const wrap = document.getElementById('unit-to-wrap');
+    const drop = document.getElementById('unit-to-drop');
+    if (!wrap) { document.removeEventListener('click', handler); return; }
+    if (!wrap.contains(e.target)) {
+      drop.classList.remove('open');
+      const chev = document.getElementById('unit-to-chev');
+      if (chev) chev.classList.remove('rotate-180');
+    }
+  });
+}
+
+// ================================================================
+//  CONVERSION PAIR PAGE  e.g. /length/long-cubit/to/kilometer
+// ================================================================
+function renderConversionPage(fromKey, toKey) {
+  const fromUnit = getUnit(fromKey);
+  const toUnit   = getUnit(toKey);
+  if (!fromUnit || !toUnit) { navigate('/'); return; }
+
+  const fromDesc = UNIT_DESC[fromKey] || { short: `Unit of length: ${fromUnit.label}`, long: `The ${fromUnit.label} is a unit of length.` };
+  const toDesc   = UNIT_DESC[toKey]   || { short: `Unit of length: ${toUnit.label}`,   long: `The ${toUnit.label} is a unit of length.` };
+  const fromMeta = GROUP_META[fromUnit.group];
+  const toMeta   = GROUP_META[toUnit.group];
+
+  const factor   = convert(1, fromKey, toKey);
+  const seoTitle = `Convert ${fromUnit.label} to ${toUnit.label} | ${fromUnit.symbol||fromUnit.label} to ${toUnit.symbol||toUnit.label} Converter | UnitFlow`;
+  const seoDesc  = `Instantly convert ${fromUnit.label}${fromUnit.symbol?' ('+fromUnit.symbol+')':''} to ${toUnit.label}${toUnit.symbol?' ('+toUnit.symbol+')':''}. 1 ${fromUnit.label} = ${fmtNum(factor)} ${toUnit.label}. Free online length converter with formula and conversion table.`;
+  const canonUrl = `https://unitflow.onspace.ai/#/length/${slug(fromKey)}/to/${slug(toKey)}`;
+
+  updateSEO({ title: seoTitle, description: seoDesc, url: canonUrl });
+
+  // JSON-LD structured data
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": seoTitle,
+    "description": seoDesc,
+    "url": canonUrl,
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "UnitFlow", "item": "https://unitflow.onspace.ai/" },
+        { "@type": "ListItem", "position": 2, "name": "Length", "item": "https://unitflow.onspace.ai/#/length" },
+        { "@type": "ListItem", "position": 3, "name": fromUnit.label, "item": `https://unitflow.onspace.ai/#/length/${slug(fromKey)}` },
+        { "@type": "ListItem", "position": 4, "name": `${fromUnit.label} to ${toUnit.label}`, "item": canonUrl }
+      ]
+    }
+  };
+  let existingLd = document.getElementById('json-ld');
+  if (existingLd) existingLd.remove();
+  const ldScript = document.createElement('script');
+  ldScript.id = 'json-ld'; ldScript.type = 'application/ld+json';
+  ldScript.textContent = JSON.stringify(jsonLd);
+  document.head.appendChild(ldScript);
+
+  // Common values for conversion table
+  const commonVals = [0.001, 0.01, 0.1, 0.5, 1, 2, 3, 5, 10, 20, 50, 100, 500, 1000, 10000];
+
+  // Other units to convert FROM the same fromUnit
+  const otherTo = LENGTH_UNITS.filter(u => u.key !== fromKey && u.key !== toKey)
+    .sort((a,b) => a.label.localeCompare(b.label));
+
+  // Other units to convert TO the same toUnit
+  const otherFrom = LENGTH_UNITS.filter(u => u.key !== toKey && u.key !== fromKey)
+    .sort((a,b) => a.label.localeCompare(b.label));
+
+  const root = document.getElementById('app-root');
+  root.innerHTML = `
+    <div class="page-fade">
+
+      <!-- Breadcrumb -->
+      <nav class="flex items-center gap-2 text-xs text-gray-600 mb-5 flex-wrap">
+        <button onclick="navigate('/')" class="hover:text-indigo-400 transition-colors">UnitFlow</button>
+        <i class="fa-solid fa-chevron-right text-gray-700 text-xs"></i>
+        <button onclick="navigate('/')" class="hover:text-indigo-400 transition-colors">Length</button>
+        <i class="fa-solid fa-chevron-right text-gray-700 text-xs"></i>
+        <button onclick="navigate('/length/${slug(fromKey)}')" class="hover:text-indigo-400 transition-colors">${fromUnit.label}</button>
+        <i class="fa-solid fa-chevron-right text-gray-700 text-xs"></i>
+        <span class="text-gray-400">${fromUnit.label} to ${toUnit.label}</span>
+      </nav>
+
+      <!-- Hero -->
+      <div class="rounded-2xl border border-white/8 bg-dark-700/50 backdrop-blur-sm p-5 sm:p-7 mb-6">
+        <div class="flex flex-wrap items-center gap-2 mb-3">
+          <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${fromMeta.color} border border-current/20">
+            <i class="fa-solid ${fromMeta.icon} mr-1.5 text-xs"></i>${fromMeta.label}
+          </span>
+          <i class="fa-solid fa-arrow-right text-gray-600 text-xs"></i>
+          <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${toMeta.color} border border-current/20">
+            <i class="fa-solid ${toMeta.icon} mr-1.5 text-xs"></i>${toMeta.label}
+          </span>
+        </div>
+        <h1 class="text-2xl sm:text-4xl font-bold text-white tracking-tight mb-2">
+          Convert ${fromUnit.label} to ${toUnit.label}
+        </h1>
+        <p class="text-gray-400 text-sm sm:text-base leading-relaxed max-w-2xl mb-5">
+          Use this free online converter to instantly convert between ${fromUnit.label}${fromUnit.symbol?' ('+fromUnit.symbol+')':''} and ${toUnit.label}${toUnit.symbol?' ('+toUnit.symbol+')':''}. Enter any value to see the result in real time.
+        </p>
+        <!-- Key conversion fact -->
+        <div class="inline-flex items-center gap-3 px-5 py-3.5 rounded-2xl bg-indigo-500/10 border border-indigo-500/25">
+          <div class="text-center">
+            <p class="text-2xl font-bold font-mono text-white">1</p>
+            <p class="text-xs text-gray-500 mt-0.5">${fromUnit.label}</p>
+            ${fromUnit.symbol ? `<p class="font-mono text-xs text-indigo-400">${fromUnit.symbol}</p>` : ''}
+          </div>
+          <i class="fa-solid fa-equals text-indigo-400 text-xl"></i>
+          <div class="text-center">
+            <p class="text-2xl font-bold font-mono text-indigo-300">${fmtNum(factor)}</p>
+            <p class="text-xs text-gray-500 mt-0.5">${toUnit.label}</p>
+            ${toUnit.symbol ? `<p class="font-mono text-xs text-indigo-400">${toUnit.symbol}</p>` : ''}
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Converter Widget -->
+      <div class="rounded-2xl border border-white/8 bg-dark-700/60 backdrop-blur-sm shadow-glow p-4 sm:p-6 mb-6">
+        <h2 class="text-base font-semibold text-white mb-4">
+          <i class="fa-solid fa-arrows-rotate text-indigo-400 mr-2"></i>${fromUnit.label} to ${toUnit.label} Converter
+        </h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+          <div>
+            <label class="block text-xs font-medium text-gray-500 mb-1.5 uppercase tracking-wider">${fromUnit.label}${fromUnit.symbol?' ('+fromUnit.symbol+')':''}</label>
+            <div class="relative">
+              <input id="cp-from" type="number" value="1" step="any"
+                class="converter-input w-full bg-dark-800 border border-white/10 rounded-xl px-4 py-3 text-2xl font-bold text-white font-mono transition-all hover:border-indigo-500/30"
+                placeholder="Enter value" oninput="cpConvert()" />
+              ${fromUnit.symbol ? `<span class="absolute right-4 top-1/2 -translate-y-1/2 text-indigo-400 font-mono text-sm pointer-events-none">${fromUnit.symbol}</span>` : ''}
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-gray-500 mb-1.5 uppercase tracking-wider">${toUnit.label}${toUnit.symbol?' ('+toUnit.symbol+')':''}</label>
+            <div class="relative">
+              <input id="cp-to" type="number" step="any" readonly
+                class="converter-input w-full bg-dark-800/50 border border-indigo-500/20 rounded-xl px-4 py-3 text-2xl font-bold text-indigo-300 font-mono cursor-default"
+                placeholder="Result" />
+              ${toUnit.symbol ? `<span class="absolute right-10 top-1/2 -translate-y-1/2 text-indigo-400/60 font-mono text-sm pointer-events-none">${toUnit.symbol}</span>` : ''}
+              <button onclick="cpCopy()" title="Copy result"
+                class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 hover:text-indigo-400 transition-colors">
+                <i class="fa-regular fa-copy text-sm" id="cp-copy-icon"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+        <!-- Formula bar -->
+        <div class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-dark-800/80 border border-white/5 text-xs text-gray-500 mb-4">
+          <i class="fa-solid fa-function text-indigo-500/60 flex-shrink-0"></i>
+          <span class="font-mono truncate" id="cp-formula">1 ${fromUnit.label} × ${fmtNum(factor)} = ${fmtNum(factor)} ${toUnit.label}</span>
+        </div>
+        <!-- Swap + reverse link -->
+        <div class="flex items-center justify-between">
+          <button onclick="cpSwap()" class="swap-btn group flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-600/15 border border-indigo-500/25 text-indigo-400 text-sm font-medium hover:bg-indigo-600/25 transition-all">
+            <i class="fa-solid fa-arrow-right-arrow-left swap-icon text-xs"></i>Swap
+          </button>
+          <button onclick="navigate('/length/${slug(toKey)}/to/${slug(fromKey)}')" class="text-xs text-gray-600 hover:text-indigo-400 transition-colors">
+            <i class="fa-solid fa-rotate text-xs mr-1"></i>Reverse: ${toUnit.label} → ${fromUnit.label}
+          </button>
+        </div>
+      </div>
+
+      <!-- Conversion Table (common values) -->
+      <div class="rounded-2xl border border-white/8 bg-dark-700/40 backdrop-blur-sm overflow-hidden mb-6">
+        <div class="p-4 sm:p-5 border-b border-white/5">
+          <h2 class="text-base font-semibold text-white">${fromUnit.label} to ${toUnit.label} Conversion Table</h2>
+          <p class="text-xs text-gray-600 mt-0.5">Common ${fromUnit.label} values and their ${toUnit.label} equivalents</p>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b border-white/5">
+                <th class="text-left px-4 sm:px-5 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">${fromUnit.label}${fromUnit.symbol?' ('+fromUnit.symbol+')':''}</th>
+                <th class="text-center px-3 py-3 text-gray-700"><i class="fa-solid fa-arrow-right"></i></th>
+                <th class="text-right px-4 sm:px-5 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">${toUnit.label}${toUnit.symbol?' ('+toUnit.symbol+')':''}</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${commonVals.map((v,i) => {
+                const res = convert(v, fromKey, toKey);
+                return `<tr class="${i%2===0?'bg-dark-800/20':''} border-b border-white/3 hover:bg-indigo-500/5 transition-colors">
+                  <td class="px-4 sm:px-5 py-2.5 font-mono text-sm text-gray-300">${v} ${fromUnit.symbol||fromUnit.label}</td>
+                  <td class="px-3 py-2.5 text-center text-gray-700"><i class="fa-solid fa-arrow-right text-xs"></i></td>
+                  <td class="px-4 sm:px-5 py-2.5 font-mono text-sm text-indigo-300 text-right">${fmtNum(res)} ${toUnit.symbol||toUnit.label}</td>
+                </tr>`;
+              }).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Reverse table -->
+      <div class="rounded-2xl border border-white/8 bg-dark-700/40 backdrop-blur-sm overflow-hidden mb-6">
+        <div class="p-4 sm:p-5 border-b border-white/5">
+          <h2 class="text-base font-semibold text-white">${toUnit.label} to ${fromUnit.label} Conversion Table</h2>
+          <p class="text-xs text-gray-600 mt-0.5">Common ${toUnit.label} values expressed in ${fromUnit.label}</p>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b border-white/5">
+                <th class="text-left px-4 sm:px-5 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">${toUnit.label}${toUnit.symbol?' ('+toUnit.symbol+')':''}</th>
+                <th class="text-center px-3 py-3 text-gray-700"><i class="fa-solid fa-arrow-right"></i></th>
+                <th class="text-right px-4 sm:px-5 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">${fromUnit.label}${fromUnit.symbol?' ('+fromUnit.symbol+')':''}</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${commonVals.map((v,i) => {
+                const res = convert(v, toKey, fromKey);
+                return `<tr class="${i%2===0?'bg-dark-800/20':''} border-b border-white/3 hover:bg-indigo-500/5 transition-colors">
+                  <td class="px-4 sm:px-5 py-2.5 font-mono text-sm text-gray-300">${v} ${toUnit.symbol||toUnit.label}</td>
+                  <td class="px-3 py-2.5 text-center text-gray-700"><i class="fa-solid fa-arrow-right text-xs"></i></td>
+                  <td class="px-4 sm:px-5 py-2.5 font-mono text-sm text-indigo-300 text-right">${fmtNum(res)} ${fromUnit.symbol||fromUnit.label}</td>
+                </tr>`;
+              }).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Formula & How To Convert -->
+      <div class="rounded-2xl border border-white/8 bg-dark-700/40 p-5 sm:p-6 mb-6">
+        <h2 class="text-base font-semibold text-white mb-4"><i class="fa-solid fa-function text-indigo-400 mr-2"></i>How to Convert ${fromUnit.label} to ${toUnit.label}</h2>
+        <p class="text-gray-400 text-sm leading-relaxed mb-4">
+          To convert from <strong class="text-white">${fromUnit.label}</strong> to <strong class="text-white">${toUnit.label}</strong>, 
+          multiply the value in ${fromUnit.label} by <strong class="font-mono text-indigo-300">${fmtNum(factor)}</strong>.
+        </p>
+        <div class="bg-dark-800/70 border border-white/8 rounded-xl p-4 font-mono text-sm mb-4">
+          <span class="text-indigo-300">${toUnit.symbol||toUnit.label}</span>
+          <span class="text-gray-500"> = </span>
+          <span class="text-white">${fromUnit.symbol||fromUnit.label}</span>
+          <span class="text-gray-500"> × </span>
+          <span class="text-emerald-400">${fmtNum(factor)}</span>
+        </div>
+        <p class="text-gray-400 text-sm leading-relaxed">
+          <strong class="text-white">Example:</strong> Convert 5 ${fromUnit.label} to ${toUnit.label}: 
+          5 × ${fmtNum(factor)} = <span class="font-mono text-indigo-300">${fmtNum(convert(5, fromKey, toKey))} ${toUnit.symbol||toUnit.label}</span>
+        </p>
+      </div>
+
+      <!-- About both units -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+        <div class="rounded-2xl border border-white/8 bg-dark-700/40 p-5">
+          <div class="flex items-center gap-2 mb-3">
+            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${fromMeta.color} border border-current/20">${fromUnit.label}</span>
+          </div>
+          <h2 class="text-sm font-semibold text-white mb-2">About the ${fromUnit.label}</h2>
+          <p class="text-gray-500 text-xs leading-relaxed">${fromDesc.long}</p>
+          <button onclick="navigate('/length/${slug(fromKey)}')" class="mt-3 text-xs text-indigo-400 hover:text-indigo-300 transition-colors">
+            Full ${fromUnit.label} converter <i class="fa-solid fa-arrow-right text-xs ml-0.5"></i>
+          </button>
+        </div>
+        <div class="rounded-2xl border border-white/8 bg-dark-700/40 p-5">
+          <div class="flex items-center gap-2 mb-3">
+            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${toMeta.color} border border-current/20">${toUnit.label}</span>
+          </div>
+          <h2 class="text-sm font-semibold text-white mb-2">About the ${toUnit.label}</h2>
+          <p class="text-gray-500 text-xs leading-relaxed">${toDesc.long}</p>
+          <button onclick="navigate('/length/${slug(toKey)}')" class="mt-3 text-xs text-indigo-400 hover:text-indigo-300 transition-colors">
+            Full ${toUnit.label} converter <i class="fa-solid fa-arrow-right text-xs ml-0.5"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Convert fromUnit to other units (SEO links) -->
+      <div class="rounded-2xl border border-white/8 bg-dark-700/30 p-5 sm:p-6 mb-4">
+        <h2 class="text-base font-semibold text-white mb-1">Convert ${fromUnit.label} to Other Length Units</h2>
+        <p class="text-xs text-gray-600 mb-4">Direct conversion pages from ${fromUnit.label}</p>
+        <div class="flex flex-wrap gap-2">
+          ${LENGTH_UNITS.filter(u=>u.key!==fromKey && u.key!==toKey).sort((a,b)=>a.label.localeCompare(b.label)).map(u=>`
+            <a href="#/length/${slug(fromKey)}/to/${slug(u.key)}"
+              onclick="navigate('/length/${slug(fromKey)}/to/${slug(u.key)}');return false;"
+              class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-dark-800/60 border border-white/5 text-xs text-gray-400 hover:text-indigo-400 hover:border-indigo-500/30 transition-all">
+              ${fromUnit.label} to ${u.label}
+            </a>`).join('')}
+        </div>
+      </div>
+
+      <!-- Other units to toUnit (SEO links) -->
+      <div class="rounded-2xl border border-white/8 bg-dark-700/30 p-5 sm:p-6">
+        <h2 class="text-base font-semibold text-white mb-1">Convert Other Length Units to ${toUnit.label}</h2>
+        <p class="text-xs text-gray-600 mb-4">Direct conversion pages to ${toUnit.label}</p>
+        <div class="flex flex-wrap gap-2">
+          ${LENGTH_UNITS.filter(u=>u.key!==toKey && u.key!==fromKey).sort((a,b)=>a.label.localeCompare(b.label)).map(u=>`
+            <a href="#/length/${slug(u.key)}/to/${slug(toKey)}"
+              onclick="navigate('/length/${slug(u.key)}/to/${slug(toKey)}');return false;"
+              class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-dark-800/60 border border-white/5 text-xs text-gray-400 hover:text-indigo-400 hover:border-indigo-500/30 transition-all">
+              ${u.label} to ${toUnit.label}
+            </a>`).join('')}
+        </div>
+      </div>
+    </div>`;
+
+  // Init converter
+  cpConvert();
+  // store current pair for cpSwap
+  window._cpFrom = fromKey;
+  window._cpTo   = toKey;
+}
+
+function cpConvert() {
+  const raw    = parseFloat(document.getElementById('cp-from').value);
+  const val    = isNaN(raw) ? 0 : raw;
+  const from   = window._cpFrom || '';
+  const to     = window._cpTo   || '';
+  const result = convert(val, from, to);
+  const toUnit = getUnit(to);
+  const frUnit = getUnit(from);
+  if (!toUnit || !frUnit) return;
+  document.getElementById('cp-to').value = fmtNum(result);
+  const f1 = convert(1, from, to);
+  document.getElementById('cp-formula').textContent =
+    `1 ${frUnit.label} × ${fmtNum(f1)} = ${fmtNum(val * f1)} ${toUnit.label}`;
+}
+
+function cpCopy() {
+  const val = document.getElementById('cp-to').value;
+  if (!val || val === '—') return;
+  navigator.clipboard.writeText(val).catch(()=>{});
+  const icon = document.getElementById('cp-copy-icon');
+  icon.className = 'fa-solid fa-circle-check text-emerald-400 text-sm';
+  showToast('Copied to clipboard');
+  setTimeout(() => { icon.className = 'fa-regular fa-copy text-sm'; }, 2000);
+}
+
+function cpSwap() {
+  const from = window._cpFrom;
+  const to   = window._cpTo;
+  navigate('/length/' + slug(to) + '/to/' + slug(from));
+}
+
+// ================================================================
+//  SIDEBAR MOBILE
+// ================================================================
+document.addEventListener('DOMContentLoaded', () => {
+  const toggle  = document.getElementById('sidebar-toggle');
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebar-overlay');
+
+  toggle.addEventListener('click', () => {
+    sidebar.classList.toggle('-translate-x-full');
+    overlay.classList.toggle('hidden');
+  });
+  overlay.addEventListener('click', () => {
+    sidebar.classList.add('-translate-x-full');
+    overlay.classList.add('hidden');
+  });
+
+  // Boot router
+  router();
+});
+</script>
+<script>window.onload=function(){var d=document.createElement("div");d.id="appLoadFinished";document.body.appendChild(d);};</script>
+<script>window.onload=function(){var d=document.createElement("div");d.id="appLoadFinished";document.body.appendChild(d);};</script>
+
+
+
+
+</body></html>
