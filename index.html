@@ -78,6 +78,21 @@
     .page-fade { animation:fadeIn 0.25s ease; }
     .unit-select option { background:#13131f; color:#e2e2ff; }
     .unit-card:hover { border-color:rgba(99,102,241,0.35); background:rgba(99,102,241,0.05); }
+
+
+    .brand-wordmark .brand-i, .brand-wordmark .brand-units { color:#fff; }
+    .brand-wordmark .brand-heart { color:#fff; }
+
+    @media (prefers-color-scheme: light) {
+      body { background-color: #f8fafc; color:#0f172a; }
+      .brand-wordmark .brand-i, .brand-wordmark .brand-units { color:#061a6b; }
+      .brand-wordmark .brand-heart {
+        background: linear-gradient(135deg, #ff1f7a 0%, #5b47ff 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+    }
   </style>
 </head>
 <body class="font-sans text-gray-200 min-h-screen relative overflow-x-hidden">
