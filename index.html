@@ -78,6 +78,36 @@
     .page-fade { animation:fadeIn 0.25s ease; }
     .unit-select option { background:#13131f; color:#e2e2ff; }
     .unit-card:hover { border-color:rgba(99,102,241,0.35); background:rgba(99,102,241,0.05); }
+
+
+    .brand-wordmark .brand-i, .brand-wordmark .brand-units { color:#fff; }
+    .brand-wordmark .brand-heart { color:#fff; }
+
+    .brand-wordmark .brand-heart { font-size:0.82em; line-height:1; }
+
+    body.light-mode { background-color: #f8fafc; color:#0f172a; }
+    body.light-mode .brand-wordmark .brand-i,
+    body.light-mode .brand-wordmark .brand-units { color:#061a6b; }
+    body.light-mode .brand-wordmark .brand-heart {
+      background: linear-gradient(135deg, #ff1f7a 0%, #5b47ff 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      color: transparent;
+    }
+
+    @media (prefers-color-scheme: light) {
+      body:not(.dark-mode) { background-color: #f8fafc; color:#0f172a; }
+      body:not(.dark-mode) .brand-wordmark .brand-i,
+      body:not(.dark-mode) .brand-wordmark .brand-units { color:#061a6b; }
+      body:not(.dark-mode) .brand-wordmark .brand-heart {
+        background: linear-gradient(135deg, #ff1f7a 0%, #5b47ff 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        color: transparent;
+      }
+    }
   </style>
 </head>
 <body class="font-sans text-gray-200 min-h-screen relative overflow-x-hidden">
@@ -98,7 +128,7 @@
           <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center shadow-glow-sm">
             <i class="fa-solid fa-heart text-white text-xs"></i>
           </div>
-          <span class="font-bold text-white tracking-tight">I<span class="text-rose-400"><i class='fa-solid fa-heart text-xs align-[1px]'></i>Love</span><span class="text-indigo-400">UNITS</span></span>
+          <span class="brand-wordmark font-bold tracking-tight"><span class="brand-i">I</span> <span class="brand-heart inline-block align-middle">♥</span> <span class="brand-units">UNITS</span></span>
         </a>
         <span class="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-indigo-500/15 text-indigo-400 border border-indigo-500/20 ml-1">v1.0</span>
       </div>
@@ -106,6 +136,9 @@
         <span class="hidden sm:flex items-center gap-1.5 text-xs text-gray-500">
           <i class="fa-solid fa-circle-check text-emerald-500 text-xs"></i>90+ length units
         </span>
+        <button id="theme-toggle" class="text-xs font-medium px-3 py-1.5 rounded-lg border border-white/15 text-gray-300 hover:bg-white/5 transition-colors" aria-label="Toggle light mode">
+          <i id="theme-icon" class="fa-regular fa-sun"></i>
+        </button>
         <button onclick="navigate(&#39;/&#39;)" class="text-xs font-medium px-3 py-1.5 rounded-lg bg-indigo-600/20 text-indigo-400 border border-indigo-500/25 hover:bg-indigo-600/30 transition-colors">
           Convert Now
         </button>
@@ -1554,6 +1587,27 @@ function cpSwap() {
 //  SIDEBAR MOBILE
 // ================================================================
 document.addEventListener('DOMContentLoaded', () => {
+  const savedTheme = localStorage.getItem('themeMode');
+  if (savedTheme === 'light') document.body.classList.add('light-mode');
+  if (savedTheme === 'dark') document.body.classList.add('dark-mode');
+
+  const themeToggle = document.getElementById('theme-toggle');
+  const themeIcon = document.getElementById('theme-icon');
+  const paintThemeIcon = () => {
+    const isLight = document.body.classList.contains('light-mode');
+    themeIcon.className = isLight ? 'fa-regular fa-moon' : 'fa-regular fa-sun';
+  };
+  if (themeToggle) {
+    paintThemeIcon();
+    themeToggle.addEventListener('click', () => {
+      const isLight = document.body.classList.toggle('light-mode');
+      document.body.classList.remove('dark-mode');
+      localStorage.setItem('themeMode', isLight ? 'light' : 'dark');
+      if (!isLight) document.body.classList.add('dark-mode');
+      paintThemeIcon();
+    });
+  }
+
   const toggle  = document.getElementById('sidebar-toggle');
   const sidebar = document.getElementById('sidebar');
   const overlay = document.getElementById('sidebar-overlay');
