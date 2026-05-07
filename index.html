@@ -5,25 +5,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <!-- Dynamic SEO tags — updated by JS router -->
-  <title>UnitFlow — Universal Unit Converter</title>
+  <title>Omni Converter — Universal Unit Converter</title>
   <meta name="description" content="Fast, accurate unit conversions across length, area, volume, weight, and more. 90+ length units supported." />
-  <link rel="canonical" href="https://unitflow.onspace.ai/" id="canonical-link" />
+  <link rel="canonical" href="https://omniconverter.onspace.ai/" id="canonical-link" />
 
   <!-- Open Graph -->
-  <meta property="og:title" content="UnitFlow — Universal Unit Converter" id="og-title" />
+  <meta property="og:title" content="Omni Converter — Universal Unit Converter" id="og-title" />
   <meta property="og:description" content="Fast, accurate unit conversions across 90+ length units and more." id="og-desc" />
-  <meta property="og:url" content="https://unitflow.onspace.ai/" id="og-url" />
+  <meta property="og:url" content="https://omniconverter.onspace.ai/" id="og-url" />
   <meta property="og:type" content="website" />
-  <meta property="og:site_name" content="UnitFlow" />
-  <meta property="og:image" content="https://via.placeholder.com/1200x630.png?text=UnitFlow+Unit+Converter" />
+  <meta property="og:site_name" content="Omni Converter" />
+  <meta property="og:image" content="https://via.placeholder.com/1200x630.png?text=Omni+Converter" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="UnitFlow — Universal Unit Converter" id="tw-title" />
+  <meta name="twitter:title" content="Omni Converter — Universal Unit Converter" id="tw-title" />
   <meta name="twitter:description" content="Fast, accurate unit conversions across 90+ length units." id="tw-desc" />
-  <meta name="twitter:image" content="https://via.placeholder.com/1200x630.png?text=UnitFlow+Unit+Converter" />
+  <meta name="twitter:image" content="https://via.placeholder.com/1200x630.png?text=Omni+Converter" />
 
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -97,10 +97,13 @@
           <i class="fa-solid fa-bars text-lg"></i>
         </button>
         <a href="#/" onclick="navigate('/')" class="flex items-center gap-2.5 hover:opacity-80 transition-opacity">
-          <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center shadow-glow-sm">
-            <i class="fa-solid fa-arrows-rotate text-white text-xs"></i>
+          <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center shadow-glow-sm flex-shrink-0">
+            <i class="fa-solid fa-arrows-rotate text-white text-sm"></i>
           </div>
-          <span class="font-bold text-white tracking-tight">Unit<span class="text-indigo-400">Flow</span></span>
+          <div class="flex flex-col leading-none gap-0.5">
+            <span class="font-extrabold text-white tracking-tight text-lg leading-none"><span class="text-indigo-400">O</span>mni</span>
+            <span class="text-xs font-semibold text-gray-500 tracking-[0.18em] uppercase leading-none">converter</span>
+          </div>
         </a>
         <span class="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-indigo-500/15 text-indigo-400 border border-indigo-500/20 ml-1">v1.0</span>
       </div>
@@ -108,8 +111,9 @@
         <span class="hidden sm:flex items-center gap-1.5 text-xs text-gray-500">
           <i class="fa-solid fa-circle-check text-emerald-500 text-xs"></i>90+ length units
         </span>
+        <span class="hidden md:flex items-center gap-1.5 text-xs text-gray-600 font-medium">Free &amp; Instant</span>
         <button onclick="navigate('/')" class="text-xs font-medium px-3 py-1.5 rounded-lg bg-indigo-600/20 text-indigo-400 border border-indigo-500/25 hover:bg-indigo-600/30 transition-colors">
-          Convert Now
+          <i class="fa-solid fa-calculator mr-1 text-xs"></i>Convert
         </button>
       </div>
     </div>
@@ -550,9 +554,9 @@ let homeTableQ  = '';
 
 function renderHomePage() {
   updateSEO({
-    title: 'Length Converter — 90+ Units | UnitFlow',
+    title: 'Length Converter — 90+ Units | Omni Converter',
     description: 'Free online length converter. Convert between 90+ units including metric, imperial, astronomical, and historical units. Instant results.',
-    url: 'https://unitflow.onspace.ai/#/length'
+    url: 'https://omniconverter.onspace.ai/#/length'
   });
 
   const root = document.getElementById('app-root');
@@ -917,13 +921,13 @@ function renderUnitPage(key) {
   unitFromKey = key;
   unitToKey   = LENGTH_UNITS.find(u => u.key !== key)?.key || 'meter';
 
-  const seoTitle = `${unit.label} Converter — Convert ${unit.label}${unit.symbol?' ('+unit.symbol+')':''} | UnitFlow`;
+  const seoTitle = `${unit.label} Converter — Convert ${unit.label}${unit.symbol?' ('+unit.symbol+')':''} | Omni Converter`;
   const seoDesc  = `Convert ${unit.label}${unit.symbol?' ('+unit.symbol+')':''} to meters, kilometers, miles, feet and 90+ other length units. ${desc.short}`;
 
   updateSEO({
     title: seoTitle,
     description: seoDesc,
-    url: `https://unitflow.onspace.ai/#/length/${slug(key)}`
+    url: `https://omniconverter.onspace.ai/#/length/${slug(key)}`
   });
 
   const root = document.getElementById('app-root');
@@ -931,7 +935,7 @@ function renderUnitPage(key) {
     <div class="page-fade">
       <!-- Breadcrumb -->
       <nav class="flex items-center gap-2 text-xs text-gray-600 mb-5">
-        <button onclick="navigate('/')" class="hover:text-indigo-400 transition-colors">UnitFlow</button>
+        <button onclick="navigate('/')" class="hover:text-indigo-400 transition-colors">Omni Converter</button>
         <i class="fa-solid fa-chevron-right text-gray-700 text-xs"></i>
         <button onclick="navigate('/')" class="hover:text-indigo-400 transition-colors">Length</button>
         <i class="fa-solid fa-chevron-right text-gray-700 text-xs"></i>
@@ -1259,9 +1263,9 @@ function renderConversionPage(fromKey, toKey) {
   const toMeta   = GROUP_META[toUnit.group];
 
   const factor   = convert(1, fromKey, toKey);
-  const seoTitle = `Convert ${fromUnit.label} to ${toUnit.label} | ${fromUnit.symbol||fromUnit.label} to ${toUnit.symbol||toUnit.label} Converter | UnitFlow`;
+  const seoTitle = `Convert ${fromUnit.label} to ${toUnit.label} | ${fromUnit.symbol||fromUnit.label} to ${toUnit.symbol||toUnit.label} Converter | Omni Converter`;
   const seoDesc  = `Instantly convert ${fromUnit.label}${fromUnit.symbol?' ('+fromUnit.symbol+')':''} to ${toUnit.label}${toUnit.symbol?' ('+toUnit.symbol+')':''}. 1 ${fromUnit.label} = ${fmtNum(factor)} ${toUnit.label}. Free online length converter with formula and conversion table.`;
-  const canonUrl = `https://unitflow.onspace.ai/#/length/${slug(fromKey)}/to/${slug(toKey)}`;
+  const canonUrl = `https://omniconverter.onspace.ai/#/length/${slug(fromKey)}/to/${slug(toKey)}`;
 
   updateSEO({ title: seoTitle, description: seoDesc, url: canonUrl });
 
@@ -1275,9 +1279,9 @@ function renderConversionPage(fromKey, toKey) {
     "breadcrumb": {
       "@type": "BreadcrumbList",
       "itemListElement": [
-        { "@type": "ListItem", "position": 1, "name": "UnitFlow", "item": "https://unitflow.onspace.ai/" },
-        { "@type": "ListItem", "position": 2, "name": "Length", "item": "https://unitflow.onspace.ai/#/length" },
-        { "@type": "ListItem", "position": 3, "name": fromUnit.label, "item": `https://unitflow.onspace.ai/#/length/${slug(fromKey)}` },
+        { "@type": "ListItem", "position": 1, "name": "Omni Converter", "item": "https://omniconverter.onspace.ai/" },
+        { "@type": "ListItem", "position": 2, "name": "Length", "item": "https://omniconverter.onspace.ai/#/length" },
+        { "@type": "ListItem", "position": 3, "name": fromUnit.label, "item": `https://omniconverter.onspace.ai/#/length/${slug(fromKey)}` },
         { "@type": "ListItem", "position": 4, "name": `${fromUnit.label} to ${toUnit.label}`, "item": canonUrl }
       ]
     }
@@ -1306,7 +1310,7 @@ function renderConversionPage(fromKey, toKey) {
 
       <!-- Breadcrumb -->
       <nav class="flex items-center gap-2 text-xs text-gray-600 mb-5 flex-wrap">
-        <button onclick="navigate('/')" class="hover:text-indigo-400 transition-colors">UnitFlow</button>
+        <button onclick="navigate('/')" class="hover:text-indigo-400 transition-colors">Omni Converter</button>
         <i class="fa-solid fa-chevron-right text-gray-700 text-xs"></i>
         <button onclick="navigate('/')" class="hover:text-indigo-400 transition-colors">Length</button>
         <i class="fa-solid fa-chevron-right text-gray-700 text-xs"></i>
@@ -1586,7 +1590,9 @@ document.addEventListener('DOMContentLoaded', () => {
 <script>window.onload=function(){var d=document.createElement("div");d.id="appLoadFinished";document.body.appendChild(d);};</script>
 <script>window.onload=function(){var d=document.createElement("div");d.id="appLoadFinished";document.body.appendChild(d);};</script>
 <script>window.onload=function(){var d=document.createElement("div");d.id="appLoadFinished";document.body.appendChild(d);};</script>
+<script>window.onload=function(){var d=document.createElement("div");d.id="appLoadFinished";document.body.appendChild(d);};</script>
 </body>
+
 
 
 
