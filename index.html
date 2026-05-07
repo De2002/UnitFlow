@@ -576,7 +576,7 @@ const UNIT_DESC = {
   arpent: { short: 'A French unit equal to ~58.5 m; still used in Quebec land law.', long: 'The arpent equals approximately 58.5216 meters. It was a French unit of length used in land measurement, particularly in France, Louisiana, and Quebec. Arpents remain relevant in Quebec property law, where land area is sometimes still described in arpents. The arpent\'s length varied by region but the "arpent de Paris" is most commonly used.' },
   aln: { short: 'A Scandinavian ell; ~59.4 cm; used in Sweden and Norway.', long: 'The aln (also spelled alen) equals approximately 0.5937777778 meters. It was the traditional unit of length used in Scandinavia (Sweden, Norway, Denmark) for measuring cloth and textiles. The Swedish aln was set at exactly 2 feet (Swedish feet) in the 19th century before metrication.' },
   famn: { short: 'A Scandinavian fathom; ~1.78 m; 3 alns.', long: 'The famn equals approximately 1.7813333333 meters. It is the Scandinavian equivalent of the fathom, historically used in Sweden and Norway. One famn equals 3 alns. Like many old Scandinavian units, it was replaced by metric units during the 19th century standardization.' },
-  ken: { short: 'A Japanese unit of ~2.12 m; used in traditional architecture.', long: 'The ken (間) equals approximately 2.11836 meters. It is a traditional Japanese unit of length used primarily in architecture and carpentry. The ken defines the spacing between pillars in traditional Japanese buildings and is the basis of the tatami mat system. Standard tatami mats are half a ken wide and one ken long.' },
+  ken: { short: 'A Japanese unit of ~2.12 m; used in traditional architecture.', long: 'The ken (���) equals approximately 2.11836 meters. It is a traditional Japanese unit of length used primarily in architecture and carpentry. The ken defines the spacing between pillars in traditional Japanese buildings and is the basis of the tatami mat system. Standard tatami mats are half a ken wide and one ken long.' },
   russian_archin: { short: 'Russian archin (arshin); 28 inches (0.7112 m).', long: 'The Russian archin (also spelled arshin) equals 28 inches or 0.7112 meters. It was the standard unit of length in the Russian Empire for measuring cloth and general distances. Three archins equal one sazhen (the Russian fathom). The archin remained in common use until the Soviet Union adopted the metric system in 1922.' },
   roman_actus: { short: 'Roman land measurement unit; 120 Roman feet (~35.5 m).', long: 'The Roman actus equals 120 Roman feet or approximately 35.47872 meters. It was used in ancient Roman land surveying, particularly for measuring the length of fields. Two actus (an actus duplex) formed the basis of the Roman square land measure. The word "actus" referred to the distance a yoke of oxen could plow without resting.' },
   vara_de_tarea: { short: 'A Spanish/Latin American vara; ~2.505 m.', long: 'The vara de tarea equals approximately 2.505456 meters. It is one of several Spanish vara measurements used in Latin America for land surveys and everyday measurement. Vara measurements were introduced by Spanish colonizers and varied by region. They appear in historical land grants throughout the Americas.' },
@@ -1660,9 +1660,14 @@ function renderUnitPage(key) {
             <h1 class="text-2xl sm:text-4xl font-bold text-white tracking-tight mb-1">${unit.label} Converter</h1>
             <p class="text-gray-400 text-sm sm:text-base leading-relaxed max-w-xl">${desc.short}</p>
           </div>
-          <div class="text-right">
-            <p class="text-xs text-gray-600 mb-1">Base value in meters</p>
-            <p class="font-mono text-lg text-indigo-300 font-semibold">${unit.factor < 1e-10 || unit.factor > 1e12 ? unit.factor.toExponential(6) : unit.factor} m</p>
+          <div class="flex flex-col items-end gap-2">
+            <div class="text-right">
+              <p class="text-xs text-gray-600 mb-1">Base value in meters</p>
+              <p class="font-mono text-lg text-indigo-300 font-semibold">${unit.factor < 1e-10 || unit.factor > 1e12 ? unit.factor.toExponential(6) : unit.factor} m</p>
+            </div>
+            <button onclick="showEmbedModal('length')" class="inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-lg border transition-colors" style="color: #818cf8; border-color: rgba(129, 140, 248, 0.3); background-color: rgba(129, 140, 248, 0.1);">
+              <i class="fa-solid fa-code text-xs"></i> Embed
+            </button>
           </div>
         </div>
         <!-- Key facts row -->
@@ -2026,14 +2031,19 @@ function renderConversionPage(fromKey, toKey) {
 
       <!-- Hero -->
       <div class="rounded-2xl border border-white/8 bg-dark-700/50 backdrop-blur-sm p-5 sm:p-7 mb-6">
-        <div class="flex flex-wrap items-center gap-2 mb-3">
-          <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${fromMeta.color} border border-current/20">
-            <i class="fa-solid ${fromMeta.icon} mr-1.5 text-xs"></i>${fromMeta.label}
-          </span>
-          <i class="fa-solid fa-arrow-right text-gray-600 text-xs"></i>
-          <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${toMeta.color} border border-current/20">
-            <i class="fa-solid ${toMeta.icon} mr-1.5 text-xs"></i>${toMeta.label}
-          </span>
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${fromMeta.color} border border-current/20">
+              <i class="fa-solid ${fromMeta.icon} mr-1.5 text-xs"></i>${fromMeta.label}
+            </span>
+            <i class="fa-solid fa-arrow-right text-gray-600 text-xs"></i>
+            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${toMeta.color} border border-current/20">
+              <i class="fa-solid ${toMeta.icon} mr-1.5 text-xs"></i>${toMeta.label}
+            </span>
+          </div>
+          <button onclick="showEmbedModal('length')" class="inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-lg border transition-colors" style="color: #818cf8; border-color: rgba(129, 140, 248, 0.3); background-color: rgba(129, 140, 248, 0.1);">
+            <i class="fa-solid fa-code text-xs"></i> Embed
+          </button>
         </div>
         <h1 class="text-2xl sm:text-4xl font-bold text-white tracking-tight mb-2">
           Convert ${fromUnit.label} to ${toUnit.label}
