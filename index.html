@@ -576,7 +576,7 @@ const UNIT_DESC = {
   arpent: { short: 'A French unit equal to ~58.5 m; still used in Quebec land law.', long: 'The arpent equals approximately 58.5216 meters. It was a French unit of length used in land measurement, particularly in France, Louisiana, and Quebec. Arpents remain relevant in Quebec property law, where land area is sometimes still described in arpents. The arpent\'s length varied by region but the "arpent de Paris" is most commonly used.' },
   aln: { short: 'A Scandinavian ell; ~59.4 cm; used in Sweden and Norway.', long: 'The aln (also spelled alen) equals approximately 0.5937777778 meters. It was the traditional unit of length used in Scandinavia (Sweden, Norway, Denmark) for measuring cloth and textiles. The Swedish aln was set at exactly 2 feet (Swedish feet) in the 19th century before metrication.' },
   famn: { short: 'A Scandinavian fathom; ~1.78 m; 3 alns.', long: 'The famn equals approximately 1.7813333333 meters. It is the Scandinavian equivalent of the fathom, historically used in Sweden and Norway. One famn equals 3 alns. Like many old Scandinavian units, it was replaced by metric units during the 19th century standardization.' },
-  ken: { short: 'A Japanese unit of ~2.12 m; used in traditional architecture.', long: 'The ken (�����) equals approximately 2.11836 meters. It is a traditional Japanese unit of length used primarily in architecture and carpentry. The ken defines the spacing between pillars in traditional Japanese buildings and is the basis of the tatami mat system. Standard tatami mats are half a ken wide and one ken long.' },
+  ken: { short: 'A Japanese unit of ~2.12 m; used in traditional architecture.', long: 'The ken (�������) equals approximately 2.11836 meters. It is a traditional Japanese unit of length used primarily in architecture and carpentry. The ken defines the spacing between pillars in traditional Japanese buildings and is the basis of the tatami mat system. Standard tatami mats are half a ken wide and one ken long.' },
   russian_archin: { short: 'Russian archin (arshin); 28 inches (0.7112 m).', long: 'The Russian archin (also spelled arshin) equals 28 inches or 0.7112 meters. It was the standard unit of length in the Russian Empire for measuring cloth and general distances. Three archins equal one sazhen (the Russian fathom). The archin remained in common use until the Soviet Union adopted the metric system in 1922.' },
   roman_actus: { short: 'Roman land measurement unit; 120 Roman feet (~35.5 m).', long: 'The Roman actus equals 120 Roman feet or approximately 35.47872 meters. It was used in ancient Roman land surveying, particularly for measuring the length of fields. Two actus (an actus duplex) formed the basis of the Roman square land measure. The word "actus" referred to the distance a yoke of oxen could plow without resting.' },
   vara_de_tarea: { short: 'A Spanish/Latin American vara; ~2.505 m.', long: 'The vara de tarea equals approximately 2.505456 meters. It is one of several Spanish vara measurements used in Latin America for land surveys and everyday measurement. Vara measurements were introduced by Spanish colonizers and varied by region. They appear in historical land grants throughout the Americas.' },
@@ -2222,8 +2222,8 @@ function renderConversionPage(fromKey, toKey) {
           ${LENGTH_UNITS.filter(u=>u.key!==fromKey && u.key!==toKey).sort((a,b)=>a.label.localeCompare(b.label)).map(u=>`
             <a href="#/length/${slug(fromKey)}/to/${slug(u.key)}"
               onclick="navigate('/length/${slug(fromKey)}/to/${slug(u.key)}');return false;"
-              class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-dark-800/60 border border-white/5 text-xs text-gray-400 hover:text-indigo-400 hover:border-indigo-500/30 transition-all">
-              ${fromUnit.label} to ${u.label}
+              class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-dark-800/60 border border-white/5 text-xs text-gray-400 hover:text-indigo-400 hover:border-indigo-500/30 transition-all min-w-0">
+              <span class="truncate">${fromUnit.label} to ${u.label}</span>
             </a>`).join('')}
         </div>
       </div>
@@ -2236,8 +2236,8 @@ function renderConversionPage(fromKey, toKey) {
           ${LENGTH_UNITS.filter(u=>u.key!==toKey && u.key!==fromKey).sort((a,b)=>a.label.localeCompare(b.label)).map(u=>`
             <a href="#/length/${slug(u.key)}/to/${slug(toKey)}"
               onclick="navigate('/length/${slug(u.key)}/to/${slug(toKey)}');return false;"
-              class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-dark-800/60 border border-white/5 text-xs text-gray-400 hover:text-indigo-400 hover:border-indigo-500/30 transition-all">
-              ${u.label} to ${toUnit.label}
+              class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-dark-800/60 border border-white/5 text-xs text-gray-400 hover:text-indigo-400 hover:border-indigo-500/30 transition-all min-w-0">
+              <span class="truncate">${u.label} to ${toUnit.label}</span>
             </a>`).join('')}
         </div>
       </div>
