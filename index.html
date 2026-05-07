@@ -121,6 +121,9 @@
         <span class="hidden sm:flex items-center gap-1.5 text-xs text-gray-500">
           <i class="fa-solid fa-circle-check text-emerald-500 text-xs"></i>90+ length units
         </span>
+        <button id="theme-toggle" class="text-xs font-medium px-3 py-1.5 rounded-lg border border-white/15 text-gray-300 hover:bg-white/5 transition-colors" aria-label="Toggle light mode">
+          <i id="theme-icon" class="fa-regular fa-sun"></i>
+        </button>
         <button onclick="navigate(&#39;/&#39;)" class="text-xs font-medium px-3 py-1.5 rounded-lg bg-indigo-600/20 text-indigo-400 border border-indigo-500/25 hover:bg-indigo-600/30 transition-colors">
           Convert Now
         </button>
@@ -1569,6 +1572,27 @@ function cpSwap() {
 //  SIDEBAR MOBILE
 // ================================================================
 document.addEventListener('DOMContentLoaded', () => {
+  const savedTheme = localStorage.getItem('themeMode');
+  if (savedTheme === 'light') document.body.classList.add('light-mode');
+  if (savedTheme === 'dark') document.body.classList.add('dark-mode');
+
+  const themeToggle = document.getElementById('theme-toggle');
+  const themeIcon = document.getElementById('theme-icon');
+  const paintThemeIcon = () => {
+    const isLight = document.body.classList.contains('light-mode');
+    themeIcon.className = isLight ? 'fa-regular fa-moon' : 'fa-regular fa-sun';
+  };
+  if (themeToggle) {
+    paintThemeIcon();
+    themeToggle.addEventListener('click', () => {
+      const isLight = document.body.classList.toggle('light-mode');
+      document.body.classList.remove('dark-mode');
+      localStorage.setItem('themeMode', isLight ? 'light' : 'dark');
+      if (!isLight) document.body.classList.add('dark-mode');
+      paintThemeIcon();
+    });
+  }
+
   const toggle  = document.getElementById('sidebar-toggle');
   const sidebar = document.getElementById('sidebar');
   const overlay = document.getElementById('sidebar-overlay');
