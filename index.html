@@ -112,7 +112,7 @@
           <i class="fa-solid fa-circle-check text-emerald-500 text-xs"></i>90+ length units
         </span>
         <span class="hidden md:flex items-center gap-1.5 text-xs text-gray-600 font-medium">Free &amp; Instant</span>
-        <button onclick="navigate('/')" class="text-xs font-medium px-3 py-1.5 rounded-lg bg-indigo-600/20 text-indigo-400 border border-indigo-500/25 hover:bg-indigo-600/30 transition-colors">
+        <button onclick="navigate('/length')" class="text-xs font-medium px-3 py-1.5 rounded-lg bg-indigo-600/20 text-indigo-400 border border-indigo-500/25 hover:bg-indigo-600/30 transition-colors">
           <i class="fa-solid fa-calculator mr-1 text-xs"></i>Convert
         </button>
       </div>
@@ -135,7 +135,7 @@
       <div class="p-4 lg:p-0">
         <p class="text-xs font-semibold text-gray-600 uppercase tracking-widest mb-3 px-2">Categories</p>
         <nav class="space-y-1">
-          <button onclick="navigate('/');closeSidebar()" data-cat="length"
+          <button onclick="navigate('/length');closeSidebar()" data-cat="length"
             class="nav-item active w-full flex items-center gap-3 px-3 py-2.5 rounded-xl border border-transparent text-left transition-all duration-200 group">
             <span class="nav-icon w-8 h-8 rounded-lg bg-indigo-500/15 flex items-center justify-center text-indigo-400">
               <i class="fa-solid fa-ruler-horizontal text-xs"></i>
@@ -518,13 +518,13 @@ function getRoute() {
   const hash = window.location.hash || '#/';
   const path = hash.replace(/^#/, '') || '/';
   const parts = path.split('/').filter(Boolean);
-  if (parts.length === 0) return { view: 'home' };
+  if (parts.length === 0) return { view: 'landing' };
   // /length/meter/to/kilometer
   if (parts[0] === 'length' && parts[1] && parts[2] === 'to' && parts[3])
     return { view: 'conv', fromKey: keyFromSlug(parts[1]), toKey: keyFromSlug(parts[3]) };
   if (parts[0] === 'length' && parts[1]) return { view: 'unit', category: 'length', key: keyFromSlug(parts[1]) };
-  if (parts[0] === 'length') return { view: 'home' };
-  return { view: 'home' };
+  if (parts[0] === 'length') return { view: 'length' };
+  return { view: 'landing' };
 }
 
 function router() {
@@ -539,20 +539,257 @@ function router() {
     const unit = getUnit(route.key);
     if (unit) { renderUnitPage(route.key); return; }
   }
-  renderHomePage();
+  if (route.view === 'length') { renderLengthPage(); return; }
+  renderLandingPage();
 }
 
 window.addEventListener('hashchange', router);
 
 // ================================================================
-//  HOME PAGE
+//  LANDING PAGE
+// ================================================================
+function renderLandingPage() {
+  updateSEO({
+    title: 'Omni Converter — Free Online Unit Converter',
+    description: 'Instantly convert between 90+ length units and growing. Metric, imperial, astronomical, historical — fast, accurate, free.',
+    url: 'https://omniconverter.onspace.ai/'
+  });
+
+  const root = document.getElementById('app-root');
+  root.innerHTML = `
+    <div class="page-fade">
+
+      <!-- HERO -->
+      <section class="relative rounded-3xl border border-white/8 bg-gradient-to-br from-dark-800/80 via-dark-700/60 to-dark-800/80 backdrop-blur-sm overflow-hidden mb-8 p-6 sm:p-10 lg:p-14">
+        <div class="absolute -top-20 -left-20 w-80 h-80 bg-indigo-600/20 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -bottom-16 -right-16 w-64 h-64 bg-violet-600/15 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="relative">
+          <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-indigo-500/15 border border-indigo-500/25 text-xs font-medium text-indigo-400 mb-6">
+            <span class="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse inline-block"></span>
+            90+ length units &amp; growing
+          </div>
+          <h1 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-none mb-4">
+            Convert Any Unit,<span class="block bg-gradient-to-r from-indigo-400 to-violet-400 bg-clip-text text-transparent">Instantly.</span>
+          </h1>
+          <p class="text-gray-400 text-base sm:text-lg leading-relaxed max-w-xl mb-8">The fastest, most comprehensive unit converter. No ads, no sign-up, no nonsense &mdash; just accurate conversions across every category.</p>
+
+          <!-- SMART SEARCH ENGINE -->
+          <div class="relative max-w-xl" id="hero-search-wrap">
+            <div class="relative">
+              <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-indigo-400 text-sm pointer-events-none"></i>
+              <input id="hero-search" type="text" placeholder="Search a unit or try: meter to foot" autocomplete="off"
+                class="w-full bg-dark-800/90 border border-indigo-500/30 rounded-2xl pl-11 pr-12 py-4 text-base text-white placeholder-gray-600 focus:outline-none focus:border-indigo-500/70 transition-all shadow-lg"
+                oninput="heroSearch(this.value)" onkeydown="heroSearchKey(event)" />
+              <button id="hero-search-clear" onclick="heroClear()" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-600 hover:text-gray-400 transition-colors hidden">
+                <i class="fa-solid fa-xmark text-sm"></i>
+              </button>
+            </div>
+            <div id="hero-dropdown" class="hidden absolute left-0 right-0 top-full mt-2 rounded-2xl border border-white/10 bg-dark-800/98 backdrop-blur-xl shadow-2xl z-50 overflow-hidden">
+              <div id="hero-results" class="max-h-72 overflow-y-auto"></div>
+              <div class="px-4 py-2.5 border-t border-white/5 text-xs text-gray-600 flex items-center gap-2">
+                <i class="fa-solid fa-keyboard text-gray-700"></i><span>&uarr;&darr; to navigate &nbsp;&middot;&nbsp; Enter to open &nbsp;&middot;&nbsp; Esc to close</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-2 mt-5">
+            <span class="text-xs text-gray-600">Popular:</span>
+            <button onclick="navigate('/length/meter/to/foot')" class="text-xs px-2.5 py-1 rounded-lg bg-dark-800/80 border border-white/8 text-gray-500 hover:text-indigo-400 hover:border-indigo-500/30 transition-all">Meter &rarr; Foot</button>
+            <button onclick="navigate('/length/kilometer/to/mile')" class="text-xs px-2.5 py-1 rounded-lg bg-dark-800/80 border border-white/8 text-gray-500 hover:text-indigo-400 hover:border-indigo-500/30 transition-all">Kilometer &rarr; Mile</button>
+            <button onclick="navigate('/length/centimeter/to/inch')" class="text-xs px-2.5 py-1 rounded-lg bg-dark-800/80 border border-white/8 text-gray-500 hover:text-indigo-400 hover:border-indigo-500/30 transition-all">Centimeter &rarr; Inch</button>
+            <button onclick="navigate('/length/light-year/to/kilometer')" class="text-xs px-2.5 py-1 rounded-lg bg-dark-800/80 border border-white/8 text-gray-500 hover:text-indigo-400 hover:border-indigo-500/30 transition-all">Light Year &rarr; Kilometer</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- STATS -->
+      <section class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
+        <div class="rounded-2xl border border-white/8 bg-dark-800/50 p-4 sm:p-5 text-center">
+          <i class="fa-solid fa-ruler-horizontal text-indigo-400 text-xl mb-2"></i>
+          <p class="text-2xl font-extrabold text-white mb-0.5">90+</p>
+          <p class="text-xs text-gray-600">Length Units</p>
+        </div>
+        <div class="rounded-2xl border border-white/8 bg-dark-800/50 p-4 sm:p-5 text-center">
+          <i class="fa-solid fa-layer-group text-violet-400 text-xl mb-2"></i>
+          <p class="text-2xl font-extrabold text-white mb-0.5">10+</p>
+          <p class="text-xs text-gray-600">Categories</p>
+        </div>
+        <div class="rounded-2xl border border-white/8 bg-dark-800/50 p-4 sm:p-5 text-center">
+          <i class="fa-solid fa-bolt text-amber-400 text-xl mb-2"></i>
+          <p class="text-2xl font-extrabold text-white mb-0.5">Instant</p>
+          <p class="text-xs text-gray-600">Real-time Results</p>
+        </div>
+        <div class="rounded-2xl border border-white/8 bg-dark-800/50 p-4 sm:p-5 text-center">
+          <i class="fa-solid fa-lock-open text-emerald-400 text-xl mb-2"></i>
+          <p class="text-2xl font-extrabold text-white mb-0.5">Free</p>
+          <p class="text-xs text-gray-600">No sign-up needed</p>
+        </div>
+      </section>
+
+      <!-- PAS -->
+      <section class="rounded-3xl border border-white/8 bg-dark-800/40 p-6 sm:p-10 mb-8">
+        <div class="max-w-2xl mx-auto text-center">
+          <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-500/10 border border-rose-500/20 text-xs font-semibold text-rose-400 uppercase tracking-widest mb-4">The Problem</div>
+          <h2 class="text-xl sm:text-2xl font-bold text-white mb-3">Unit conversion is needlessly complicated</h2>
+          <p class="text-gray-500 text-sm sm:text-base leading-relaxed mb-8">Every day, engineers, students, scientists and curious minds hit the same wall: dozens of browser tabs, confusing formulas, outdated tables, and converters cluttered with ads. One quick unit check turns into a 5-minute detour.</p>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-left mb-8">
+            <div class="rounded-xl border border-rose-500/20 bg-rose-500/10 p-4">
+              <i class="fa-solid fa-eye-slash text-rose-400 text-lg mb-2"></i>
+              <h3 class="text-sm font-semibold text-white mb-1">Hidden Complexity</h3>
+              <p class="text-xs text-gray-500 leading-relaxed">Over 90 length units exist &mdash; from Planck lengths to megaparsecs. Most tools cover only 10.</p>
+            </div>
+            <div class="rounded-xl border border-amber-500/20 bg-amber-500/10 p-4">
+              <i class="fa-solid fa-triangle-exclamation text-amber-400 text-lg mb-2"></i>
+              <h3 class="text-sm font-semibold text-white mb-1">Wrong Results</h3>
+              <p class="text-xs text-gray-500 leading-relaxed">Unit errors have caused real-world disasters. Precision and accuracy are non-negotiable.</p>
+            </div>
+            <div class="rounded-xl border border-violet-500/20 bg-violet-500/10 p-4">
+              <i class="fa-solid fa-hourglass text-violet-400 text-lg mb-2"></i>
+              <h3 class="text-sm font-semibold text-white mb-1">Wasted Time</h3>
+              <p class="text-xs text-gray-500 leading-relaxed">Cluttered UIs and slow-loading converters steal focus from what actually matters.</p>
+            </div>
+          </div>
+          <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-xs font-semibold text-emerald-400 uppercase tracking-widest mb-4">The Solution</div>
+          <h2 class="text-xl sm:text-2xl font-bold text-white mb-3">Omni Converter &mdash; one tool for every unit</h2>
+          <p class="text-gray-500 text-sm sm:text-base leading-relaxed mb-6">Every unit gets its own dedicated page with history, formula, and a full conversion table. Search in natural language. Get answers instantly. No clutter, no cost.</p>
+          <button onclick="navigate('/length')" class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-semibold text-sm hover:opacity-90 hover:scale-[1.02] transition-all shadow-glow">
+            <i class="fa-solid fa-arrows-rotate"></i> Start Converting
+          </button>
+        </div>
+      </section>
+
+      <!-- CATEGORIES -->
+      <section class="mb-8">
+        <h2 class="text-lg sm:text-xl font-bold text-white mb-1">Browse by Category</h2>
+        <p class="text-xs text-gray-600 mb-5">Click any active category to start converting</p>
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+          <button onclick="navigate('/length')" class="group rounded-2xl border border-indigo-500/30 bg-gradient-to-br from-indigo-600/15 to-violet-600/10 p-4 sm:p-5 text-left hover:border-indigo-500/60 hover:scale-[1.02] transition-all">
+            <div class="w-10 h-10 rounded-xl bg-indigo-500/20 border border-indigo-500/30 flex items-center justify-center mb-3 group-hover:bg-indigo-500/30 transition-colors"><i class="fa-solid fa-ruler-horizontal text-indigo-400"></i></div>
+            <p class="text-sm font-semibold text-white mb-0.5">Length</p>
+            <p class="text-xs text-indigo-400">90+ units active</p>
+          </button>
+          <div class="rounded-2xl border border-white/5 bg-dark-800/30 p-4 sm:p-5 opacity-50 cursor-not-allowed"><div class="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center mb-3"><i class="fa-solid fa-vector-square text-gray-600"></i></div><p class="text-sm font-medium text-gray-500 mb-0.5">Area</p><p class="text-xs text-gray-700">Coming soon</p></div>
+          <div class="rounded-2xl border border-white/5 bg-dark-800/30 p-4 sm:p-5 opacity-50 cursor-not-allowed"><div class="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center mb-3"><i class="fa-solid fa-cube text-gray-600"></i></div><p class="text-sm font-medium text-gray-500 mb-0.5">Volume</p><p class="text-xs text-gray-700">Coming soon</p></div>
+          <div class="rounded-2xl border border-white/5 bg-dark-800/30 p-4 sm:p-5 opacity-50 cursor-not-allowed"><div class="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center mb-3"><i class="fa-solid fa-weight-hanging text-gray-600"></i></div><p class="text-sm font-medium text-gray-500 mb-0.5">Weight</p><p class="text-xs text-gray-700">Coming soon</p></div>
+          <div class="rounded-2xl border border-white/5 bg-dark-800/30 p-4 sm:p-5 opacity-50 cursor-not-allowed"><div class="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center mb-3"><i class="fa-solid fa-temperature-half text-gray-600"></i></div><p class="text-sm font-medium text-gray-500 mb-0.5">Temperature</p><p class="text-xs text-gray-700">Coming soon</p></div>
+          <div class="rounded-2xl border border-white/5 bg-dark-800/30 p-4 sm:p-5 opacity-50 cursor-not-allowed"><div class="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center mb-3"><i class="fa-solid fa-gauge-high text-gray-600"></i></div><p class="text-sm font-medium text-gray-500 mb-0.5">Speed</p><p class="text-xs text-gray-700">Coming soon</p></div>
+          <div class="rounded-2xl border border-white/5 bg-dark-800/30 p-4 sm:p-5 opacity-50 cursor-not-allowed"><div class="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center mb-3"><i class="fa-solid fa-clock text-gray-600"></i></div><p class="text-sm font-medium text-gray-500 mb-0.5">Time</p><p class="text-xs text-gray-700">Coming soon</p></div>
+          <div class="rounded-2xl border border-white/5 bg-dark-800/30 p-4 sm:p-5 opacity-50 cursor-not-allowed"><div class="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center mb-3"><i class="fa-solid fa-compress-arrows-alt text-gray-600"></i></div><p class="text-sm font-medium text-gray-500 mb-0.5">Pressure</p><p class="text-xs text-gray-700">Coming soon</p></div>
+          <div class="rounded-2xl border border-white/5 bg-dark-800/30 p-4 sm:p-5 opacity-50 cursor-not-allowed"><div class="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center mb-3"><i class="fa-solid fa-bolt text-gray-600"></i></div><p class="text-sm font-medium text-gray-500 mb-0.5">Energy</p><p class="text-xs text-gray-700">Coming soon</p></div>
+          <div class="rounded-2xl border border-white/5 bg-dark-800/30 p-4 sm:p-5 opacity-50 cursor-not-allowed"><div class="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center mb-3"><i class="fa-solid fa-hard-drive text-gray-600"></i></div><p class="text-sm font-medium text-gray-500 mb-0.5">Data Storage</p><p class="text-xs text-gray-700">Coming soon</p></div>
+        </div>
+      </section>
+
+      <!-- POPULAR CONVERSIONS -->
+      <section class="mb-8">
+        <h2 class="text-lg sm:text-xl font-bold text-white mb-1">Popular Conversions</h2>
+        <p class="text-xs text-gray-600 mb-5">Most searched unit conversion pairs</p>
+        <div id="popular-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3"></div>
+      </section>
+
+      <!-- HOW IT WORKS -->
+      <section class="rounded-3xl border border-white/8 bg-dark-800/40 p-6 sm:p-10 mb-4">
+        <h2 class="text-lg sm:text-xl font-bold text-white text-center mb-8">How Omni Converter Works</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
+          <div class="flex flex-col items-center">
+            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-600 to-indigo-500 flex items-center justify-center mb-4 shadow-glow-sm"><i class="fa-solid fa-magnifying-glass text-white text-lg"></i></div>
+            <p class="text-base font-bold text-white mb-1">Search or Browse</p>
+            <p class="text-xs text-gray-500 leading-relaxed max-w-44 mx-auto">Type any unit name or use the category grid to find your converter instantly.</p>
+          </div>
+          <div class="flex flex-col items-center">
+            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-violet-600 to-violet-500 flex items-center justify-center mb-4 shadow-glow-sm"><i class="fa-solid fa-keyboard text-white text-lg"></i></div>
+            <p class="text-base font-bold text-white mb-1">Enter Your Value</p>
+            <p class="text-xs text-gray-500 leading-relaxed max-w-44 mx-auto">Type in any number &mdash; the result updates in real time with no button to press.</p>
+          </div>
+          <div class="flex flex-col items-center">
+            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-600 to-emerald-500 flex items-center justify-center mb-4 shadow-glow-sm"><i class="fa-solid fa-copy text-white text-lg"></i></div>
+            <p class="text-base font-bold text-white mb-1">Copy &amp; Use</p>
+            <p class="text-xs text-gray-500 leading-relaxed max-w-44 mx-auto">Copy the result to clipboard with one click and use it wherever you need.</p>
+          </div>
+        </div>
+      </section>
+
+    </div>`;
+
+  // Render popular conversions
+  const pg = document.getElementById('popular-grid');
+  if (pg) {
+    const pairs = [['meter','foot'],['kilometer','mile'],['centimeter','inch'],['foot','meter'],['mile','kilometer'],['inch','centimeter'],['meter','yard'],['light_year','kilometer'],['kilometer','foot'],['nanometer','meter'],['parsec','light_year'],['mile','meter']];
+    pg.innerHTML = pairs.map(([f,t]) => {
+      const fu=getUnit(f), tu=getUnit(t);
+      if (!fu||!tu) return '';
+      const path = '/length/'+slug(f)+'/to/'+slug(t);
+      return `<button onclick="navigate('${path}')" class="group flex items-center justify-between p-3.5 rounded-xl border border-white/6 bg-dark-800/50 hover:border-indigo-500/30 hover:bg-indigo-500/5 transition-all text-left"><div class="flex items-center gap-2 min-w-0"><span class="text-sm text-gray-300 group-hover:text-white transition-colors truncate">${fu.label}</span><i class="fa-solid fa-arrow-right text-xs text-gray-700 flex-shrink-0"></i><span class="text-sm text-gray-300 group-hover:text-white transition-colors truncate">${tu.label}</span></div><i class="fa-solid fa-chevron-right text-xs text-indigo-500/50 group-hover:text-indigo-400 ml-2 flex-shrink-0"></i></button>`;
+    }).join('');
+  }
+
+  // Search logic
+  let heroSelectedIdx = -1;
+  let heroResults = [];
+
+  window.heroSearch = function(q) {
+    const clearBtn = document.getElementById('hero-search-clear');
+    if (clearBtn) clearBtn.classList.toggle('hidden', !q);
+    const dropdown = document.getElementById('hero-dropdown');
+    const resultEl = document.getElementById('hero-results');
+    if (!q || !q.trim()) { dropdown.classList.add('hidden'); heroSelectedIdx=-1; return; }
+    const ql = q.toLowerCase().trim();
+    const toMatch = ql.match(/^(.+?)\s+to\s+(.+)$/);
+    let pairs = [];
+    if (toMatch) {
+      const fq=toMatch[1].trim(), tq=toMatch[2].trim();
+      const fm=LENGTH_UNITS.filter(u=>u.label.toLowerCase().includes(fq)||(u.altNames||[]).some(n=>n.toLowerCase().includes(fq)));
+      const tm=LENGTH_UNITS.filter(u=>u.label.toLowerCase().includes(tq)||(u.altNames||[]).some(n=>n.toLowerCase().includes(tq)));
+      fm.slice(0,3).forEach(f=>tm.slice(0,3).forEach(t=>{ if(f.key!==t.key) pairs.push({type:'pair',from:f,to:t,path:'/length/'+slug(f.key)+'/to/'+slug(t.key)}); }));
+    }
+    const units = LENGTH_UNITS.filter(u=>u.label.toLowerCase().includes(ql)||(u.symbol||'').toLowerCase().includes(ql)||(u.altNames||[]).some(n=>n.toLowerCase().includes(ql))).slice(0,8).map(u=>({type:'unit',unit:u,path:'/length/'+slug(u.key)}));
+    heroResults=[...pairs.slice(0,4),...units];
+    heroSelectedIdx=-1;
+    if(!heroResults.length){resultEl.innerHTML='<div class="px-4 py-5 text-sm text-gray-600 text-center">No matches found</div>';dropdown.classList.remove('hidden');return;}
+    resultEl.innerHTML=heroResults.map(r=>{
+      if(r.type==='pair'){
+        return '<button class="hero-res w-full text-left px-4 py-3 hover:bg-indigo-500/10 transition-colors flex items-center gap-3 border-b border-white/3" onclick="navigate(\''+r.path+'\')"><div class="w-8 h-8 rounded-lg bg-indigo-500/15 flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-right-left text-indigo-400 text-xs"></i></div><div class="min-w-0"><p class="text-sm font-medium text-white">'+r.from.label+' &rarr; '+r.to.label+'</p><p class="text-xs text-gray-600">Conversion page</p></div><i class="fa-solid fa-arrow-right text-xs text-gray-700 ml-auto"></i></button>';
+      }
+      const u=r.unit,meta=GROUP_META[u.group],desc=UNIT_DESC[u.key];
+      const cp=meta.color.split(' '),bg=cp.filter(c=>c.startsWith('bg-')).join(' '),tx=cp.filter(c=>c.startsWith('text-')).join(' ');
+      return '<button class="hero-res w-full text-left px-4 py-3 hover:bg-indigo-500/10 transition-colors flex items-center gap-3 border-b border-white/3" onclick="navigate(\''+r.path+'\')"><div class="w-8 h-8 rounded-lg '+bg+' flex items-center justify-center flex-shrink-0"><i class="fa-solid '+meta.icon+' '+tx+' text-xs"></i></div><div class="min-w-0"><p class="text-sm font-medium text-white">'+u.label+(u.symbol?' <span class="font-mono text-xs text-indigo-400">['+u.symbol+']</span>':'')+' </p><p class="text-xs text-gray-600 truncate">'+(desc?desc.short:meta.label+' unit')+' </p></div><span class="text-xs '+tx+' ml-auto flex-shrink-0">'+meta.label+'</span></button>';
+    }).join('');
+    dropdown.classList.remove('hidden');
+  };
+
+  window.heroSearchKey = function(e) {
+    const btns=document.querySelectorAll('.hero-res');
+    if(e.key==='ArrowDown'){e.preventDefault();heroSelectedIdx=Math.min(heroSelectedIdx+1,btns.length-1);btns.forEach((b,i)=>b.classList.toggle('bg-indigo-500/15',i===heroSelectedIdx));}
+    else if(e.key==='ArrowUp'){e.preventDefault();heroSelectedIdx=Math.max(heroSelectedIdx-1,-1);btns.forEach((b,i)=>b.classList.toggle('bg-indigo-500/15',i===heroSelectedIdx));}
+    else if(e.key==='Enter'){e.preventDefault();const r=heroSelectedIdx>=0?heroResults[heroSelectedIdx]:heroResults[0];if(r)navigate(r.path);}
+    else if(e.key==='Escape'){document.getElementById('hero-dropdown')?.classList.add('hidden');heroSelectedIdx=-1;}
+  };
+
+  window.heroClear = function() {
+    const el=document.getElementById('hero-search');
+    if(el)el.value='';
+    document.getElementById('hero-dropdown')?.classList.add('hidden');
+    document.getElementById('hero-search-clear')?.classList.add('hidden');
+    heroResults=[];heroSelectedIdx=-1;
+    el?.focus();
+  };
+
+  document.addEventListener('click', function hdl(e) {
+    const wrap=document.getElementById('hero-search-wrap');
+    if(!wrap){document.removeEventListener('click',hdl);return;}
+    if(!wrap.contains(e.target))document.getElementById('hero-dropdown')?.classList.add('hidden');
+  });
+}
+
+// ================================================================
+//  LENGTH CONVERTER PAGE
 // ================================================================
 let homeFromKey = 'meter';
 let homeToKey   = 'kilometer';
 let homeGroup   = 'all';
 let homeTableQ  = '';
 
-function renderHomePage() {
+function renderLengthPage() {
   updateSEO({
     title: 'Length Converter — 90+ Units | Omni Converter',
     description: 'Free online length converter. Convert between 90+ units including metric, imperial, astronomical, and historical units. Instant results.',
@@ -937,7 +1174,7 @@ function renderUnitPage(key) {
       <nav class="flex items-center gap-2 text-xs text-gray-600 mb-5">
         <button onclick="navigate('/')" class="hover:text-indigo-400 transition-colors">Omni Converter</button>
         <i class="fa-solid fa-chevron-right text-gray-700 text-xs"></i>
-        <button onclick="navigate('/')" class="hover:text-indigo-400 transition-colors">Length</button>
+        <button onclick="navigate('/length')" class="hover:text-indigo-400 transition-colors">Length</button>
         <i class="fa-solid fa-chevron-right text-gray-700 text-xs"></i>
         <span class="text-gray-400">${unit.label}</span>
       </nav>
@@ -1035,7 +1272,7 @@ function renderUnitPage(key) {
           <button onclick="unitSwap()" class="swap-btn group flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-600/15 border border-indigo-500/25 text-indigo-400 text-sm font-medium hover:bg-indigo-600/25 transition-all">
             <i class="fa-solid fa-arrow-right-arrow-left swap-icon text-xs"></i>Swap
           </button>
-          <button onclick="navigate('/')" class="flex items-center gap-1.5 text-xs text-gray-600 hover:text-indigo-400 transition-colors">
+          <button onclick="navigate('/length')" class="flex items-center gap-1.5 text-xs text-gray-600 hover:text-indigo-400 transition-colors">
             <i class="fa-solid fa-table text-xs"></i>All units
           </button>
         </div>
@@ -1312,7 +1549,7 @@ function renderConversionPage(fromKey, toKey) {
       <nav class="flex items-center gap-2 text-xs text-gray-600 mb-5 flex-wrap">
         <button onclick="navigate('/')" class="hover:text-indigo-400 transition-colors">Omni Converter</button>
         <i class="fa-solid fa-chevron-right text-gray-700 text-xs"></i>
-        <button onclick="navigate('/')" class="hover:text-indigo-400 transition-colors">Length</button>
+        <button onclick="navigate('/length')" class="hover:text-indigo-400 transition-colors">Length</button>
         <i class="fa-solid fa-chevron-right text-gray-700 text-xs"></i>
         <button onclick="navigate('/length/${slug(fromKey)}')" class="hover:text-indigo-400 transition-colors">${fromUnit.label}</button>
         <i class="fa-solid fa-chevron-right text-gray-700 text-xs"></i>
@@ -1591,7 +1828,9 @@ document.addEventListener('DOMContentLoaded', () => {
 <script>window.onload=function(){var d=document.createElement("div");d.id="appLoadFinished";document.body.appendChild(d);};</script>
 <script>window.onload=function(){var d=document.createElement("div");d.id="appLoadFinished";document.body.appendChild(d);};</script>
 <script>window.onload=function(){var d=document.createElement("div");d.id="appLoadFinished";document.body.appendChild(d);};</script>
+<script>window.onload=function(){var d=document.createElement("div");d.id="appLoadFinished";document.body.appendChild(d);};</script>
 </body>
+
 
 
 
