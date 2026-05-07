@@ -25,6 +25,15 @@
   <meta name="twitter:description" content="Fast, accurate unit conversions across 90+ length units." id="tw-desc" />
   <meta name="twitter:image" content="https://via.placeholder.com/1200x630.png?text=Omni+Converter" />
 
+  <!-- PWA Meta Tags -->
+  <meta name="theme-color" content="#6366f1" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Omni Converter" />
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect fill='%236366f1' width='192' height='192'/><text x='50%' y='50%' font-size='100' font-weight='bold' fill='white' text-anchor='middle' dominant-baseline='central' font-family='Inter'>∞</text></svg>" />
+
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -576,7 +585,7 @@ const UNIT_DESC = {
   arpent: { short: 'A French unit equal to ~58.5 m; still used in Quebec land law.', long: 'The arpent equals approximately 58.5216 meters. It was a French unit of length used in land measurement, particularly in France, Louisiana, and Quebec. Arpents remain relevant in Quebec property law, where land area is sometimes still described in arpents. The arpent\'s length varied by region but the "arpent de Paris" is most commonly used.' },
   aln: { short: 'A Scandinavian ell; ~59.4 cm; used in Sweden and Norway.', long: 'The aln (also spelled alen) equals approximately 0.5937777778 meters. It was the traditional unit of length used in Scandinavia (Sweden, Norway, Denmark) for measuring cloth and textiles. The Swedish aln was set at exactly 2 feet (Swedish feet) in the 19th century before metrication.' },
   famn: { short: 'A Scandinavian fathom; ~1.78 m; 3 alns.', long: 'The famn equals approximately 1.7813333333 meters. It is the Scandinavian equivalent of the fathom, historically used in Sweden and Norway. One famn equals 3 alns. Like many old Scandinavian units, it was replaced by metric units during the 19th century standardization.' },
-  ken: { short: 'A Japanese unit of ~2.12 m; used in traditional architecture.', long: 'The ken (���) equals approximately 2.11836 meters. It is a traditional Japanese unit of length used primarily in architecture and carpentry. The ken defines the spacing between pillars in traditional Japanese buildings and is the basis of the tatami mat system. Standard tatami mats are half a ken wide and one ken long.' },
+  ken: { short: 'A Japanese unit of ~2.12 m; used in traditional architecture.', long: 'The ken (�����) equals approximately 2.11836 meters. It is a traditional Japanese unit of length used primarily in architecture and carpentry. The ken defines the spacing between pillars in traditional Japanese buildings and is the basis of the tatami mat system. Standard tatami mats are half a ken wide and one ken long.' },
   russian_archin: { short: 'Russian archin (arshin); 28 inches (0.7112 m).', long: 'The Russian archin (also spelled arshin) equals 28 inches or 0.7112 meters. It was the standard unit of length in the Russian Empire for measuring cloth and general distances. Three archins equal one sazhen (the Russian fathom). The archin remained in common use until the Soviet Union adopted the metric system in 1922.' },
   roman_actus: { short: 'Roman land measurement unit; 120 Roman feet (~35.5 m).', long: 'The Roman actus equals 120 Roman feet or approximately 35.47872 meters. It was used in ancient Roman land surveying, particularly for measuring the length of fields. Two actus (an actus duplex) formed the basis of the Roman square land measure. The word "actus" referred to the distance a yoke of oxen could plow without resting.' },
   vara_de_tarea: { short: 'A Spanish/Latin American vara; ~2.505 m.', long: 'The vara de tarea equals approximately 2.505456 meters. It is one of several Spanish vara measurements used in Latin America for land surveys and everyday measurement. Vara measurements were introduced by Spanish colonizers and varied by region. They appear in historical land grants throughout the Americas.' },
@@ -2310,6 +2319,207 @@ document.addEventListener('DOMContentLoaded', () => {
 <script>window.onload=function(){var d=document.createElement("div");d.id="appLoadFinished";document.body.appendChild(d);};</script>
 <script>window.onload=function(){var d=document.createElement("div");d.id="appLoadFinished";document.body.appendChild(d);};</script>
 <script>window.onload=function(){var d=document.createElement("div");d.id="appLoadFinished";document.body.appendChild(d);};</script>
+
+<!-- Floating Action Button for Share -->
+<div id="fab-container" style="position: fixed; bottom: 2rem; right: 2rem; z-index: 40; display: none;">
+  <button id="fab-share" onclick="showShareFAB()" title="Share" style="
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    color: white;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+    transition: all 0.3s ease;
+  ">
+    <i class="fa-solid fa-share-nodes"></i>
+  </button>
+  
+  <!-- Share menu -->
+  <div id="fab-menu" style="
+    position: absolute;
+    bottom: 70px;
+    right: 0;
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-primary);
+    border-radius: 0.75rem;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    display: none;
+    flex-direction: column;
+    min-width: 160px;
+  ">
+    <button onclick="nativeShare()" style="
+      padding: 0.75rem 1rem;
+      background: none;
+      border: none;
+      text-align: left;
+      cursor: pointer;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.875rem;
+      transition: background-color 0.2s;
+      border-bottom: 1px solid var(--border-secondary);
+    " onmouseover="this.style.backgroundColor='var(--card-hover-bg)'" onmouseout="this.style.backgroundColor='transparent'">
+      <i class="fa-solid fa-share" style="width: 18px;"></i>
+      <span>Share</span>
+    </button>
+    <button onclick="copyShareLink()" style="
+      padding: 0.75rem 1rem;
+      background: none;
+      border: none;
+      text-align: left;
+      cursor: pointer;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.875rem;
+      transition: background-color 0.2s;
+      border-bottom: 1px solid var(--border-secondary);
+    " onmouseover="this.style.backgroundColor='var(--card-hover-bg)'" onmouseout="this.style.backgroundColor='transparent'">
+      <i class="fa-solid fa-link" style="width: 18px;"></i>
+      <span>Copy Link</span>
+    </button>
+    <button onclick="installPWA()" id="install-btn" style="
+      padding: 0.75rem 1rem;
+      background: none;
+      border: none;
+      text-align: left;
+      cursor: pointer;
+      color: var(--text-primary);
+      display: none;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.875rem;
+      transition: background-color 0.2s;
+    " onmouseover="this.style.backgroundColor='var(--card-hover-bg)'" onmouseout="this.style.backgroundColor='transparent'">
+      <i class="fa-solid fa-download" style="width: 18px;"></i>
+      <span>Install App</span>
+    </button>
+  </div>
+</div>
+
+<script>
+  // PWA Installation Setup
+  let deferredPrompt;
+  const installBtn = document.getElementById('install-btn');
+
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    installBtn.style.display = 'flex';
+  });
+
+  window.addEventListener('appinstalled', () => {
+    installBtn.style.display = 'none';
+    deferredPrompt = null;
+    showToast('App installed successfully!');
+  });
+
+  // Service Worker Registration
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js')
+        .then((registration) => {
+          console.log('[v0] Service Worker registered:', registration);
+        })
+        .catch((error) => {
+          console.log('[v0] Service Worker registration failed:', error);
+        });
+    });
+
+    // Check for updates periodically
+    if (navigator.serviceWorker.controller) {
+      setInterval(() => {
+        navigator.serviceWorker.controller.postMessage({ type: 'SKIP_WAITING' });
+      }, 60000); // Check every minute
+    }
+  }
+
+  // FAB Functions
+  function showShareFAB() {
+    const menu = document.getElementById('fab-menu');
+    const isHidden = menu.style.display === 'none';
+    menu.style.display = isHidden ? 'flex' : 'none';
+  }
+
+  function nativeShare() {
+    const title = document.title;
+    const url = window.location.href;
+    const text = 'Check out this amazing unit converter!';
+
+    if (navigator.share) {
+      navigator.share({
+        title: title,
+        text: text,
+        url: url
+      }).then(() => {
+        document.getElementById('fab-menu').style.display = 'none';
+      }).catch((error) => {
+        console.log('[v0] Share failed:', error);
+      });
+    } else {
+      // Fallback to copying link
+      copyShareLink();
+    }
+  }
+
+  function copyShareLink() {
+    const url = window.location.href;
+    navigator.clipboard.writeText(url).then(() => {
+      showToast('Link copied to clipboard!');
+      document.getElementById('fab-menu').style.display = 'none';
+    }).catch(() => {
+      // Fallback
+      const input = document.createElement('input');
+      input.value = url;
+      document.body.appendChild(input);
+      input.select();
+      document.execCommand('copy');
+      document.body.removeChild(input);
+      showToast('Link copied to clipboard!');
+      document.getElementById('fab-menu').style.display = 'none';
+    });
+  }
+
+  function installPWA() {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then((choiceResult) => {
+        if (choiceResult.outcome === 'accepted') {
+          showToast('Installing app...');
+        }
+        deferredPrompt = null;
+      });
+      document.getElementById('fab-menu').style.display = 'none';
+    }
+  }
+
+  // Show FAB when page loads
+  document.addEventListener('DOMContentLoaded', () => {
+    const fabContainer = document.getElementById('fab-container');
+    if (fabContainer) {
+      fabContainer.style.display = 'block';
+    }
+  });
+
+  // Hide FAB menu when clicking outside
+  document.addEventListener('click', (e) => {
+    const fabContainer = document.getElementById('fab-container');
+    if (fabContainer && !fabContainer.contains(e.target)) {
+      document.getElementById('fab-menu').style.display = 'none';
+    }
+  });
+</script>
+
 </body>
 
 
