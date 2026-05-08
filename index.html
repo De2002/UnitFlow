@@ -714,14 +714,16 @@ function applyTheme(theme) {
 // ================================================================
 //  EMBED MODAL AND FUNCTIONS
 // ================================================================
-function showEmbedModal(category) {
+function showEmbedModal(category, fromKey = null, toKey = null) {
   const modal = document.getElementById('embed-modal');
   if (!modal) createEmbedModal();
   
   const embedModal = document.getElementById('embed-modal');
   embedModal.style.display = 'flex';
   embedModal.dataset.category = category;
-  
+  embedModal.dataset.fromKey = fromKey || '';
+  embedModal.dataset.toKey = toKey || '';
+
   updateEmbedPreview(category);
   updateEmbedCode(category);
 }
@@ -836,12 +838,25 @@ function setEmbedTheme(theme) {
   updateEmbedPreview(category);
 }
 
+function getEmbedUrl(category) {
+  const modal = document.getElementById('embed-modal');
+  const fromKey = modal?.dataset.fromKey;
+  const toKey = modal?.dataset.toKey;
+
+  if (category === 'length' && fromKey && toKey) {
+    return `https://www.omniconverter.cyou/embed/${category}/${slug(fromKey)}/to/${slug(toKey)}`;
+  }
+
+  return `https://www.omniconverter.cyou/embed/${category}`;
+}
+
 function updateEmbedCode(category) {
   const width = document.getElementById('embed-width').value || '500';
   const height = document.getElementById('embed-height').value || '600';
   const theme = Array.from(document.querySelectorAll('.embed-theme-btn')).find(btn => btn.style.backgroundColor === '#6366f1')?.dataset.theme || 'dark';
-  
-  const code = `<iframe src="https://www.omniconverter.cyou/#/embed/${category}" width="${width}" height="${height}" frameborder="0" style="border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);"></iframe>`;
+
+  const src = `${getEmbedUrl(category)}?theme=${theme}`;
+  const code = `<iframe src="${src}" width="${width}" height="${height}" frameborder="0" style="border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);"></iframe>`;
   
   const codeArea = document.getElementById('embed-code');
   if (codeArea) codeArea.value = code;
@@ -855,7 +870,8 @@ function updateEmbedPreview(category) {
   if (preview) {
     preview.style.width = Math.min(parseInt(width), 600) + 'px';
     preview.style.height = Math.min(parseInt(height), 500) + 'px';
-    preview.src = `https://www.omniconverter.cyou/#/embed/${category}`;
+    const theme = Array.from(document.querySelectorAll('.embed-theme-btn')).find(btn => btn.style.backgroundColor === '#6366f1')?.dataset.theme || 'dark';
+    preview.src = `${getEmbedUrl(category)}?theme=${theme}`;
   }
 }
 
@@ -870,11 +886,16 @@ function copyEmbedCode() {
 // ================================================================
 //  EMBED PAGE RENDERER
 // ================================================================
-function renderEmbedPage(category) {
+function renderEmbedPage(category, fromKey = null, toKey = null) {
   // Check if category is valid (currently only 'length' is available)
   if (category !== 'length') {
     document.getElementById('app-root').innerHTML = '<div style="padding: 2rem; text-align: center; color: var(--text-secondary);">Converter not found</div>';
     return;
+  }
+
+  if (category === 'length' && getUnit(fromKey) && getUnit(toKey)) {
+    homeFromKey = fromKey;
+    homeToKey = toKey;
   }
 
   const root = document.getElementById('app-root');
@@ -995,7 +1016,12 @@ function getRoute() {
   const parts = path.split('/').filter(Boolean);
   if (parts.length === 0) return { view: 'landing' };
   // /embed/length, /embed/area, etc.
-  if (parts[0] === 'embed' && parts[1]) return { view: 'embed', category: parts[1] };
+  if (parts[0] === 'embed' && parts[1]) {
+    if (parts[1] === 'length' && parts[2] && parts[3] === 'to' && parts[4]) {
+      return { view: 'embed', category: parts[1], fromKey: keyFromSlug(parts[2]), toKey: keyFromSlug(parts[4]) };
+    }
+    return { view: 'embed', category: parts[1] };
+  }
   // /length/meter/to/kilometer
   if (parts[0] === 'length' && parts[1] && parts[2] === 'to' && parts[3])
     return { view: 'conv', fromKey: keyFromSlug(parts[1]), toKey: keyFromSlug(parts[3]) };
@@ -1008,7 +1034,7 @@ function router() {
   const route = getRoute();
   window.scrollTo(0, 0);
   if (route.view === 'embed' && route.category) {
-    renderEmbedPage(route.category);
+    renderEmbedPage(route.category, route.fromKey, route.toKey);
     return;
   }
   if (route.view === 'conv' && route.fromKey && route.toKey) {
@@ -2057,7 +2083,7 @@ function renderConversionPage(fromKey, toKey) {
               <i class="fa-solid ${toMeta.icon} mr-1.5 text-xs"></i>${toMeta.label}
             </span>
           </div>
-          <button onclick="showEmbedModal('length')" class="inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-lg border transition-colors" style="color: #818cf8; border-color: rgba(129, 140, 248, 0.3); background-color: rgba(129, 140, 248, 0.1);">
+          <button onclick="showEmbedModal('length', fromKey, toKey)" class="inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-lg border transition-colors" style="color: #818cf8; border-color: rgba(129, 140, 248, 0.3); background-color: rgba(129, 140, 248, 0.1);">
             <i class="fa-solid fa-code text-xs"></i> Embed
           </button>
         </div>
