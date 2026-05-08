@@ -1389,7 +1389,7 @@ function renderLengthPage() {
             <i class="fa-solid fa-code text-xs"></i> Embed
           </button>
         </div>
-        <h1 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">Length Converter</h1>
+        <h2 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">Length Converter</h2>
         <p class="text-gray-500 text-sm mt-1">Convert between 90+ units — metric, imperial, astronomical, historical &amp; more.</p>
       </div>
 
@@ -1772,7 +1772,7 @@ function renderUnitPage(key) {
               </span>
               ${unit.symbol ? `<span class="font-mono text-xs text-indigo-400 bg-indigo-500/10 border border-indigo-500/20 px-2 py-0.5 rounded">${unit.symbol}</span>` : ''}
             </div>
-            <h1 class="text-2xl sm:text-4xl font-bold text-white tracking-tight mb-1">${unit.label} Converter</h1>
+            <h2 class="text-2xl sm:text-4xl font-bold text-white tracking-tight mb-1">${unit.label} Converter</h2>
             <p class="text-gray-400 text-sm sm:text-base leading-relaxed max-w-xl">${desc.short}</p>
           </div>
           <div class="flex flex-col items-end gap-2">
@@ -2160,9 +2160,9 @@ function renderConversionPage(fromKey, toKey) {
             <i class="fa-solid fa-code text-xs"></i> Embed
           </button>
         </div>
-        <h1 class="text-2xl sm:text-4xl font-bold text-white tracking-tight mb-2">
+        <h2 class="text-2xl sm:text-4xl font-bold text-white tracking-tight mb-2">
           Convert ${fromUnit.label} to ${toUnit.label}
-        </h1>
+        </h2>
         <p class="text-gray-400 text-sm sm:text-base leading-relaxed max-w-2xl mb-5">
           Use this free online converter to instantly convert between ${fromUnit.label}${fromUnit.symbol?' ('+fromUnit.symbol+')':''} and ${toUnit.label}${toUnit.symbol?' ('+toUnit.symbol+')':''}. Enter any value to see the result in real time.
         </p>
