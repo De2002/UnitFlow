@@ -259,7 +259,7 @@
   <div class="orb w-64 h-64 bg-indigo-500 top-[50%] left-[40%]"></div>
 
   <!-- ===================== HEADER ===================== -->
-  <header class="relative z-20 border-b sticky top-0 transition-colors" style="border-color: var(--border-secondary); background-color: rgba(var(--bg-secondary-rgb, 15, 15, 26), 0.8); backdrop-filter: blur(20px);">
+  <header id="main-header" class="relative z-20 border-b sticky top-0 transition-colors" style="border-color: var(--border-secondary); background-color: rgba(var(--bg-secondary-rgb, 15, 15, 26), 0.8); backdrop-filter: blur(20px);">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
       <div class="flex items-center gap-2.5">
         <button id="sidebar-toggle" class="lg:hidden mr-1 transition-colors p-1" style="color: var(--text-tertiary);">
@@ -287,7 +287,7 @@
   </header>
 
   <!-- ===================== LAYOUT ===================== -->
-  <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 flex gap-6 pt-6 pb-16">
+  <div id="app-layout" class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 flex gap-6 pt-6 pb-16">
 
     <!-- Mobile overlay -->
     <div id="sidebar-overlay" class="sidebar-overlay fixed inset-0 z-30 hidden lg:hidden"></div>
@@ -1003,6 +1003,24 @@ function renderEmbedPage(category, fromKey = null, toKey = null) {
   homeInitOutsideClick();
 }
 
+
+function setEmbedChrome(isEmbed) {
+  const header = document.getElementById('main-header');
+  const layout = document.getElementById('app-layout');
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebar-overlay');
+
+  if (header) header.style.display = isEmbed ? 'none' : '';
+  if (sidebar) sidebar.style.display = isEmbed ? 'none' : '';
+  if (overlay && isEmbed) overlay.classList.add('hidden');
+
+  if (layout) {
+    layout.style.maxWidth = isEmbed ? '100%' : '';
+    layout.style.padding = isEmbed ? '0' : '';
+    layout.style.display = isEmbed ? 'block' : '';
+  }
+}
+
 // ================================================================
 //  ROUTER
 // ================================================================
@@ -1033,6 +1051,7 @@ function getRoute() {
 function router() {
   const route = getRoute();
   window.scrollTo(0, 0);
+  setEmbedChrome(route.view === 'embed');
   if (route.view === 'embed' && route.category) {
     renderEmbedPage(route.category, route.fromKey, route.toKey);
     return;
@@ -2083,7 +2102,7 @@ function renderConversionPage(fromKey, toKey) {
               <i class="fa-solid ${toMeta.icon} mr-1.5 text-xs"></i>${toMeta.label}
             </span>
           </div>
-          <button onclick="showEmbedModal('length', fromKey, toKey)" class="inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-lg border transition-colors" style="color: #818cf8; border-color: rgba(129, 140, 248, 0.3); background-color: rgba(129, 140, 248, 0.1);">
+          <button onclick="showEmbedModal('length', '${fromKey}', '${toKey}')" class="inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-lg border transition-colors" style="color: #818cf8; border-color: rgba(129, 140, 248, 0.3); background-color: rgba(129, 140, 248, 0.1);">
             <i class="fa-solid fa-code text-xs"></i> Embed
           </button>
         </div>
