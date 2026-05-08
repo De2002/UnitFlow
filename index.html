@@ -83,6 +83,8 @@
       --orb-opacity: 0.15;
       --card-bg: rgba(28, 28, 46, 0.6);
       --card-hover-bg: rgba(99, 102, 241, 0.05);
+      --header-bg-rgb: 15, 15, 26;
+      --footer-bg-rgb: 19, 19, 31;
     }
 
     html.light {
@@ -106,6 +108,8 @@
       --orb-opacity: 0.08;
       --card-bg: rgba(230, 233, 245, 0.4);
       --card-hover-bg: rgba(99, 102, 241, 0.08);
+      --header-bg-rgb: 248, 249, 252;
+      --footer-bg-rgb: 255, 255, 255;
     }
 
     body { 
@@ -270,7 +274,7 @@
   <div class="orb w-64 h-64 bg-indigo-500 top-[50%] left-[40%]"></div>
 
   <!-- ===================== HEADER ===================== -->
-  <header id="main-header" class="relative z-20 border-b sticky top-0 transition-colors" style="border-color: var(--border-secondary); background-color: rgba(var(--bg-secondary-rgb, 15, 15, 26), 0.8); backdrop-filter: blur(20px);">
+  <header id="main-header" class="relative z-20 border-b sticky top-0 transition-colors" style="border-color: var(--border-secondary); background-color: rgba(var(--header-bg-rgb), 0.88); backdrop-filter: blur(20px);">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
       <div class="flex items-center gap-2.5">
         <button id="sidebar-toggle" class="lg:hidden mr-1 transition-colors p-1" style="color: var(--text-tertiary);">
@@ -388,7 +392,7 @@
     <main class="flex-1 min-w-0" id="app-root"></main>
   </div>
 
-  <footer class="relative z-10 border-t mt-4" style="border-color: var(--border-secondary); background-color: rgba(19, 19, 31, 0.35);">
+  <footer class="relative z-10 border-t mt-4" style="border-color: var(--border-secondary); background-color: rgba(var(--footer-bg-rgb), 0.85);">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
       <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
