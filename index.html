@@ -8,12 +8,12 @@
   <!-- Dynamic SEO tags — updated by JS router -->
   <title>Omni Converter — Universal Unit Converter</title>
   <meta name="description" content="Fast, accurate unit conversions across length, area, volume, weight, and more. 90+ length units supported." />
-  <link rel="canonical" href="https://omniconverter.onspace.ai/" id="canonical-link" />
+  <link rel="canonical" href="https://www.omniconverter.cyou/" id="canonical-link" />
 
   <!-- Open Graph -->
   <meta property="og:title" content="Omni Converter — Universal Unit Converter" id="og-title" />
   <meta property="og:description" content="Fast, accurate unit conversions across 90+ length units and more." id="og-desc" />
-  <meta property="og:url" content="https://omniconverter.onspace.ai/" id="og-url" />
+  <meta property="og:url" content="https://www.omniconverter.cyou/" id="og-url" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Omni Converter" />
   <meta property="og:image" content="https://via.placeholder.com/1200x630.png?text=Omni+Converter" />
@@ -1131,7 +1131,7 @@ function renderLandingPage() {
   updateSEO({
     title: 'Omni Converter — Free Online Unit Converter',
     description: 'Instantly convert between 90+ length units and growing. Metric, imperial, astronomical, historical — fast, accurate, free.',
-    url: 'https://omniconverter.onspace.ai/'
+    url: 'https://www.omniconverter.cyou/'
   });
 
   const root = document.getElementById('app-root');
@@ -1372,7 +1372,7 @@ function renderLengthPage() {
   updateSEO({
     title: 'Length Converter — 90+ Units | Omni Converter',
     description: 'Free online length converter. Convert between 90+ units including metric, imperial, astronomical, and historical units. Instant results.',
-    url: 'https://omniconverter.onspace.ai/length'
+    url: 'https://www.omniconverter.cyou/length'
   });
 
   const root = document.getElementById('app-root');
@@ -1746,7 +1746,7 @@ function renderUnitPage(key) {
   updateSEO({
     title: seoTitle2,
     description: seoDesc2,
-    url: `https://omniconverter.onspace.ai/length/${slug(key)}`
+    url: `https://www.omniconverter.cyou/length/${slug(key)}`
   });
 
   const root = document.getElementById('app-root');
@@ -2089,7 +2089,7 @@ function renderConversionPage(fromKey, toKey) {
   const factor   = convert(1, fromKey, toKey);
   const seoTitle = `Convert ${fromUnit.label} to ${toUnit.label} | ${fromUnit.symbol||fromUnit.label} to ${toUnit.symbol||toUnit.label} Converter | Omni Converter`;
   const seoDesc  = `Instantly convert ${fromUnit.label}${fromUnit.symbol?' ('+fromUnit.symbol+')':''} to ${toUnit.label}${toUnit.symbol?' ('+toUnit.symbol+')':''}. 1 ${fromUnit.label} = ${fmtNum(factor)} ${toUnit.label}. Free online length converter with formula and conversion table.`;
-  const canonUrl = `https://omniconverter.onspace.ai/length/${slug(fromKey)}/to/${slug(toKey)}`;
+  const canonUrl = `https://www.omniconverter.cyou/length/${slug(fromKey)}/to/${slug(toKey)}`;
 
   updateSEO({ title: seoTitle, description: seoDesc, url: canonUrl });
 
@@ -2103,9 +2103,9 @@ function renderConversionPage(fromKey, toKey) {
     "breadcrumb": {
       "@type": "BreadcrumbList",
       "itemListElement": [
-        { "@type": "ListItem", "position": 1, "name": "Omni Converter", "item": "https://omniconverter.onspace.ai/" },
-        { "@type": "ListItem", "position": 2, "name": "Length", "item": "https://omniconverter.onspace.ai/length" },
-        { "@type": "ListItem", "position": 3, "name": fromUnit.label, "item": `https://omniconverter.onspace.ai/length/${slug(fromKey)}` },
+        { "@type": "ListItem", "position": 1, "name": "Omni Converter", "item": "https://www.omniconverter.cyou/" },
+        { "@type": "ListItem", "position": 2, "name": "Length", "item": "https://www.omniconverter.cyou/length" },
+        { "@type": "ListItem", "position": 3, "name": fromUnit.label, "item": `https://www.omniconverter.cyou/length/${slug(fromKey)}` },
         { "@type": "ListItem", "position": 4, "name": `${fromUnit.label} to ${toUnit.label}`, "item": canonUrl }
       ]
     }
