@@ -233,6 +233,22 @@
       background: var(--border-primary);
       border-radius: 2px;
     }
+    @media (max-width: 640px) {
+      #embed-modal .embed-modal-card {
+        max-width: 360px !important;
+        max-height: 78vh !important;
+      }
+
+      #embed-modal .embed-modal-header,
+      #embed-modal .embed-modal-body {
+        padding: 1rem !important;
+      }
+
+      #embed-modal .embed-dimensions-grid {
+        grid-template-columns: 1fr !important;
+        gap: 0.75rem !important;
+      }
+    }
   </style>
 </head>
 <body class="font-sans min-h-screen relative overflow-x-hidden" style="color: var(--text-primary);">
@@ -733,9 +749,9 @@ function createEmbedModal() {
   `;
   
   modal.innerHTML = `
-    <div style="background-color: var(--bg-secondary); border: 1px solid var(--border-primary); border-radius: 0.75rem; width: 100%; max-width: 600px; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 25px rgba(0,0,0,0.3);">
+    <div class="embed-modal-card" style="background-color: var(--bg-secondary); border: 1px solid var(--border-primary); border-radius: 0.75rem; width: 100%; max-width: 540px; max-height: 84vh; overflow-y: auto; box-shadow: 0 20px 25px rgba(0,0,0,0.3);">
       <!-- Header -->
-      <div style="padding: 1.5rem; border-bottom: 1px solid var(--border-secondary); display: flex; align-items: center; justify-content: space-between;">
+      <div class="embed-modal-header" style="padding: 1.25rem; border-bottom: 1px solid var(--border-secondary); display: flex; align-items: center; justify-content: space-between;">
         <h2 style="color: var(--text-primary); font-size: 1.25rem; font-weight: 600; margin: 0;">Embed Converter</h2>
         <button onclick="hideEmbedModal()" style="background: none; border: none; color: var(--text-tertiary); cursor: pointer; font-size: 1.5rem; padding: 0; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;">
           <i class="fa-solid fa-xmark"></i>
@@ -743,7 +759,7 @@ function createEmbedModal() {
       </div>
       
       <!-- Content -->
-      <div style="padding: 1.5rem;">
+      <div class="embed-modal-body" style="padding: 1.25rem;">
         <!-- Theme Toggle -->
         <div style="margin-bottom: 1.5rem;">
           <label style="display: block; color: var(--text-secondary); font-size: 0.875rem; font-weight: 500; margin-bottom: 0.75rem;">Theme</label>
@@ -758,7 +774,7 @@ function createEmbedModal() {
         </div>
 
         <!-- Dimensions -->
-        <div style="margin-bottom: 1.5rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+        <div class="embed-dimensions-grid" style="margin-bottom: 1.5rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
           <div>
             <label style="display: block; color: var(--text-secondary); font-size: 0.875rem; font-weight: 500; margin-bottom: 0.5rem;">Width (px)</label>
             <input id="embed-width" type="number" value="500" min="300" max="1200" style="width: 100%; padding: 0.5rem; border: 1px solid var(--border-primary); border-radius: 0.5rem; background-color: var(--input-bg); color: var(--text-primary); box-sizing: border-box;" oninput="updateEmbedCode(document.getElementById('embed-modal').dataset.category)" />
@@ -825,7 +841,7 @@ function updateEmbedCode(category) {
   const height = document.getElementById('embed-height').value || '600';
   const theme = Array.from(document.querySelectorAll('.embed-theme-btn')).find(btn => btn.style.backgroundColor === '#6366f1')?.dataset.theme || 'dark';
   
-  const code = `<iframe src="https://www.omniconverter.xyz/#/embed/${category}" width="${width}" height="${height}" frameborder="0" style="border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);"></iframe>`;
+  const code = `<iframe src="https://www.omniconverter.cyou/#/embed/${category}" width="${width}" height="${height}" frameborder="0" style="border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);"></iframe>`;
   
   const codeArea = document.getElementById('embed-code');
   if (codeArea) codeArea.value = code;
@@ -839,7 +855,7 @@ function updateEmbedPreview(category) {
   if (preview) {
     preview.style.width = Math.min(parseInt(width), 600) + 'px';
     preview.style.height = Math.min(parseInt(height), 500) + 'px';
-    preview.src = `https://www.omniconverter.xyz/#/embed/${category}`;
+    preview.src = `https://www.omniconverter.cyou/#/embed/${category}`;
   }
 }
 
@@ -950,7 +966,7 @@ function renderEmbedPage(category) {
 
       <!-- Attribution Footer -->
       <div style="border-top: 1px solid var(--border-secondary); padding: 0.75rem 1.5rem; background-color: var(--bg-secondary); text-align: center;">
-        <a href="https://www.omniconverter.xyz" target="_blank" rel="noopener noreferrer" style="color: #6366f1; text-decoration: none; font-size: 0.875rem; font-weight: 500; display: inline-flex; align-items: center; gap: 0.5rem; transition: color 0.2s;">
+        <a href="https://www.omniconverter.cyou" target="_blank" rel="noopener noreferrer" style="color: #6366f1; text-decoration: none; font-size: 0.875rem; font-weight: 500; display: inline-flex; align-items: center; gap: 0.5rem; transition: color 0.2s;">
           <i class="fa-solid fa-link" style="font-size: 0.75rem;"></i>
           Powered by Omni Converter
         </a>
