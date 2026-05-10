@@ -234,6 +234,25 @@
     html.light [class*="text-indigo-400"] { color: #4338ca !important; }
     html.light [class*="text-emerald-400"] { color: #047857 !important; }
 
+
+
+    .hero-section {
+      transition: background 0.3s ease, border-color 0.3s ease;
+    }
+
+    html.light .hero-section {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(242, 245, 255, 0.95), rgba(236, 240, 253, 0.98));
+      border-color: rgba(99, 102, 241, 0.16) !important;
+    }
+
+    html.light .hero-body-copy {
+      color: #4a4a6a !important;
+    }
+
+    html.light .hero-popular-label {
+      color: #5b5f84 !important;
+    }
+
     /* Placeholder text color */
     :root ::placeholder { color: var(--text-tertiary); }
     :root input::placeholder { color: var(--text-tertiary); }
@@ -1141,7 +1160,7 @@ function renderLandingPage() {
     <div class="page-fade">
 
       <!-- HERO -->
-      <section class="relative rounded-3xl border border-white/8 bg-gradient-to-br from-dark-800/80 via-dark-700/60 to-dark-800/80 backdrop-blur-sm overflow-hidden mb-8 p-6 sm:p-10 lg:p-14">
+      <section class="hero-section relative rounded-3xl border border-white/8 bg-gradient-to-br from-dark-800/80 via-dark-700/60 to-dark-800/80 backdrop-blur-sm overflow-hidden mb-8 p-6 sm:p-10 lg:p-14">
         <div class="absolute -top-20 -left-20 w-80 h-80 bg-indigo-600/20 rounded-full blur-3xl pointer-events-none"></div>
         <div class="absolute -bottom-16 -right-16 w-64 h-64 bg-violet-600/15 rounded-full blur-3xl pointer-events-none"></div>
         <div class="relative">
@@ -1152,7 +1171,7 @@ function renderLandingPage() {
           <h1 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-none mb-4">
             Convert Any Unit,<span class="block bg-gradient-to-r from-indigo-400 to-violet-400 bg-clip-text text-transparent">Instantly.</span>
           </h1>
-          <p class="text-gray-400 text-base sm:text-lg leading-relaxed max-w-xl mb-8">The fastest, most comprehensive unit converter. No ads, no sign-up, no nonsense &mdash; just accurate conversions across every category.</p>
+          <p class="hero-body-copy text-gray-400 text-base sm:text-lg leading-relaxed max-w-xl mb-8">The fastest, most comprehensive unit converter. No ads, no sign-up, no nonsense &mdash; just accurate conversions across every category.</p>
 
           <!-- SMART SEARCH ENGINE -->
           <div class="relative max-w-xl" id="hero-search-wrap">
@@ -1174,7 +1193,7 @@ function renderLandingPage() {
           </div>
 
           <div class="flex flex-wrap items-center gap-2 mt-5">
-            <span class="text-xs text-gray-600">Popular:</span>
+            <span class="hero-popular-label text-xs text-gray-600">Popular:</span>
             <button onclick="navigate('/length/meter/to/foot')" class="text-xs px-2.5 py-1 rounded-lg bg-dark-800/80 border border-white/8 text-gray-500 hover:text-indigo-400 hover:border-indigo-500/30 transition-all">Meter &rarr; Foot</button>
             <button onclick="navigate('/length/kilometer/to/mile')" class="text-xs px-2.5 py-1 rounded-lg bg-dark-800/80 border border-white/8 text-gray-500 hover:text-indigo-400 hover:border-indigo-500/30 transition-all">Kilometer &rarr; Mile</button>
             <button onclick="navigate('/length/centimeter/to/inch')" class="text-xs px-2.5 py-1 rounded-lg bg-dark-800/80 border border-white/8 text-gray-500 hover:text-indigo-400 hover:border-indigo-500/30 transition-all">Centimeter &rarr; Inch</button>
