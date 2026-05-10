@@ -205,6 +205,9 @@
     html.light .text-gray-600,
     html.light .text-gray-700 { color: #7a7a99; }
 
+    /* Preserve white foreground for specific marketing CTA/icon elements in light mode */
+    html.light .light-keep-white { color: #ffffff !important; }
+
     /* Border overrides */
     :root [class*="border-white"] { border-color: var(--border-primary) !important; }
     :root .border-gray-600 { border-color: var(--border-secondary) !important; }
@@ -1252,7 +1255,7 @@ function renderLandingPage() {
           <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-xs font-semibold text-emerald-400 uppercase tracking-widest mb-4">The Solution</div>
           <h2 class="text-xl sm:text-2xl font-bold text-white mb-3">Omni Converter &mdash; one tool for every unit</h2>
           <p class="text-gray-500 text-sm sm:text-base leading-relaxed mb-6">Every unit gets its own dedicated page with history, formula, and a full conversion table. Search in natural language. Get answers instantly. No clutter, no cost.</p>
-          <button onclick="navigate('/length')" class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-semibold text-sm hover:opacity-90 hover:scale-[1.02] transition-all shadow-glow">
+          <button onclick="navigate('/length')" class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 text-white light-keep-white font-semibold text-sm hover:opacity-90 hover:scale-[1.02] transition-all shadow-glow">
             <i class="fa-solid fa-arrows-rotate"></i> Start Converting
           </button>
         </div>
@@ -1292,17 +1295,17 @@ function renderLandingPage() {
         <h2 class="text-lg sm:text-xl font-bold text-white text-center mb-8">How Omni Converter Works</h2>
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
           <div class="flex flex-col items-center">
-            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-600 to-indigo-500 flex items-center justify-center mb-4 shadow-glow-sm"><i class="fa-solid fa-magnifying-glass text-white text-lg"></i></div>
+            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-600 to-indigo-500 flex items-center justify-center mb-4 shadow-glow-sm"><i class="fa-solid fa-magnifying-glass text-white light-keep-white text-lg"></i></div>
             <p class="text-base font-bold text-white mb-1">Search or Browse</p>
             <p class="text-xs text-gray-500 leading-relaxed max-w-44 mx-auto">Type any unit name or use the category grid to find your converter instantly.</p>
           </div>
           <div class="flex flex-col items-center">
-            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-violet-600 to-violet-500 flex items-center justify-center mb-4 shadow-glow-sm"><i class="fa-solid fa-keyboard text-white text-lg"></i></div>
+            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-violet-600 to-violet-500 flex items-center justify-center mb-4 shadow-glow-sm"><i class="fa-solid fa-keyboard text-white light-keep-white text-lg"></i></div>
             <p class="text-base font-bold text-white mb-1">Enter Your Value</p>
             <p class="text-xs text-gray-500 leading-relaxed max-w-44 mx-auto">Type in any number &mdash; the result updates in real time with no button to press.</p>
           </div>
           <div class="flex flex-col items-center">
-            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-600 to-emerald-500 flex items-center justify-center mb-4 shadow-glow-sm"><i class="fa-solid fa-copy text-white text-lg"></i></div>
+            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-600 to-emerald-500 flex items-center justify-center mb-4 shadow-glow-sm"><i class="fa-solid fa-copy text-white light-keep-white text-lg"></i></div>
             <p class="text-base font-bold text-white mb-1">Copy &amp; Use</p>
             <p class="text-xs text-gray-500 leading-relaxed max-w-44 mx-auto">Copy the result to clipboard with one click and use it wherever you need.</p>
           </div>
