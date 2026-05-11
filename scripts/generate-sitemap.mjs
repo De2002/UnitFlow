@@ -8,7 +8,7 @@ const BASE_URL = 'https://www.omniconverter.cyou';
 
 const CATEGORY_CONFIG = [
   { slug: 'length', unitsConstName: 'LENGTH_UNITS', categoryPriority: '0.9', conversionPriority: '0.8' },
-  { slug: 'area', categoryPriority: '0.7' },
+  { slug: 'area', unitsConstName: 'AREA_UNITS', categoryPriority: '0.7', conversionPriority: '0.7' },
   { slug: 'volume', categoryPriority: '0.7' },
   { slug: 'weight', categoryPriority: '0.7' },
   { slug: 'temperature', categoryPriority: '0.7' },
