@@ -361,7 +361,7 @@
           <button onclick="navigate('/area');closeSidebar()" data-cat="area"
             class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-xl border border-transparent text-left transition-all duration-200 group">
             <span class="nav-icon w-8 h-8 rounded-lg bg-indigo-500/15 flex items-center justify-center text-indigo-400"><i class="fa-solid fa-vector-square text-xs"></i></span>
-            <div class="flex-1 min-w-0"><p class="nav-label text-sm font-medium text-gray-300">Area</p><p class="text-xs text-gray-600">120+ units</p></div>
+            <div class="flex-1 min-w-0"><p class="nav-label text-sm font-medium text-gray-300">Area</p><p class="text-xs text-gray-600">40+ units</p></div>
             <i class="fa-solid fa-chevron-right text-xs text-indigo-400/70"></i>
           </button>
 
@@ -590,45 +590,50 @@ const LENGTH_UNITS = [
 
 
 const AREA_UNITS = [
-  { key:'square_meter', label:'Square Meter', symbol:'m^2', factor:1 },
-  { key:'square_kilometer', label:'Square Kilometer', symbol:'km^2', factor:1000000 },
-  { key:'square_centimeter', label:'Square Centimeter', symbol:'cm^2', factor:0.0001 },
-  { key:'square_millimeter', label:'Square Millimeter', symbol:'mm^2', factor:1.0e-6 },
-  { key:'square_micrometer', label:'Square Micrometer', symbol:'µm^2', factor:1.0e-12 },
-  { key:'hectare', label:'Hectare', symbol:'ha', factor:10000 },
-  { key:'acre', label:'Acre', symbol:'ac', factor:4046.8564224 },
-  { key:'square_mile', label:'Square Mile', symbol:'mi^2', factor:2589988.110336 },
-  { key:'square_yard', label:'Square Yard', symbol:'yd^2', factor:0.83612736 },
-  { key:'square_foot', label:'Square Foot', symbol:'ft^2', factor:0.09290304 },
-  { key:'square_inch', label:'Square Inch', symbol:'in^2', factor:0.00064516 },
-  { key:'square_hectometer', label:'Square Hectometer', symbol:'hm^2', factor:10000 },
-  { key:'square_dekameter', label:'Square Dekameter', symbol:'dam^2', factor:100 },
-  { key:'square_decimeter', label:'Square Decimeter', symbol:'dm^2', factor:0.01 },
-  { key:'square_nanometer', label:'Square Nanometer', symbol:'nm^2', factor:1.0e-18 },
-  { key:'are', label:'Are', symbol:'a', factor:100 },
-  { key:'barn', label:'Barn', symbol:'b', factor:1.0e-28 },
-  { key:'square_mile_us_survey', label:'Square Mile (US Survey)', symbol:'', factor:2589998.4703195 },
-  { key:'square_foot_us_survey', label:'Square Foot (US Survey)', symbol:'', factor:0.0929034116 },
-  { key:'circular_inch', label:'Circular Inch', symbol:'', factor:0.0005067075 },
-  { key:'township', label:'Township', symbol:'', factor:93239571.972096 },
-  { key:'section', label:'Section', symbol:'', factor:2589988.110336 },
-  { key:'acre_us_survey', label:'Acre (US Survey)', symbol:'ac', factor:4046.8726098743 },
-  { key:'rood', label:'Rood', symbol:'', factor:1011.7141056 },
-  { key:'square_chain', label:'Square Chain', symbol:'ch^2', factor:404.68564224 },
-  { key:'square_rod', label:'Square Rod', symbol:'', factor:25.29285264 },
-  { key:'square_rod_us_survey', label:'Square Rod (US Survey)', symbol:'', factor:25.2929538117 },
-  { key:'square_perch', label:'Square Perch', symbol:'', factor:25.29285264 },
-  { key:'square_pole', label:'Square Pole', symbol:'', factor:25.29285264 },
-  { key:'square_mil', label:'Square Mil', symbol:'mil^2', factor:6.4516e-10 },
-  { key:'circular_mil', label:'Circular Mil', symbol:'', factor:5.067074790975e-10 },
-  { key:'homestead', label:'Homestead', symbol:'', factor:647497.027584 },
-  { key:'sabin', label:'Sabin', symbol:'', factor:0.09290304 },
-  { key:'arpent_area', label:'Arpent', symbol:'', factor:3418.8929236669 },
-  { key:'cuerda', label:'Cuerda', symbol:'', factor:3930.395625 },
-  { key:'plaza', label:'Plaza', symbol:'', factor:6400 },
-  { key:'varas_castellanas_cuad', label:'Varas Castellanas Cuad', symbol:'', factor:0.698737 },
-  { key:'varas_conuqueras_cuad', label:'Varas Conuqueras Cuad', symbol:'', factor:6.288633 },
-  { key:'electron_cross_section', label:'Electron Cross Section', symbol:'', factor:6.6524615999999e-29 },
+  // METRIC
+  { key:'square_meter',          label:'Square Meter',             symbol:'m²',   factor:1,                   group:'metric',    altNames:['sq m','sq meter'] },
+  { key:'square_kilometer',      label:'Square Kilometer',         symbol:'km²',  factor:1e6,                 group:'metric',    altNames:['sq km'] },
+  { key:'square_centimeter',     label:'Square Centimeter',        symbol:'cm²',  factor:0.0001,              group:'metric',    altNames:['sq cm'] },
+  { key:'square_millimeter',     label:'Square Millimeter',        symbol:'mm²',  factor:1e-6,                group:'metric',    altNames:['sq mm'] },
+  { key:'square_micrometer',     label:'Square Micrometer',        symbol:'µm²',  factor:1e-12,               group:'metric',    altNames:['sq µm'] },
+  { key:'square_hectometer',     label:'Square Hectometer',        symbol:'hm²',  factor:10000,               group:'metric',    altNames:['sq hm'] },
+  { key:'square_dekameter',      label:'Square Dekameter',         symbol:'dam²', factor:100,                 group:'metric',    altNames:['sq dam','square decameter'] },
+  { key:'square_decimeter',      label:'Square Decimeter',         symbol:'dm²',  factor:0.01,                group:'metric',    altNames:['sq dm'] },
+  { key:'square_nanometer',      label:'Square Nanometer',         symbol:'nm²',  factor:1e-18,               group:'metric',    altNames:['sq nm'] },
+  { key:'are',                   label:'Are',                      symbol:'a',    factor:100,                 group:'metric',    altNames:[] },
+  { key:'hectare',               label:'Hectare',                  symbol:'ha',   factor:10000,               group:'metric',    altNames:[] },
+  // IMPERIAL
+  { key:'acre',                  label:'Acre',                     symbol:'ac',   factor:4046.8564224,        group:'imperial',  altNames:['international acre'] },
+  { key:'square_mile',           label:'Square Mile',              symbol:'mi²',  factor:2589988.110336,      group:'imperial',  altNames:['sq mi'] },
+  { key:'square_yard',           label:'Square Yard',              symbol:'yd²',  factor:0.83612736,          group:'imperial',  altNames:['sq yd'] },
+  { key:'square_foot',           label:'Square Foot',              symbol:'ft²',  factor:0.09290304,          group:'imperial',  altNames:['sq ft','square feet'] },
+  { key:'square_inch',           label:'Square Inch',              symbol:'in²',  factor:0.00064516,          group:'imperial',  altNames:['sq in'] },
+  { key:'square_rod',            label:'Square Rod',               symbol:'rd²',  factor:25.29285264,         group:'imperial',  altNames:['sq rod'] },
+  { key:'square_perch',          label:'Square Perch',             symbol:'',     factor:25.29285264,         group:'imperial',  altNames:[] },
+  { key:'square_pole',           label:'Square Pole',              symbol:'',     factor:25.29285264,         group:'imperial',  altNames:[] },
+  { key:'square_chain',          label:'Square Chain',             symbol:'ch²',  factor:404.68564224,        group:'imperial',  altNames:['sq ch'] },
+  { key:'square_mil',            label:'Square Mil',               symbol:'mil²', factor:6.4516e-10,          group:'imperial',  altNames:['sq mil'] },
+  { key:'circular_mil',          label:'Circular Mil',             symbol:'',     factor:5.067074790975e-10,  group:'imperial',  altNames:['circ mil'] },
+  { key:'circular_inch',         label:'Circular Inch',            symbol:'',     factor:0.0005067075,        group:'imperial',  altNames:[] },
+  { key:'rood',                  label:'Rood',                     symbol:'',     factor:1011.7141056,        group:'imperial',  altNames:[] },
+  { key:'homestead',             label:'Homestead',                symbol:'',     factor:647497.027584,        group:'imperial',  altNames:[] },
+  { key:'sabin',                 label:'Sabin',                    symbol:'',     factor:0.09290304,          group:'imperial',  altNames:[] },
+  // US SURVEY
+  { key:'square_mile_us_survey', label:'Square Mile (US Survey)',  symbol:'',     factor:2589998.4703195,     group:'us_survey', altNames:[] },
+  { key:'square_foot_us_survey', label:'Square Foot (US Survey)',  symbol:'',     factor:0.0929034116,        group:'us_survey', altNames:[] },
+  { key:'acre_us_survey',        label:'Acre (US Survey)',         symbol:'ac',   factor:4046.8726098743,     group:'us_survey', altNames:['US survey acre'] },
+  { key:'square_rod_us_survey',  label:'Square Rod (US Survey)',   symbol:'',     factor:25.2929538117,       group:'us_survey', altNames:[] },
+  // HISTORICAL
+  { key:'township',              label:'Township',                 symbol:'',     factor:93239571.972096,     group:'historical',altNames:[] },
+  { key:'section',               label:'Section',                  symbol:'',     factor:2589988.110336,      group:'historical',altNames:[] },
+  { key:'arpent_area',           label:'Arpent',                   symbol:'',     factor:3418.8929236669,     group:'historical',altNames:[] },
+  { key:'cuerda',                label:'Cuerda',                   symbol:'',     factor:3930.395625,         group:'historical',altNames:[] },
+  { key:'plaza',                 label:'Plaza',                    symbol:'',     factor:6400,                group:'historical',altNames:[] },
+  { key:'varas_castellanas_cuad',label:'Varas Castellanas Cuad',   symbol:'',     factor:0.698737,            group:'historical',altNames:[] },
+  { key:'varas_conuqueras_cuad', label:'Varas Conuqueras Cuad',    symbol:'',     factor:6.288633,            group:'historical',altNames:[] },
+  // SCIENTIFIC
+  { key:'barn',                  label:'Barn',                     symbol:'b',    factor:1e-28,               group:'scientific',altNames:[] },
+  { key:'electron_cross_section',label:'Electron Cross Section',   symbol:'',     factor:6.6524615999999e-29, group:'scientific',altNames:['Thomson cross section'] },
 ];
 // ================================================================
 //  UNIT DESCRIPTIONS  (SEO content for each unit page)
@@ -728,6 +733,60 @@ const UNIT_DESC = {
   fingerbreadth: { short: 'The width of one finger; ~1.905 cm; the smallest ancient body unit.', long: 'The fingerbreadth (also called a digit) equals approximately 0.01905 meters (about 3/4 of an inch). It was the smallest common unit in ancient measurement systems across Egypt, Greece, Rome, and the Near East. 4 fingerbreadths = 1 handbreadth; 24 fingerbreadths = 1 cubit in most systems.' },
 };
 
+// ================================================================
+//  AREA UNIT DESCRIPTIONS
+// ================================================================
+const AREA_UNIT_DESC = {
+  square_meter:          { short:'The SI base unit of area; 1 m × 1 m.', long:'The square meter (symbol: m²) is the SI unit of area. It is the standard unit for measuring land, floor space, and surface areas in scientific and everyday contexts worldwide.' },
+  square_kilometer:      { short:'One million square meters; used for geographic areas.', long:'The square kilometer (symbol: km²) equals one million square meters. The standard unit for measuring cities, countries, and large geographic features. 1 km² ≈ 0.386 square miles.' },
+  square_centimeter:     { short:'One ten-thousandth of a square meter; common in science.', long:'The square centimeter (symbol: cm²) equals 0.0001 square meters. Widely used in science, medicine, and engineering for small surface areas. 1 cm² = 0.155 square inches.' },
+  square_millimeter:     { short:'One millionth of a square meter; used in precision work.', long:'The square millimeter (symbol: mm²) equals 10⁻⁶ square meters. Used in precision engineering, material science, and medical imaging.' },
+  square_micrometer:     { short:'10⁻¹² m²; used in microscopy and nanotechnology.', long:'The square micrometer (symbol: µm²) equals 10⁻¹² square meters. Used in microscopy, semiconductor manufacturing, and cell biology.' },
+  square_hectometer:     { short:'10,000 m²; identical to one hectare.', long:'The square hectometer (symbol: hm²) equals 10,000 square meters and is numerically identical to the hectare. It appears in the complete metric system as the square of the hectometer.' },
+  square_dekameter:      { short:'100 m²; equals one are.', long:'The square dekameter (symbol: dam²) equals 100 square meters, equal to one are. It is rarely encountered in everyday use but exists in the full metric system.' },
+  square_decimeter:      { short:'0.01 m²; useful in intermediate calculations.', long:'The square decimeter (symbol: dm²) equals 0.01 square meters (10 cm × 10 cm). Occasionally used in cooking and tile sizing in some European contexts.' },
+  square_nanometer:      { short:'10⁻¹⁸ m²; the scale of molecular surfaces.', long:'The square nanometer (symbol: nm²) equals 10⁻¹⁸ square meters. Used in nanotechnology, surface chemistry, and materials science to describe molecular-scale surface areas.' },
+  are:                   { short:'100 m²; an older metric unit of area.', long:'The are (symbol: a) equals 100 square meters. A metric unit primarily used for land measurement in some European countries. One hectare equals 100 ares.' },
+  barn:                  { short:'10⁻²⁸ m²; the standard unit for nuclear cross-sections.', long:'The barn (symbol: b) equals 10⁻²⁸ square meters. Coined during the Manhattan Project for uranium nuclei cross-sections. Now the standard unit in nuclear and particle physics.' },
+  hectare:               { short:'10,000 m²; the standard global unit for land area.', long:'The hectare (symbol: ha) equals 10,000 square meters (100 m × 100 m). The most widely used unit of land area globally. A standard football pitch is about 0.7 hectares. 1 hectare ≈ 2.471 acres.' },
+  acre:                  { short:'4,046.86 m²; the standard US/UK land area unit.', long:'The acre equals exactly 4,046.8564224 square meters — originally the area of 1 chain × 1 furlong (66 × 660 feet). Standard unit in the US, UK, and several other countries. 640 acres = 1 square mile.' },
+  square_mile:           { short:'2,589,988 m²; used for large geographic areas.', long:'The square mile (symbol: mi²) equals 2,589,988.110336 square meters. Used in the US and UK for large geographic extents such as cities and counties. 1 mi² = 640 acres.' },
+  square_yard:           { short:'0.836 m²; used in flooring, fabric, and construction.', long:'The square yard (symbol: yd²) equals 0.83612736 square meters (3 ft × 3 ft). Commonly used in the US and UK for flooring, carpeting, and fabric.' },
+  square_foot:           { short:'0.0929 m²; the most common imperial area unit.', long:'The square foot (symbol: ft²) equals 0.09290304 square meters. The primary unit for floor space and real estate in the US, Canada, and UK.' },
+  square_inch:           { short:'6.4516 cm²; used in engineering and manufacturing.', long:'The square inch (symbol: in²) equals 0.00064516 square meters. Used in engineering, manufacturing, and typography. Pressures in psi reference this unit.' },
+  square_rod:            { short:'25.29 m²; a traditional surveying unit equal to 1 rod².', long:'The square rod equals 25.29285264 square meters (16.5 ft × 16.5 ft). Used in US and UK land surveys. 160 square rods = 1 acre. Also called square perch or square pole.' },
+  square_perch:          { short:'Same as square rod; 25.29 m².', long:'The square perch equals exactly 25.29285264 square meters, identical to the square rod and square pole. Used in medieval and early modern European land measurement.' },
+  square_pole:           { short:'Same as square rod; 25.29 m².', long:'The square pole equals 25.29285264 square meters, identical to the square rod and square perch. All three names refer to the same unit.' },
+  square_chain:          { short:"404.69 m²; one-tenth of an acre (Gunter's chain squared).", long:"The square chain (symbol: ch²) equals 404.68564224 square meters. 10 square chains = 1 acre. The fundamental unit of the US Public Land Survey System." },
+  square_mil:            { short:'6.45 × 10⁻¹⁰ m²; one thousandth of an inch, squared.', long:'The square mil (symbol: mil²) equals 6.4516 × 10⁻¹⁰ square meters. A mil is one thousandth of an inch. Used in electronics for small cross-sectional areas.' },
+  circular_mil:          { short:'5.07 × 10⁻¹⁰ m²; standard for electrical wire sizing.', long:'The circular mil equals π/4 × (0.001 inch)² ≈ 5.067 × 10⁻¹⁰ m² — the area of a circle with a 1 mil diameter. Standard US unit for electrical conductor cross-sections.' },
+  circular_inch:         { short:'5.07 × 10⁻⁴ m²; the area of a 1-inch diameter circle.', long:'The circular inch equals π/4 square inches ≈ 0.0005067075 square meters. Used in engineering for pipe and shaft cross-sections.' },
+  rood:                  { short:'1,011.7 m²; one quarter of an acre.', long:'The rood equals 1,011.7141056 square meters — exactly one quarter of an acre. An old English unit still occasionally encountered in historic land documents.' },
+  homestead:             { short:'647,497 m²; 160 acres; a US land grant unit.', long:'The homestead equals 647,497.027584 square meters (160 acres). It corresponds to the land granted by the US Homestead Act of 1862 to settlers.' },
+  sabin:                 { short:'0.0929 m²; one square foot; used in architectural acoustics.', long:'The sabin equals one square foot (0.09290304 m²). Named after Wallace Clement Sabine, pioneer of architectural acoustics. Represents absorption equivalent to 1 sq ft of perfectly absorbing surface.' },
+  square_mile_us_survey: { short:'2,589,998.47 m²; slightly larger than the standard square mile.', long:'The US survey square mile equals 2,589,998.4703195 square meters, derived from the US survey foot. Used in official US land surveys and PLSS documentation.' },
+  square_foot_us_survey: { short:'0.09290341 m²; slightly larger than the standard square foot.', long:'The US survey square foot equals approximately 0.0929034116 square meters, marginally larger than the international square foot. It was the legal standard for US land surveys until 2023.' },
+  acre_us_survey:        { short:'4,046.87 m²; the US land survey acre.', long:'The US survey acre equals approximately 4,046.8726098743 square meters, very slightly larger than the international acre. Derived from the US survey foot for historical American land surveys.' },
+  square_rod_us_survey:  { short:'25.2929538 m²; based on the US survey foot.', long:'The US survey square rod equals approximately 25.2929538117 square meters, slightly larger than the international square rod. Appears in historical US PLSS documents.' },
+  township:              { short:'93,239,572 m²; 36 square miles; a US land division.', long:'The township equals 93,239,571.972096 square meters (approximately 36 square miles = 23,040 acres). In the US PLSS, a township is a 6-mile × 6-mile square subdivided into 36 sections.' },
+  section:               { short:'2,589,988 m²; 1 square mile; 640 acres.', long:'The section equals 2,589,988.110336 square meters (1 square mile = 640 acres). In the US PLSS, land is divided into townships of 36 sections, each 1 mile × 1 mile.' },
+  arpent_area:           { short:'3,418.89 m²; a French land area unit used in Quebec.', long:'The arpent (area) equals approximately 3,418.8929236669 square meters. A French land area unit historically used in France, Quebec, Louisiana, and other French colonial territories.' },
+  cuerda:                { short:'3,930.4 m²; a traditional Spanish/Latin American land unit.', long:'The cuerda equals 3,930.395625 square meters. A traditional Spanish unit of area used primarily in Puerto Rico and other Spanish-speaking countries for land measurement.' },
+  plaza:                 { short:'6,400 m²; 80 m × 80 m; a traditional Spanish area unit.', long:'The plaza equals 6,400 square meters (80 m × 80 m). A traditional Spanish unit of area named for its use in measuring town squares and urban lots.' },
+  varas_castellanas_cuad:{ short:'0.6987 m²; the square vara castellana.', long:'The vara castellana cuadrada equals approximately 0.698737 square meters — the square of the vara castellana (≈ 0.8352 m). Appears in historical Spanish land grants throughout the Americas.' },
+  varas_conuqueras_cuad: { short:'6.2886 m²; a Venezuelan area unit.', long:'The vara conuquera cuadrada equals approximately 6.288633 square meters — the square of the vara conuquera (≈ 2.505 m). Used historically to measure small agricultural plots in Venezuela.' },
+  electron_cross_section:{ short:'~6.65 × 10⁻²⁹ m²; the Thomson scattering cross-section.', long:'The electron cross section equals approximately 6.6524615999999 × 10⁻²⁹ square meters — the Thomson scattering cross-section (σₜ = 8π/3 × rₑ²). Used in particle physics.' },
+};
+
+// Area Group metadata
+const AREA_GROUP_META = {
+  metric:    { label:'Metric',     color:'bg-blue-500/15 text-blue-400',    icon:'fa-flask' },
+  imperial:  { label:'Imperial',   color:'bg-amber-500/15 text-amber-400',  icon:'fa-flag' },
+  us_survey: { label:'US Survey',  color:'bg-orange-500/15 text-orange-400',icon:'fa-map' },
+  historical:{ label:'Historical', color:'bg-emerald-500/15 text-emerald-400',icon:'fa-scroll' },
+  scientific:{ label:'Scientific', color:'bg-rose-500/15 text-rose-400',    icon:'fa-atom' },
+};
+
 // Group metadata
 const GROUP_META = {
   metric:     { label:'Metric',       color:'bg-blue-500/15 text-blue-400',    icon:'fa-flask' },
@@ -748,6 +807,22 @@ function convert(value, fromKey, toKey) {
   const to   = getUnit(toKey);
   if (!from || !to || !isFinite(value)) return NaN;
   return (value * from.factor) / to.factor;
+}
+
+function getAreaUnit(key) { return AREA_UNITS.find(u => u.key === key); }
+
+function convertArea(value, fromKey, toKey) {
+  const from = getAreaUnit(fromKey);
+  const to   = getAreaUnit(toKey);
+  if (!from || !to || !isFinite(value)) return NaN;
+  return (value * from.factor) / to.factor;
+}
+
+function updateNavActive(cat) {
+  document.querySelectorAll('.nav-item[data-cat]').forEach(btn => {
+    if (btn.dataset.cat === cat) { btn.classList.add('active'); }
+    else { btn.classList.remove('active'); }
+  });
 }
 
 function fmtNum(n) {
@@ -1167,6 +1242,11 @@ function getRoute() {
     return { view: 'conv', fromKey: keyFromSlug(parts[1]), toKey: keyFromSlug(parts[3]) };
   if (parts[0] === 'length' && parts[1]) return { view: 'unit', category: 'length', key: keyFromSlug(parts[1]) };
   if (parts[0] === 'length') return { view: 'length' };
+  // Area routes
+  if (parts[0] === 'area' && parts[1] && parts[2] === 'to' && parts[3])
+    return { view: 'area_conv', fromKey: keyFromSlug(parts[1]), toKey: keyFromSlug(parts[3]) };
+  if (parts[0] === 'area' && parts[1]) return { view: 'area_unit', key: keyFromSlug(parts[1]) };
+  if (parts[0] === 'area') return { view: 'area' };
   return { view: 'landing' };
 }
 
@@ -1188,6 +1268,10 @@ function router() {
     if (unit) { renderUnitPage(route.key); return; }
   }
   if (route.view === 'length') { renderLengthPage(); return; }
+  // Area routes
+  if (route.view === 'area_conv') { const f=getAreaUnit(route.fromKey),t=getAreaUnit(route.toKey); if(f&&t){renderAreaConversionPage(route.fromKey,route.toKey);return;} }
+  if (route.view === 'area_unit') { if(getAreaUnit(route.key)){renderAreaUnitPage(route.key);return;} }
+  if (route.view === 'area') { renderAreaPage(); return; }
   renderLandingPage();
 }
 
@@ -1197,6 +1281,7 @@ window.addEventListener('popstate', router);
 //  LANDING PAGE
 // ================================================================
 function renderLandingPage() {
+  updateNavActive('');
   updateSEO({
     title: 'Omni Converter — Free Online Unit Converter',
     description: 'Instantly convert between 90+ length units and growing. Metric, imperial, astronomical, historical — fast, accurate, free.',
@@ -1316,7 +1401,7 @@ function renderLandingPage() {
             <p class="text-sm font-semibold text-white mb-0.5">Length</p>
             <p class="text-xs text-indigo-400">90+ units active</p>
           </button>
-          <button onclick="navigate('/area')" class="group rounded-2xl border border-indigo-500/20 bg-gradient-to-br from-indigo-600/10 to-violet-600/5 p-4 sm:p-5 text-left hover:border-indigo-500/50 hover:scale-[1.02] transition-all"><div class="w-10 h-10 rounded-xl bg-indigo-500/15 border border-indigo-500/25 flex items-center justify-center mb-3 group-hover:bg-indigo-500/25 transition-colors"><i class="fa-solid fa-vector-square text-indigo-400"></i></div><p class="text-sm font-semibold text-white mb-0.5">Area</p><p class="text-xs text-indigo-400">120+ units active</p></button>
+          <button onclick="navigate('/area')" class="group rounded-2xl border border-indigo-500/20 bg-gradient-to-br from-indigo-600/10 to-violet-600/5 p-4 sm:p-5 text-left hover:border-indigo-500/50 hover:scale-[1.02] transition-all"><div class="w-10 h-10 rounded-xl bg-indigo-500/15 border border-indigo-500/25 flex items-center justify-center mb-3 group-hover:bg-indigo-500/25 transition-colors"><i class="fa-solid fa-vector-square text-indigo-400"></i></div><p class="text-sm font-semibold text-white mb-0.5">Area</p><p class="text-xs text-indigo-400">40+ units active</p></button>
           <div class="rounded-2xl border border-white/5 bg-dark-800/30 p-4 sm:p-5 opacity-50 cursor-not-allowed"><div class="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center mb-3"><i class="fa-solid fa-cube text-gray-600"></i></div><p class="text-sm font-medium text-gray-500 mb-0.5">Volume</p><p class="text-xs text-gray-700">Coming soon</p></div>
           <div class="rounded-2xl border border-white/5 bg-dark-800/30 p-4 sm:p-5 opacity-50 cursor-not-allowed"><div class="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center mb-3"><i class="fa-solid fa-weight-hanging text-gray-600"></i></div><p class="text-sm font-medium text-gray-500 mb-0.5">Weight</p><p class="text-xs text-gray-700">Coming soon</p></div>
           <div class="rounded-2xl border border-white/5 bg-dark-800/30 p-4 sm:p-5 opacity-50 cursor-not-allowed"><div class="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center mb-3"><i class="fa-solid fa-temperature-half text-gray-600"></i></div><p class="text-sm font-medium text-gray-500 mb-0.5">Temperature</p><p class="text-xs text-gray-700">Coming soon</p></div>
@@ -1435,9 +1520,13 @@ function renderLandingPage() {
 let homeFromKey = 'meter';
 let homeToKey   = 'kilometer';
 let homeGroup   = 'all';
+let areaFromKey = 'square_meter';
+let areaToKey   = 'hectare';
+let areaGroup   = 'all';
 let homeTableQ  = '';
 
 function renderLengthPage() {
+  updateNavActive('length');
   updateSEO({
     title: 'Length Converter — 90+ Units | Omni Converter',
     description: 'Free online length converter. Convert between 90+ units including metric, imperial, astronomical, and historical units. Instant results.',
@@ -1789,6 +1878,531 @@ function homeInitOutsideClick() {
     });
   });
 }
+
+// ================================================================
+//  AREA CONVERTER PAGE
+// ================================================================
+function renderAreaPage() {
+  updateNavActive('area');
+  updateSEO({
+    title: 'Area Converter — 40+ Units | Omni Converter',
+    description: 'Free online area converter. Convert between 40+ units including metric, imperial, US survey, and historical area units. Instant results.',
+    url: 'https://www.omniconverter.cyou/area'
+  });
+  const root = document.getElementById('app-root');
+  root.innerHTML = `
+    <div class="page-fade">
+      <div class="mb-6">
+        <div class="flex items-center gap-2 mb-2 justify-between">
+          <span class="inline-flex items-center gap-1.5 text-xs font-medium text-indigo-400 bg-indigo-500/10 border border-indigo-500/20 px-2 py-0.5 rounded-full">
+            <i class="fa-solid fa-vector-square text-xs"></i> Area
+          </span>
+        </div>
+        <h2 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">Area Converter</h2>
+        <p class="text-gray-500 text-sm mt-1">Convert between 40+ area units — metric, imperial, US survey, historical &amp; more.</p>
+      </div>
+
+      <div class="rounded-2xl border border-white/8 bg-dark-700/60 backdrop-blur-sm shadow-glow p-4 sm:p-6 mb-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-3">
+          <div>
+            <label class="block text-xs font-medium text-gray-500 mb-1.5 uppercase tracking-wider">From</label>
+            <div class="relative">
+              <input id="area-from-value" type="number" value="1" step="any"
+                class="converter-input w-full bg-dark-800 border border-white/10 rounded-xl px-4 py-3 text-xl font-semibold text-white font-mono transition-all hover:border-indigo-500/30"
+                placeholder="Enter value" oninput="areaConvert()" />
+              <button onclick="areaClear()" id="area-clear-btn" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 hover:text-gray-400 transition-colors hidden">
+                <i class="fa-solid fa-xmark text-sm"></i>
+              </button>
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-gray-500 mb-1.5 uppercase tracking-wider">From Unit</label>
+            <div id="area-from-wrap">
+              <button id="area-from-btn" onclick="areaToggleDrop('from')"
+                class="w-full bg-dark-800 border border-white/10 rounded-xl px-4 py-3 text-sm font-medium text-white text-left flex items-center justify-between hover:border-indigo-500/30 transition-all">
+                <span id="area-from-label"></span>
+                <i class="fa-solid fa-chevron-down text-indigo-400 text-xs transition-transform duration-200" id="area-from-chev"></i>
+              </button>
+              <div id="area-from-drop" class="unit-drop-panel mt-1 rounded-xl border border-white/10 bg-dark-800/98 backdrop-blur-xl shadow-xl overflow-hidden">
+                <div class="p-2 border-b border-white/5"><input id="area-from-search" type="text" placeholder="Search units…" class="w-full bg-dark-700 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-600 border border-white/5 focus:outline-none focus:border-indigo-500/40" oninput="areaBuildList('from')" /></div>
+                <div id="area-from-list" class="search-dropdown py-1"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="flex items-center justify-center my-4">
+          <button onclick="areaSwap()" class="swap-btn group flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-600/15 border border-indigo-500/25 text-indigo-400 text-sm font-medium hover:bg-indigo-600/25 hover:border-indigo-500/50 transition-all">
+            <i class="fa-solid fa-arrow-right-arrow-left swap-icon text-xs"></i>Swap Units
+          </button>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+          <div>
+            <label class="block text-xs font-medium text-gray-500 mb-1.5 uppercase tracking-wider">To</label>
+            <div class="relative">
+              <input id="area-to-value" type="number" step="any" readonly
+                class="converter-input w-full bg-dark-800/60 border border-white/8 rounded-xl px-4 py-3 text-xl font-semibold text-indigo-300 font-mono cursor-default" placeholder="Result" />
+              <button onclick="areaCopy()" title="Copy result" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 hover:text-indigo-400 transition-colors">
+                <i class="fa-regular fa-copy text-sm" id="area-copy-icon"></i>
+              </button>
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-gray-500 mb-1.5 uppercase tracking-wider">To Unit</label>
+            <div id="area-to-wrap">
+              <button id="area-to-btn" onclick="areaToggleDrop('to')"
+                class="w-full bg-dark-800 border border-white/10 rounded-xl px-4 py-3 text-sm font-medium text-white text-left flex items-center justify-between hover:border-indigo-500/30 transition-all">
+                <span id="area-to-label"></span>
+                <i class="fa-solid fa-chevron-down text-indigo-400 text-xs transition-transform duration-200" id="area-to-chev"></i>
+              </button>
+              <div id="area-to-drop" class="unit-drop-panel mt-1 rounded-xl border border-white/10 bg-dark-800/98 backdrop-blur-xl shadow-xl overflow-hidden">
+                <div class="p-2 border-b border-white/5"><input id="area-to-search" type="text" placeholder="Search units…" class="w-full bg-dark-700 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-600 border border-white/5 focus:outline-none focus:border-indigo-500/40" oninput="areaBuildList('to')" /></div>
+                <div id="area-to-list" class="search-dropdown py-1"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-dark-800/80 border border-white/5 text-xs text-gray-500">
+          <i class="fa-solid fa-function text-indigo-500/60 flex-shrink-0"></i>
+          <span id="area-formula-text" class="font-mono truncate"></span>
+        </div>
+      </div>
+
+      <!-- UNITS GRID -->
+      <div class="rounded-2xl border border-white/8 bg-dark-700/40 backdrop-blur-sm overflow-hidden mb-6">
+        <div class="p-4 sm:p-5 border-b border-white/5 flex flex-wrap items-center justify-between gap-3">
+          <div><h2 class="text-base font-semibold text-white">All Area Units</h2><p class="text-xs text-gray-600 mt-0.5">Click any unit to open its dedicated converter page</p></div>
+          <div class="flex flex-wrap gap-1.5" id="area-group-tabs">
+            <button onclick="areaFilterGroup('all')" data-group="all" class="agtab active text-xs font-medium px-3 py-1.5 rounded-lg bg-indigo-600/20 text-indigo-400 border border-indigo-500/30 transition-all">All</button>
+            <button onclick="areaFilterGroup('metric')" data-group="metric" class="agtab text-xs font-medium px-3 py-1.5 rounded-lg bg-dark-800/80 text-gray-500 border border-white/5 hover:text-gray-300 hover:border-white/10 transition-all">Metric</button>
+            <button onclick="areaFilterGroup('imperial')" data-group="imperial" class="agtab text-xs font-medium px-3 py-1.5 rounded-lg bg-dark-800/80 text-gray-500 border border-white/5 hover:text-gray-300 hover:border-white/10 transition-all">Imperial</button>
+            <button onclick="areaFilterGroup('us_survey')" data-group="us_survey" class="agtab text-xs font-medium px-3 py-1.5 rounded-lg bg-dark-800/80 text-gray-500 border border-white/5 hover:text-gray-300 hover:border-white/10 transition-all">US Survey</button>
+            <button onclick="areaFilterGroup('historical')" data-group="historical" class="agtab text-xs font-medium px-3 py-1.5 rounded-lg bg-dark-800/80 text-gray-500 border border-white/5 hover:text-gray-300 hover:border-white/10 transition-all">Historical</button>
+            <button onclick="areaFilterGroup('scientific')" data-group="scientific" class="agtab text-xs font-medium px-3 py-1.5 rounded-lg bg-dark-800/80 text-gray-500 border border-white/5 hover:text-gray-300 hover:border-white/10 transition-all">Scientific</button>
+          </div>
+        </div>
+        <div class="px-4 sm:px-5 py-3 border-b border-white/5">
+          <div class="relative">
+            <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-600 text-xs"></i>
+            <input id="area-unit-grid-search" type="text" placeholder="Search units…"
+              class="w-full bg-dark-800/60 rounded-lg pl-8 pr-4 py-2 text-sm text-white placeholder-gray-600 border border-white/5 focus:outline-none focus:border-indigo-500/30 transition-colors"
+              oninput="areaRenderGrid()" />
+          </div>
+        </div>
+        <div class="p-4 sm:p-5">
+          <div id="area-unit-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2"></div>
+          <p class="text-xs text-gray-600 mt-3" id="area-grid-count"></p>
+        </div>
+      </div>
+
+      <!-- QUICK REF TABLE -->
+      <div class="rounded-2xl border border-white/8 bg-dark-700/40 backdrop-blur-sm overflow-hidden mb-6">
+        <div class="p-4 sm:p-5 border-b border-white/5"><h2 class="text-base font-semibold text-white">Quick Reference Table</h2><p class="text-xs text-gray-600 mt-0.5">All conversions relative to your current input</p></div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead><tr class="border-b border-white/5">
+              <th class="text-left px-4 sm:px-5 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">Unit</th>
+              <th class="text-left px-3 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider hidden sm:table-cell">Group</th>
+              <th class="text-right px-4 sm:px-5 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">Value</th>
+              <th class="px-3 py-3 w-10"></th>
+            </tr></thead>
+            <tbody id="area-ref-table"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>`;
+
+  document.getElementById('area-from-label').textContent = areaUnitLabel(getAreaUnit(areaFromKey));
+  document.getElementById('area-to-label').textContent   = areaUnitLabel(getAreaUnit(areaToKey));
+  areaConvert(); areaRenderGrid(); areaRenderTable(); areaInitOutsideClick();
+}
+
+function areaUnitLabel(u) { return u.label + (u.symbol ? ' [' + u.symbol + ']' : ''); }
+
+function areaConvert() {
+  const raw = parseFloat(document.getElementById('area-from-value').value);
+  const val = isNaN(raw) ? 0 : raw;
+  document.getElementById('area-to-value').value = fmtNum(convertArea(val, areaFromKey, areaToKey));
+  document.getElementById('area-formula-text').textContent = `1 ${getAreaUnit(areaFromKey).label} = ${fmtNum(convertArea(1,areaFromKey,areaToKey))} ${getAreaUnit(areaToKey).label}`;
+  const cb = document.getElementById('area-clear-btn');
+  if (cb) cb.classList.toggle('hidden', !document.getElementById('area-from-value').value);
+  areaRenderTable();
+}
+function areaClear() { document.getElementById('area-from-value').value=''; document.getElementById('area-from-value').focus(); areaConvert(); }
+function areaCopy() {
+  const val=document.getElementById('area-to-value').value; if(!val||val==='—')return;
+  navigator.clipboard.writeText(val).catch(()=>{});
+  const icon=document.getElementById('area-copy-icon'); icon.className='fa-solid fa-circle-check text-emerald-400 text-sm';
+  showToast('Result copied to clipboard'); setTimeout(()=>{icon.className='fa-regular fa-copy text-sm';},2000);
+}
+function areaSwap() {
+  const tmp=areaFromKey;areaFromKey=areaToKey;areaToKey=tmp;
+  document.getElementById('area-from-label').textContent=areaUnitLabel(getAreaUnit(areaFromKey));
+  document.getElementById('area-to-label').textContent=areaUnitLabel(getAreaUnit(areaToKey));
+  const tv=document.getElementById('area-to-value').value;
+  if(tv&&tv!=='—')document.getElementById('area-from-value').value=tv;
+  areaConvert(); areaRenderGrid();
+}
+function areaToggleDrop(side) {
+  const drop=document.getElementById('area-'+side+'-drop'), chev=document.getElementById('area-'+side+'-chev');
+  const isOpen=drop.classList.contains('open');
+  ['from','to'].forEach(s=>{document.getElementById('area-'+s+'-drop').classList.remove('open');document.getElementById('area-'+s+'-chev').classList.remove('rotate-180');const si=document.getElementById('area-'+s+'-search');if(si)si.value=''});
+  if(!isOpen){drop.classList.add('open');chev.classList.add('rotate-180');areaBuildList(side);setTimeout(()=>document.getElementById('area-'+side+'-search').focus(),50);}
+}
+function areaBuildList(side) {
+  const q=(document.getElementById('area-'+side+'-search').value||'').toLowerCase();
+  const con=document.getElementById('area-'+side+'-list');con.innerHTML='';
+  const groups=['metric','imperial','us_survey','scientific','historical'];const grouped={};groups.forEach(g=>grouped[g]=[]);
+  AREA_UNITS.filter(u=>!q||u.label.toLowerCase().includes(q)||(u.altNames||[]).some(n=>n.toLowerCase().includes(q))).forEach(u=>{if(grouped[u.group])grouped[u.group].push(u);});
+  let any=false;
+  groups.forEach(g=>{if(!grouped[g].length)return;any=true;
+    const meta=AREA_GROUP_META[g];const hd=document.createElement('div');hd.className='px-3 pt-2 pb-1';
+    hd.innerHTML=`<span class="text-xs font-semibold uppercase tracking-widest ${meta.color.split(' ')[1]} opacity-70">${meta.label}</span>`;con.appendChild(hd);
+    grouped[g].forEach(u=>{const cur=(side==='from'?areaFromKey:areaToKey)===u.key;
+      const btn=document.createElement('button');btn.className=`w-full text-left px-3 py-2 text-sm transition-colors hover:bg-indigo-500/10 ${cur?'text-indigo-400 bg-indigo-500/8 font-medium':'text-gray-300'}`;
+      btn.textContent=areaUnitLabel(u);btn.onclick=()=>areaSelectUnit(side,u.key);con.appendChild(btn);});});
+  if(!any)con.innerHTML='<div class="px-3 py-4 text-sm text-gray-600 text-center">No units found</div>';
+}
+function areaSelectUnit(side,key){
+  if(side==='from'){areaFromKey=key;document.getElementById('area-from-label').textContent=areaUnitLabel(getAreaUnit(key));}
+  else{areaToKey=key;document.getElementById('area-to-label').textContent=areaUnitLabel(getAreaUnit(key));}
+  document.getElementById('area-'+side+'-drop').classList.remove('open');document.getElementById('area-'+side+'-chev').classList.remove('rotate-180');
+  areaConvert();areaRenderGrid();
+}
+function areaFilterGroup(g){
+  areaGroup=g;
+  document.querySelectorAll('.agtab').forEach(b=>{const a=b.dataset.group===g;
+    b.className=a?'agtab text-xs font-medium px-3 py-1.5 rounded-lg bg-indigo-600/20 text-indigo-400 border border-indigo-500/30 transition-all'
+    :'agtab text-xs font-medium px-3 py-1.5 rounded-lg bg-dark-800/80 text-gray-500 border border-white/5 hover:text-gray-300 hover:border-white/10 transition-all';});
+  areaRenderGrid();
+}
+function areaRenderGrid(){
+  const q=(document.getElementById('area-unit-grid-search')?.value||'').toLowerCase();
+  const units=AREA_UNITS.filter(u=>(areaGroup==='all'||u.group===areaGroup)&&(!q||u.label.toLowerCase().includes(q)||(u.altNames||[]).some(n=>n.toLowerCase().includes(q))));
+  const grid=document.getElementById('area-unit-grid');
+  const val=parseFloat(document.getElementById('area-from-value')?.value)||1;
+  grid.innerHTML=units.map(u=>{const meta=AREA_GROUP_META[u.group];const result=convertArea(val,areaFromKey,u.key);const desc=AREA_UNIT_DESC[u.key];
+    return `<button onclick="navigate('/area/${slug(u.key)}')" class="unit-card text-left p-3 rounded-xl border border-white/6 bg-dark-800/40 transition-all duration-200 group">
+      <div class="flex items-start justify-between mb-1.5"><span class="text-sm font-medium text-gray-200 group-hover:text-white transition-colors leading-tight">${u.label}</span>
+      <span class="inline-flex items-center px-1.5 py-0.5 rounded-md text-xs ${meta.color} ml-2 flex-shrink-0">${u.symbol||meta.label.slice(0,3)}</span></div>
+      <p class="text-xs text-gray-600 leading-relaxed mb-2 line-clamp-1">${desc?desc.short:''}</p>
+      <div class="flex items-center justify-between"><span class="font-mono text-xs text-indigo-300">${fmtNum(result)} ${u.symbol||''}</span>
+      <span class="text-xs text-indigo-500/60 group-hover:text-indigo-400 transition-colors">View <i class="fa-solid fa-arrow-right text-xs ml-0.5"></i></span></div></button>`;}).join('');
+  const cnt=document.getElementById('area-grid-count');if(cnt)cnt.textContent=`Showing ${units.length} unit${units.length!==1?'s':''}`;
+}
+function areaRenderTable(){
+  const val=parseFloat(document.getElementById('area-from-value')?.value)||0;
+  const tbody=document.getElementById('area-ref-table');if(!tbody)return;
+  tbody.innerHTML=AREA_UNITS.map(u=>{const result=convertArea(val,areaFromKey,u.key);const meta=AREA_GROUP_META[u.group];const isFrom=u.key===areaFromKey;
+    return `<tr class="result-row border-b border-white/3 transition-colors cursor-pointer" onclick="navigate('/area/${slug(u.key)}')">
+      <td class="px-4 sm:px-5 py-2.5"><div class="flex items-center gap-2">${isFrom?'<i class="fa-solid fa-arrow-right text-indigo-400 text-xs"></i>':''}<span class="text-sm text-gray-200 ${isFrom?'font-semibold text-indigo-300':''}">${u.label}${u.symbol?' ['+u.symbol+']':''}</span></div></td>
+      <td class="px-3 py-2.5 hidden sm:table-cell"><span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${meta.color}">${meta.label}</span></td>
+      <td class="px-4 sm:px-5 py-2.5 text-right"><span class="font-mono text-sm ${isFrom?'text-indigo-300 font-semibold':'text-gray-300'}">${fmtNum(result)}</span></td>
+      <td class="px-3 py-2.5"><i class="fa-solid fa-arrow-up-right-from-square text-xs text-gray-700 hover:text-indigo-400 transition-colors"></i></td>
+    </tr>`;}).join('');
+}
+function areaInitOutsideClick(){
+  document.addEventListener('click',function handler(e){
+    if(!document.getElementById('area-from-wrap')&&!document.getElementById('area-to-wrap')){document.removeEventListener('click',handler);return;}
+    ['from','to'].forEach(s=>{const w=document.getElementById('area-'+s+'-wrap'),d=document.getElementById('area-'+s+'-drop');
+      if(w&&d&&!w.contains(e.target)){d.classList.remove('open');const c=document.getElementById('area-'+s+'-chev');if(c)c.classList.remove('rotate-180');}});});
+}
+
+// ================================================================
+//  AREA UNIT DETAIL PAGE
+// ================================================================
+let areaUnitFromKey='';
+let areaUnitToKey='';
+let areaUnitConvGroup='all';
+
+function renderAreaUnitPage(key){
+  updateNavActive('area');
+  const unit=getAreaUnit(key);if(!unit){navigate('/area');return;}
+  const desc=AREA_UNIT_DESC[key]||{short:`Unit of area: ${unit.label}`,long:`The ${unit.label} is a unit of area.`};
+  const meta=AREA_GROUP_META[unit.group];
+  const related=AREA_UNITS.filter(u=>u.group===unit.group&&u.key!==key).slice(0,6);
+  areaUnitFromKey=key;
+  areaUnitToKey=AREA_UNITS.find(u=>u.key!==key)?.key||'square_meter';
+  updateSEO({title:`${unit.label} Converter | Omni Converter`,description:`Convert ${unit.label}${unit.symbol?' ('+unit.symbol+')':''} to other area units. ${desc.short}`,url:`https://www.omniconverter.cyou/area/${slug(key)}`});
+  const root=document.getElementById('app-root');
+  root.innerHTML=`<div class="page-fade">
+    <nav class="flex items-center gap-2 text-xs text-gray-600 mb-5">
+      <button onclick="navigate('/')" class="hover:text-indigo-400 transition-colors">Omni Converter</button>
+      <i class="fa-solid fa-chevron-right text-gray-700 text-xs"></i>
+      <button onclick="navigate('/area')" class="hover:text-indigo-400 transition-colors">Area</button>
+      <i class="fa-solid fa-chevron-right text-gray-700 text-xs"></i>
+      <span class="text-gray-400">${unit.label}</span>
+    </nav>
+    <div class="rounded-2xl border border-white/8 bg-dark-700/50 backdrop-blur-sm p-5 sm:p-7 mb-6">
+      <div class="flex flex-wrap items-start justify-between gap-4 mb-4">
+        <div><div class="flex items-center gap-2 mb-2">
+          <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${meta.color} border border-current/20"><i class="fa-solid ${meta.icon} mr-1.5 text-xs"></i>${meta.label}</span>
+          ${unit.symbol?`<span class="font-mono text-xs text-indigo-400 bg-indigo-500/10 border border-indigo-500/20 px-2 py-0.5 rounded">${unit.symbol}</span>`:''}
+        </div><h2 class="text-2xl sm:text-4xl font-bold text-white tracking-tight mb-1">${unit.label} Converter</h2><p class="text-gray-400 text-sm leading-relaxed max-w-xl">${desc.short}</p></div>
+        <div class="text-right"><p class="text-xs text-gray-600 mb-1">Base value in m²</p><p class="font-mono text-lg text-indigo-300 font-semibold">${unit.factor<1e-15||unit.factor>1e12?unit.factor.toExponential(6):unit.factor} m²</p></div>
+      </div>
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-4 border-t border-white/5">
+        <div class="bg-dark-800/60 rounded-xl p-3"><p class="text-xs text-gray-600 mb-1">SI Base (m²)</p><p class="font-mono text-xs text-white truncate">${unit.factor<1e-15||unit.factor>1e12?unit.factor.toExponential(4):unit.factor}</p></div>
+        <div class="bg-dark-800/60 rounded-xl p-3"><p class="text-xs text-gray-600 mb-1">Category</p><p class="text-xs text-white">${meta.label}</p></div>
+        <div class="bg-dark-800/60 rounded-xl p-3"><p class="text-xs text-gray-600 mb-1">Symbol</p><p class="font-mono text-xs text-white">${unit.symbol||'—'}</p></div>
+        <div class="bg-dark-800/60 rounded-xl p-3"><p class="text-xs text-gray-600 mb-1">Also known as</p><p class="text-xs text-white truncate">${(unit.altNames||[]).length?unit.altNames.join(', '):'—'}</p></div>
+      </div>
+    </div>
+    <div class="rounded-2xl border border-white/8 bg-dark-700/60 backdrop-blur-sm shadow-glow p-4 sm:p-6 mb-6">
+      <h2 class="text-base font-semibold text-white mb-4"><i class="fa-solid fa-arrows-rotate text-indigo-400 mr-2"></i>Quick Converter</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-3">
+        <div><label class="block text-xs font-medium text-gray-500 mb-1.5 uppercase tracking-wider">From (${unit.label})</label>
+          <div class="relative"><input id="au-from-val" type="number" value="1" step="any"
+            class="converter-input w-full bg-dark-800 border border-white/10 rounded-xl px-4 py-3 text-xl font-semibold text-white font-mono transition-all hover:border-indigo-500/30"
+            placeholder="Enter value" oninput="areaUnitConvert()" />
+            ${unit.symbol?`<span class="absolute right-4 top-1/2 -translate-y-1/2 text-indigo-400 font-mono text-sm">${unit.symbol}</span>`:''}
+          </div>
+        </div>
+        <div><label class="block text-xs font-medium text-gray-500 mb-1.5 uppercase tracking-wider">To Unit</label>
+          <div id="au-to-wrap"><button id="au-to-btn" onclick="areaUnitToggleDrop()"
+            class="w-full bg-dark-800 border border-white/10 rounded-xl px-4 py-3 text-sm font-medium text-white text-left flex items-center justify-between hover:border-indigo-500/30 transition-all">
+            <span id="au-to-label"></span><i class="fa-solid fa-chevron-down text-indigo-400 text-xs transition-transform duration-200" id="au-to-chev"></i></button>
+            <div id="au-to-drop" class="unit-drop-panel mt-1 rounded-xl border border-white/10 bg-dark-800/98 backdrop-blur-xl shadow-xl overflow-hidden">
+              <div class="p-2 border-b border-white/5"><input id="au-to-search" type="text" placeholder="Search units…" class="w-full bg-dark-700 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-600 border border-white/5 focus:outline-none focus:border-indigo-500/40" oninput="areaUnitBuildList()" /></div>
+              <div id="au-to-list" class="search-dropdown py-1"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="bg-dark-800/70 border border-white/8 rounded-xl p-4 mb-3">
+        <div class="flex items-center justify-between mb-1">
+          <span class="text-xs text-gray-600 uppercase tracking-wider">Result</span>
+          <button onclick="areaUnitCopy()" class="text-xs text-gray-600 hover:text-indigo-400 transition-colors flex items-center gap-1"><i class="fa-regular fa-copy text-xs" id="au-copy-icon"></i> Copy</button>
+        </div>
+        <div class="flex items-baseline gap-2 flex-wrap"><span id="au-result" class="font-mono text-3xl font-bold text-indigo-300 num-shimmer"></span><span id="au-result-sym" class="font-mono text-lg text-indigo-400/60"></span></div>
+        <p id="au-formula" class="text-xs text-gray-600 font-mono mt-2"></p>
+      </div>
+      <div class="flex items-center justify-between">
+        <button onclick="areaUnitSwap()" class="swap-btn group flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-600/15 border border-indigo-500/25 text-indigo-400 text-sm font-medium hover:bg-indigo-600/25 transition-all">
+          <i class="fa-solid fa-arrow-right-arrow-left swap-icon text-xs"></i>Swap
+        </button>
+        <button onclick="navigate('/area')" class="flex items-center gap-1.5 text-xs text-gray-600 hover:text-indigo-400 transition-colors"><i class="fa-solid fa-table text-xs"></i>All units</button>
+      </div>
+    </div>
+    <div class="rounded-2xl border border-white/8 bg-dark-700/40 p-5 sm:p-6 mb-6">
+      <h2 class="text-base font-semibold text-white mb-3"><i class="fa-solid fa-circle-info text-indigo-400 mr-2"></i>About the ${unit.label}</h2>
+      <p class="text-gray-400 text-sm leading-relaxed">${desc.long}</p>
+    </div>
+    <div class="rounded-2xl border border-white/8 bg-dark-700/40 backdrop-blur-sm overflow-hidden mb-6">
+      <div class="p-4 sm:p-5 border-b border-white/5 flex flex-wrap items-center justify-between gap-3">
+        <div><h2 class="text-base font-semibold text-white">1 ${unit.label} Equals…</h2><p class="text-xs text-gray-600 mt-0.5">Complete conversion table</p></div>
+        <div class="flex flex-wrap gap-1.5" id="au-ct-tabs">
+          <button onclick="areaUnitFilterGroup('all')" data-group="all" class="auctab active text-xs font-medium px-3 py-1.5 rounded-lg bg-indigo-600/20 text-indigo-400 border border-indigo-500/30 transition-all">All</button>
+          <button onclick="areaUnitFilterGroup('metric')" data-group="metric" class="auctab text-xs font-medium px-3 py-1.5 rounded-lg bg-dark-800/80 text-gray-500 border border-white/5 hover:text-gray-300 hover:border-white/10 transition-all">Metric</button>
+          <button onclick="areaUnitFilterGroup('imperial')" data-group="imperial" class="auctab text-xs font-medium px-3 py-1.5 rounded-lg bg-dark-800/80 text-gray-500 border border-white/5 hover:text-gray-300 hover:border-white/10 transition-all">Imperial</button>
+          <button onclick="areaUnitFilterGroup('us_survey')" data-group="us_survey" class="auctab text-xs font-medium px-3 py-1.5 rounded-lg bg-dark-800/80 text-gray-500 border border-white/5 hover:text-gray-300 hover:border-white/10 transition-all">US Survey</button>
+          <button onclick="areaUnitFilterGroup('historical')" data-group="historical" class="auctab text-xs font-medium px-3 py-1.5 rounded-lg bg-dark-800/80 text-gray-500 border border-white/5 hover:text-gray-300 hover:border-white/10 transition-all">Historical</button>
+        </div>
+      </div>
+      <div class="overflow-x-auto"><table class="w-full text-sm"><thead><tr class="border-b border-white/5">
+        <th class="text-left px-4 sm:px-5 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">Unit</th>
+        <th class="text-left px-3 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider hidden sm:table-cell">Symbol</th>
+        <th class="text-right px-4 sm:px-5 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">1 ${unit.symbol||unit.label} =</th>
+        <th class="px-3 py-3 w-10"></th>
+      </tr></thead><tbody id="au-conv-table"></tbody></table></div>
+    </div>
+    ${related.length>0?`<div class="mb-6"><h2 class="text-base font-semibold text-white mb-3"><i class="fa-solid fa-link text-indigo-400 mr-2"></i>Related ${meta.label} Units</h2>
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
+        ${related.map(u=>{const r=convertArea(1,key,u.key);return `<a href="/area/${slug(u.key)}" onclick="navigate('/area/${slug(u.key)}');return false;" class="unit-card text-left p-3 rounded-xl border border-white/6 bg-dark-800/40 transition-all duration-200 group">
+          <p class="text-xs font-medium text-gray-300 group-hover:text-white transition-colors mb-1 truncate">${u.label}</p>
+          ${u.symbol?`<p class="font-mono text-xs text-indigo-400 mb-1">${u.symbol}</p>`:''}
+          <p class="font-mono text-xs text-gray-600">${fmtNum(r)}</p></a>`;}).join('')}
+      </div></div>`:''
+    }
+    <div class="rounded-2xl border border-white/8 bg-dark-700/30 p-5 sm:p-6">
+      <h2 class="text-base font-semibold text-white mb-1">Convert ${unit.label} to Other Area Units</h2>
+      <p class="text-xs text-gray-600 mb-4">Direct conversion pages</p>
+      <div class="flex flex-wrap gap-2">
+        ${AREA_UNITS.filter(u=>u.key!==key).sort((a,b)=>a.label.localeCompare(b.label)).map(u=>`<a href="/area/${slug(key)}/to/${slug(u.key)}" onclick="navigate('/area/${slug(key)}/to/${slug(u.key)}');return false;" class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-dark-800/60 border border-white/5 text-xs text-gray-400 hover:text-indigo-400 hover:border-indigo-500/30 transition-all">${unit.label} → ${u.label}</a>`).join('')}
+      </div>
+    </div>
+  </div>`;
+  document.getElementById('au-to-label').textContent=areaUnitLabel(getAreaUnit(areaUnitToKey));
+  areaUnitRenderConvTable('all'); areaUnitConvert(); areaUnitInitOutsideClick();
+}
+
+function areaUnitConvert(){
+  const raw=parseFloat(document.getElementById('au-from-val').value);const val=isNaN(raw)?0:raw;
+  const result=convertArea(val,areaUnitFromKey,areaUnitToKey);const toUnit=getAreaUnit(areaUnitToKey);const frUnit=getAreaUnit(areaUnitFromKey);
+  document.getElementById('au-result').textContent=fmtNum(result);document.getElementById('au-result-sym').textContent=toUnit.symbol||toUnit.label;
+  document.getElementById('au-formula').textContent=`1 ${frUnit.label} = ${fmtNum(convertArea(1,areaUnitFromKey,areaUnitToKey))} ${toUnit.label}`;
+}
+function areaUnitCopy(){const val=document.getElementById('au-result').textContent;if(!val||val==='—')return;
+  navigator.clipboard.writeText(val).catch(()=>{});const icon=document.getElementById('au-copy-icon');
+  icon.className='fa-solid fa-circle-check text-emerald-400 text-xs';showToast('Copied!');setTimeout(()=>{icon.className='fa-regular fa-copy text-xs';},2000);}
+function areaUnitSwap(){const tmp=areaUnitFromKey;areaUnitFromKey=areaUnitToKey;areaUnitToKey=tmp;
+  const rv=document.getElementById('au-result').textContent;if(rv&&rv!=='—')document.getElementById('au-from-val').value=rv;
+  document.getElementById('au-to-label').textContent=areaUnitLabel(getAreaUnit(areaUnitToKey));areaUnitConvert();areaUnitRenderConvTable(areaUnitConvGroup);}
+function areaUnitToggleDrop(){const drop=document.getElementById('au-to-drop'),chev=document.getElementById('au-to-chev');
+  const isOpen=drop.classList.contains('open');if(!isOpen){drop.classList.add('open');chev.classList.add('rotate-180');areaUnitBuildList();setTimeout(()=>document.getElementById('au-to-search').focus(),50);}
+  else{drop.classList.remove('open');chev.classList.remove('rotate-180');}}
+function areaUnitBuildList(){const q=(document.getElementById('au-to-search').value||'').toLowerCase();
+  const con=document.getElementById('au-to-list');con.innerHTML='';
+  const groups=['metric','imperial','us_survey','scientific','historical'];const grouped={};groups.forEach(g=>grouped[g]=[]);
+  AREA_UNITS.filter(u=>!q||u.label.toLowerCase().includes(q)||(u.altNames||[]).some(n=>n.toLowerCase().includes(q))).forEach(u=>{if(grouped[u.group])grouped[u.group].push(u);});
+  let any=false;
+  groups.forEach(g=>{if(!grouped[g].length)return;any=true;
+    const meta=AREA_GROUP_META[g];const hd=document.createElement('div');hd.className='px-3 pt-2 pb-1';
+    hd.innerHTML=`<span class="text-xs font-semibold uppercase tracking-widest ${meta.color.split(' ')[1]} opacity-70">${meta.label}</span>`;con.appendChild(hd);
+    grouped[g].forEach(u=>{const cur=areaUnitToKey===u.key;
+      const btn=document.createElement('button');btn.className=`w-full text-left px-3 py-2 text-sm transition-colors hover:bg-indigo-500/10 ${cur?'text-indigo-400 bg-indigo-500/8 font-medium':'text-gray-300'}`;
+      btn.textContent=areaUnitLabel(u);btn.onclick=()=>{areaUnitToKey=u.key;document.getElementById('au-to-label').textContent=areaUnitLabel(u);document.getElementById('au-to-drop').classList.remove('open');document.getElementById('au-to-chev').classList.remove('rotate-180');areaUnitConvert();};con.appendChild(btn);});});
+  if(!any)con.innerHTML='<div class="px-3 py-4 text-sm text-gray-600 text-center">No units found</div>';}
+function areaUnitFilterGroup(g){areaUnitConvGroup=g;
+  document.querySelectorAll('.auctab').forEach(b=>{const a=b.dataset.group===g;
+    b.className=a?'auctab text-xs font-medium px-3 py-1.5 rounded-lg bg-indigo-600/20 text-indigo-400 border border-indigo-500/30 transition-all':'auctab text-xs font-medium px-3 py-1.5 rounded-lg bg-dark-800/80 text-gray-500 border border-white/5 hover:text-gray-300 hover:border-white/10 transition-all';});
+  areaUnitRenderConvTable(g);}
+function areaUnitRenderConvTable(group){const tbody=document.getElementById('au-conv-table');if(!tbody)return;
+  const units=AREA_UNITS.filter(u=>u.key!==areaUnitFromKey&&(group==='all'||u.group===group));
+  tbody.innerHTML=units.map(u=>{const meta=AREA_GROUP_META[u.group];const result=convertArea(1,areaUnitFromKey,u.key);
+    return `<tr class="result-row border-b border-white/3 cursor-pointer" onclick="navigate('/area/${slug(u.key)}')">
+      <td class="px-4 sm:px-5 py-2.5"><span class="text-sm text-gray-200">${u.label}</span></td>
+      <td class="px-3 py-2.5 hidden sm:table-cell"><span class="font-mono text-xs text-gray-500">${u.symbol||'—'}</span></td>
+      <td class="px-4 sm:px-5 py-2.5 text-right"><span class="font-mono text-sm text-gray-300">${fmtNum(result)}</span></td>
+      <td class="px-3 py-2.5"><span class="inline-flex items-center px-1.5 py-0.5 rounded-md text-xs ${meta.color}">${meta.label.slice(0,3)}</span></td>
+    </tr>`;}).join('');}
+function areaUnitInitOutsideClick(){document.addEventListener('click',function handler(e){
+  const w=document.getElementById('au-to-wrap'),d=document.getElementById('au-to-drop');
+  if(!w){document.removeEventListener('click',handler);return;}
+  if(!w.contains(e.target)){d.classList.remove('open');const c=document.getElementById('au-to-chev');if(c)c.classList.remove('rotate-180');}});}
+
+// ================================================================
+//  AREA CONVERSION PAIR PAGE
+// ================================================================
+function renderAreaConversionPage(fromKey,toKey){
+  updateNavActive('area');
+  const fromUnit=getAreaUnit(fromKey),toUnit=getAreaUnit(toKey);
+  if(!fromUnit||!toUnit){navigate('/area');return;}
+  const fromDesc=AREA_UNIT_DESC[fromKey]||{short:`Unit of area: ${fromUnit.label}`,long:`The ${fromUnit.label} is a unit of area.`};
+  const toDesc=AREA_UNIT_DESC[toKey]||{short:`Unit of area: ${toUnit.label}`,long:`The ${toUnit.label} is a unit of area.`};
+  const fromMeta=AREA_GROUP_META[fromUnit.group],toMeta=AREA_GROUP_META[toUnit.group];
+  const factor=convertArea(1,fromKey,toKey);
+  updateSEO({title:`Convert ${fromUnit.label} to ${toUnit.label} | Omni Converter`,
+    description:`Instantly convert ${fromUnit.label} to ${toUnit.label}. 1 ${fromUnit.label} = ${fmtNum(factor)} ${toUnit.label}.`,
+    url:`https://www.omniconverter.cyou/area/${slug(fromKey)}/to/${slug(toKey)}`});
+  const commonVals=[0.001,0.01,0.1,0.5,1,2,5,10,20,50,100,500,1000,10000];
+  const root=document.getElementById('app-root');
+  root.innerHTML=`<div class="page-fade">
+    <nav class="flex items-center gap-2 text-xs text-gray-600 mb-5 flex-wrap">
+      <button onclick="navigate('/')" class="hover:text-indigo-400 transition-colors">Omni Converter</button>
+      <i class="fa-solid fa-chevron-right text-gray-700 text-xs"></i>
+      <button onclick="navigate('/area')" class="hover:text-indigo-400 transition-colors">Area</button>
+      <i class="fa-solid fa-chevron-right text-gray-700 text-xs"></i>
+      <button onclick="navigate('/area/${slug(fromKey)}')" class="hover:text-indigo-400 transition-colors">${fromUnit.label}</button>
+      <i class="fa-solid fa-chevron-right text-gray-700 text-xs"></i>
+      <span class="text-gray-400">${fromUnit.label} to ${toUnit.label}</span>
+    </nav>
+    <div class="rounded-2xl border border-white/8 bg-dark-700/50 backdrop-blur-sm p-5 sm:p-7 mb-6">
+      <div class="flex flex-wrap items-center gap-2 mb-3">
+        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${fromMeta.color} border border-current/20"><i class="fa-solid ${fromMeta.icon} mr-1.5 text-xs"></i>${fromMeta.label}</span>
+        <i class="fa-solid fa-arrow-right text-gray-600 text-xs"></i>
+        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${toMeta.color} border border-current/20"><i class="fa-solid ${toMeta.icon} mr-1.5 text-xs"></i>${toMeta.label}</span>
+      </div>
+      <h2 class="text-2xl sm:text-4xl font-bold text-white tracking-tight mb-2">Convert ${fromUnit.label} to ${toUnit.label}</h2>
+      <p class="text-gray-400 text-sm leading-relaxed max-w-2xl mb-5">Instantly convert ${fromUnit.label}${fromUnit.symbol?' ('+fromUnit.symbol+')':''} to ${toUnit.label}${toUnit.symbol?' ('+toUnit.symbol+')':''}. Enter any value for real-time results.</p>
+      <div class="inline-flex items-center gap-3 px-5 py-3.5 rounded-2xl bg-indigo-500/10 border border-indigo-500/25">
+        <div class="text-center"><p class="text-2xl font-bold font-mono text-white">1</p><p class="text-xs text-gray-500 mt-0.5">${fromUnit.label}</p>${fromUnit.symbol?`<p class="font-mono text-xs text-indigo-400">${fromUnit.symbol}</p>`:''}</div>
+        <i class="fa-solid fa-equals text-indigo-400 text-xl"></i>
+        <div class="text-center"><p class="text-2xl font-bold font-mono text-indigo-300">${fmtNum(factor)}</p><p class="text-xs text-gray-500 mt-0.5">${toUnit.label}</p>${toUnit.symbol?`<p class="font-mono text-xs text-indigo-400">${toUnit.symbol}</p>`:''}</div>
+      </div>
+    </div>
+    <!-- Live Converter -->
+    <div class="rounded-2xl border border-white/8 bg-dark-700/60 backdrop-blur-sm shadow-glow p-4 sm:p-6 mb-6">
+      <h2 class="text-base font-semibold text-white mb-4"><i class="fa-solid fa-arrows-rotate text-indigo-400 mr-2"></i>${fromUnit.label} to ${toUnit.label} Converter</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+        <div><label class="block text-xs font-medium text-gray-500 mb-1.5 uppercase tracking-wider">${fromUnit.label}${fromUnit.symbol?' ('+fromUnit.symbol+')':''}</label>
+          <div class="relative"><input id="acp-from" type="number" value="1" step="any"
+            class="converter-input w-full bg-dark-800 border border-white/10 rounded-xl px-4 py-3 text-2xl font-bold text-white font-mono transition-all hover:border-indigo-500/30"
+            placeholder="Enter value" oninput="acpConvert()" />
+            ${fromUnit.symbol?`<span class="absolute right-4 top-1/2 -translate-y-1/2 text-indigo-400 font-mono text-sm pointer-events-none">${fromUnit.symbol}</span>`:''}
+          </div>
+        </div>
+        <div><label class="block text-xs font-medium text-gray-500 mb-1.5 uppercase tracking-wider">${toUnit.label}${toUnit.symbol?' ('+toUnit.symbol+')':''}</label>
+          <div class="relative"><input id="acp-to" type="number" step="any" readonly
+            class="converter-input w-full bg-dark-800/50 border border-indigo-500/20 rounded-xl px-4 py-3 text-2xl font-bold text-indigo-300 font-mono cursor-default" placeholder="Result" />
+            ${toUnit.symbol?`<span class="absolute right-10 top-1/2 -translate-y-1/2 text-indigo-400/60 font-mono text-sm pointer-events-none">${toUnit.symbol}</span>`:''}
+            <button onclick="acpAreaCopy()" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 hover:text-indigo-400 transition-colors"><i class="fa-regular fa-copy text-sm" id="acp-copy-icon"></i></button>
+          </div>
+        </div>
+      </div>
+      <div class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-dark-800/80 border border-white/5 text-xs text-gray-500 mb-4">
+        <i class="fa-solid fa-function text-indigo-500/60 flex-shrink-0"></i>
+        <span class="font-mono truncate" id="acp-formula">1 ${fromUnit.label} × ${fmtNum(factor)} = ${fmtNum(factor)} ${toUnit.label}</span>
+      </div>
+      <div class="flex items-center justify-between">
+        <button onclick="acpAreaSwap()" class="swap-btn group flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-600/15 border border-indigo-500/25 text-indigo-400 text-sm font-medium hover:bg-indigo-600/25 transition-all">
+          <i class="fa-solid fa-arrow-right-arrow-left swap-icon text-xs"></i>Swap
+        </button>
+        <button onclick="navigate('/area/${slug(toKey)}/to/${slug(fromKey)}')" class="text-xs text-gray-600 hover:text-indigo-400 transition-colors">
+          <i class="fa-solid fa-rotate text-xs mr-1"></i>Reverse: ${toUnit.label} → ${fromUnit.label}
+        </button>
+      </div>
+    </div>
+    <!-- Conversion Table -->
+    <div class="rounded-2xl border border-white/8 bg-dark-700/40 backdrop-blur-sm overflow-hidden mb-6">
+      <div class="p-4 sm:p-5 border-b border-white/5"><h2 class="text-base font-semibold text-white">${fromUnit.label} to ${toUnit.label} Table</h2></div>
+      <div class="overflow-x-auto"><table class="w-full text-sm"><thead><tr class="border-b border-white/5">
+        <th class="text-left px-4 sm:px-5 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">${fromUnit.label}${fromUnit.symbol?' ('+fromUnit.symbol+')':''}</th>
+        <th class="text-center px-3 py-3 text-gray-700"><i class="fa-solid fa-arrow-right"></i></th>
+        <th class="text-right px-4 sm:px-5 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">${toUnit.label}${toUnit.symbol?' ('+toUnit.symbol+')':''}</th>
+      </tr></thead><tbody>
+        ${commonVals.map((v,i)=>`<tr class="${i%2===0?'bg-dark-800/20':''} border-b border-white/3 hover:bg-indigo-500/5 transition-colors">
+          <td class="px-4 sm:px-5 py-2.5 font-mono text-sm text-gray-300">${v} ${fromUnit.symbol||fromUnit.label}</td>
+          <td class="px-3 py-2.5 text-center text-gray-700"><i class="fa-solid fa-arrow-right text-xs"></i></td>
+          <td class="px-4 sm:px-5 py-2.5 font-mono text-sm text-indigo-300 text-right">${fmtNum(convertArea(v,fromKey,toKey))} ${toUnit.symbol||toUnit.label}</td>
+        </tr>`).join('')}
+      </tbody></table></div>
+    </div>
+    <!-- Formula -->
+    <div class="rounded-2xl border border-white/8 bg-dark-700/40 p-5 sm:p-6 mb-6">
+      <h2 class="text-base font-semibold text-white mb-4"><i class="fa-solid fa-function text-indigo-400 mr-2"></i>How to Convert ${fromUnit.label} to ${toUnit.label}</h2>
+      <p class="text-gray-400 text-sm leading-relaxed mb-4">Multiply the value in <strong class="text-white">${fromUnit.label}</strong> by <strong class="font-mono text-indigo-300">${fmtNum(factor)}</strong>.</p>
+      <div class="bg-dark-800/70 border border-white/8 rounded-xl p-4 font-mono text-sm mb-4">
+        <span class="text-indigo-300">${toUnit.symbol||toUnit.label}</span><span class="text-gray-500"> = </span><span class="text-white">${fromUnit.symbol||fromUnit.label}</span><span class="text-gray-500"> × </span><span class="text-emerald-400">${fmtNum(factor)}</span>
+      </div>
+      <p class="text-gray-400 text-sm"><strong class="text-white">Example:</strong> 5 ${fromUnit.label} = <span class="font-mono text-indigo-300">${fmtNum(convertArea(5,fromKey,toKey))} ${toUnit.symbol||toUnit.label}</span></p>
+    </div>
+    <!-- About both units -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+      <div class="rounded-2xl border border-white/8 bg-dark-700/40 p-5">
+        <div class="flex items-center gap-2 mb-3"><span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${fromMeta.color} border border-current/20">${fromUnit.label}</span></div>
+        <h2 class="text-sm font-semibold text-white mb-2">About the ${fromUnit.label}</h2>
+        <p class="text-gray-500 text-xs leading-relaxed">${fromDesc.long}</p>
+        <button onclick="navigate('/area/${slug(fromKey)}')" class="mt-3 text-xs text-indigo-400 hover:text-indigo-300 transition-colors">Full ${fromUnit.label} converter <i class="fa-solid fa-arrow-right text-xs ml-0.5"></i></button>
+      </div>
+      <div class="rounded-2xl border border-white/8 bg-dark-700/40 p-5">
+        <div class="flex items-center gap-2 mb-3"><span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${toMeta.color} border border-current/20">${toUnit.label}</span></div>
+        <h2 class="text-sm font-semibold text-white mb-2">About the ${toUnit.label}</h2>
+        <p class="text-gray-500 text-xs leading-relaxed">${toDesc.long}</p>
+        <button onclick="navigate('/area/${slug(toKey)}')" class="mt-3 text-xs text-indigo-400 hover:text-indigo-300 transition-colors">Full ${toUnit.label} converter <i class="fa-solid fa-arrow-right text-xs ml-0.5"></i></button>
+      </div>
+    </div>
+    <div class="rounded-2xl border border-white/8 bg-dark-700/30 p-5 sm:p-6">
+      <h2 class="text-base font-semibold text-white mb-1">Convert ${fromUnit.label} to Other Area Units</h2>
+      <p class="text-xs text-gray-600 mb-4">Direct conversion pages from ${fromUnit.label}</p>
+      <div class="flex flex-wrap gap-2">
+        ${AREA_UNITS.filter(u=>u.key!==fromKey&&u.key!==toKey).sort((a,b)=>a.label.localeCompare(b.label)).map(u=>`<a href="/area/${slug(fromKey)}/to/${slug(u.key)}" onclick="navigate('/area/${slug(fromKey)}/to/${slug(u.key)}');return false;" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-dark-800/60 border border-white/5 text-xs text-gray-400 hover:text-indigo-400 hover:border-indigo-500/30 transition-all">${fromUnit.label} to ${u.label}</a>`).join('')}
+      </div>
+    </div>
+  </div>`;
+  window._acpFrom=fromKey;window._acpTo=toKey;acpConvert();
+}
+
+function acpConvert(){
+  const raw=parseFloat(document.getElementById('acp-from')?.value);const val=isNaN(raw)?0:raw;
+  const from=window._acpFrom,to=window._acpTo;if(!from||!to)return;
+  const result=convertArea(val,from,to);const toUnit=getAreaUnit(to);const frUnit=getAreaUnit(from);if(!toUnit||!frUnit)return;
+  document.getElementById('acp-to').value=fmtNum(result);
+  const f1=convertArea(1,from,to);document.getElementById('acp-formula').textContent=`1 ${frUnit.label} × ${fmtNum(f1)} = ${fmtNum(val*f1)} ${toUnit.label}`;
+}
+function acpAreaCopy(){const val=document.getElementById('acp-to').value;if(!val||val==='—')return;
+  navigator.clipboard.writeText(val).catch(()=>{});const icon=document.getElementById('acp-copy-icon');
+  icon.className='fa-solid fa-circle-check text-emerald-400 text-sm';showToast('Copied to clipboard');setTimeout(()=>{icon.className='fa-regular fa-copy text-sm';},2000);}
+function acpAreaSwap(){navigate('/area/'+slug(window._acpTo)+'/to/'+slug(window._acpFrom));}
 
 // ================================================================
 //  UNIT DETAIL PAGE
@@ -2578,7 +3192,11 @@ document.addEventListener('DOMContentLoaded', () => {
 <script>window.onload=function(){var d=document.createElement("div");d.id="appLoadFinished";document.body.appendChild(d);};</script>
 <script>window.onload=function(){var d=document.createElement("div");d.id="appLoadFinished";document.body.appendChild(d);};</script>
 <script>window.onload=function(){var d=document.createElement("div");d.id="appLoadFinished";document.body.appendChild(d);};</script>
+<script>window.onload=function(){var d=document.createElement("div");d.id="appLoadFinished";document.body.appendChild(d);};</script>
+<script>window.onload=function(){var d=document.createElement("div");d.id="appLoadFinished";document.body.appendChild(d);};</script>
 </body>
+
+
 
 
 
