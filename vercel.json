@@ -1,7 +1,7 @@
 {
   "headers": [
     {
-      "source": "/sitemap.xml",
+      "source": "/sitemap(.*).xml",
       "headers": [
         {
           "key": "Content-Type",
@@ -29,8 +29,8 @@
   ],
   "rewrites": [
     {
-      "source": "/sitemap.xml",
-      "destination": "/sitemap.xml"
+      "source": "/sitemap(.*).xml",
+      "destination": "/sitemap$1.xml"
     },
     {
       "source": "/robots.txt",
