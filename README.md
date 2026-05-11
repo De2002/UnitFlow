@@ -17,3 +17,18 @@ From Idea to Profit with OnSpace
 - Output directory:
   - `dist/`
 - Every route is emitted as a physical `index.html` file (for example, `dist/length/meter/to/foot/index.html`) so navigation uses real page loads.
+
+## Google Search Console sitemap troubleshooting
+
+If Search Console still reports **Couldn't fetch** after deploy, validate these checks in order:
+
+1. Open `https://www.omniconverter.cyou/sitemap.xml` and `https://www.omniconverter.cyou/sitemap-length.xml` in an incognito window. They must return raw XML (not app HTML).
+2. Verify with curl from an external machine:
+   - `curl -I https://www.omniconverter.cyou/sitemap.xml`
+   - `curl -I https://www.omniconverter.cyou/sitemap-length.xml`
+   Expect HTTP 200 and `content-type: application/xml`.
+3. In Vercel project settings, ensure **Deployment Protection / Password Protection** is disabled for production, or explicitly allow crawler access.
+4. Confirm DNS/SSL is healthy for `www.omniconverter.cyou` (the exact host used in sitemap URLs).
+5. In Search Console, remove and re-submit `/sitemap.xml`, then use **Inspect URL** on `https://www.omniconverter.cyou/sitemap.xml`.
+
+Search Console statuses can lag by several hours after fixes are deployed.
