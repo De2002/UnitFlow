@@ -433,6 +433,10 @@
           <button onclick="openLegalModal('privacy')" class="text-gray-400 hover:text-indigo-400 transition-colors">Privacy</button>
           <span class="text-gray-700">•</span>
           <button onclick="openLegalModal('disclaimer')" class="text-gray-400 hover:text-indigo-400 transition-colors">Disclaimer</button>
+          <span class="text-gray-700">•</span>
+          <a href="https://blog.omniconverter.cyou" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-indigo-400 transition-colors">Blog</a>
+          <span class="text-gray-700">•</span>
+          <button onclick="navigate('/site-owners')" class="text-gray-400 hover:text-indigo-400 transition-colors">For Site Owners</button>
         </nav>
       </div>
       <div class="mt-5 pt-4 border-t text-xs text-gray-600 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2" style="border-color: var(--border-secondary);">
@@ -1247,6 +1251,7 @@ function getRoute() {
     return { view: 'area_conv', fromKey: keyFromSlug(parts[1]), toKey: keyFromSlug(parts[3]) };
   if (parts[0] === 'area' && parts[1]) return { view: 'area_unit', key: keyFromSlug(parts[1]) };
   if (parts[0] === 'area') return { view: 'area' };
+  if (parts[0] === 'site-owners') return { view: 'site_owners' };
   return { view: 'landing' };
 }
 
@@ -1272,6 +1277,7 @@ function router() {
   if (route.view === 'area_conv') { const f=getAreaUnit(route.fromKey),t=getAreaUnit(route.toKey); if(f&&t){renderAreaConversionPage(route.fromKey,route.toKey);return;} }
   if (route.view === 'area_unit') { if(getAreaUnit(route.key)){renderAreaUnitPage(route.key);return;} }
   if (route.view === 'area') { renderAreaPage(); return; }
+  if (route.view === 'site_owners') { renderSiteOwnersPage(); return; }
   renderLandingPage();
 }
 
@@ -1280,6 +1286,73 @@ window.addEventListener('popstate', router);
 // ================================================================
 //  LANDING PAGE
 // ================================================================
+
+function renderSiteOwnersPage() {
+  updateNavActive('');
+  updateSEO({
+    title: 'Omni Converter Widgets for Site Owners & Bloggers',
+    description: 'Add free Omni Converter widgets to your website to boost engagement, trust, and SEO with useful conversion tools your readers will actually use.',
+    url: 'https://www.omniconverter.cyou/site-owners'
+  });
+
+  const root = document.getElementById('app-root');
+  root.innerHTML = `
+    <div class="page-fade">
+      <section class="hero-section relative rounded-3xl border border-white/8 bg-gradient-to-br from-dark-800/80 via-dark-700/60 to-dark-800/80 backdrop-blur-sm overflow-hidden mb-8 p-6 sm:p-10 lg:p-14">
+        <div class="absolute -top-20 -left-20 w-80 h-80 bg-indigo-600/20 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -bottom-16 -right-16 w-64 h-64 bg-violet-600/15 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="relative">
+          <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-indigo-500/15 border border-indigo-500/25 text-xs font-medium text-indigo-400 mb-6">
+            <span class="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse inline-block"></span>
+            Built for publishers, educators, and SEO teams
+          </div>
+          <h1 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-none mb-4">
+            Add Free Converter Tools <span class="block bg-gradient-to-r from-indigo-400 to-violet-400 bg-clip-text text-transparent">to Your Site in Minutes.</span>
+          </h1>
+          <p class="hero-body-copy text-gray-400 text-base sm:text-lg leading-relaxed max-w-3xl mb-8">Give your readers instant value with accurate converter widgets they can use without leaving your page. Keep people engaged longer, improve trust, and make technical content more actionable for every visitor.</p>
+          <div class="flex flex-wrap gap-3">
+            <button onclick="navigate('/length')" class="px-5 py-2.5 rounded-xl bg-indigo-600/20 border border-indigo-500/30 text-indigo-300 hover:bg-indigo-600/30 transition-colors">Explore Converters</button>
+            <a href="https://blog.omniconverter.cyou" target="_blank" rel="noopener noreferrer" class="px-5 py-2.5 rounded-xl border border-white/10 text-gray-300 hover:text-indigo-300 hover:border-indigo-500/30 transition-colors">Read the Blog</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="grid md:grid-cols-3 gap-4 mb-8">
+        <div class="rounded-2xl border border-white/8 bg-dark-800/50 p-5">
+          <h2 class="text-lg font-semibold text-white mb-2">Increase engagement</h2>
+          <p class="text-sm text-gray-400 leading-relaxed">Useful tools reduce bounce and keep users on your pages longer by helping them solve conversion questions immediately.</p>
+        </div>
+        <div class="rounded-2xl border border-white/8 bg-dark-800/50 p-5">
+          <h2 class="text-lg font-semibold text-white mb-2">Earn trust fast</h2>
+          <p class="text-sm text-gray-400 leading-relaxed">When visitors can verify numbers right in your article, your content feels more credible and practical.</p>
+        </div>
+        <div class="rounded-2xl border border-white/8 bg-dark-800/50 p-5">
+          <h2 class="text-lg font-semibold text-white mb-2">Completely free</h2>
+          <p class="text-sm text-gray-400 leading-relaxed">No licensing fee, no account required, and no complex setup. Copy, paste, and publish.</p>
+        </div>
+      </section>
+
+      <section class="rounded-3xl border border-white/8 bg-dark-800/50 p-6 sm:p-8 mb-8">
+        <h2 class="text-2xl font-bold text-white mb-2">How to embed Omni Converter</h2>
+        <p class="text-sm text-gray-400 mb-4">Use this simple iframe snippet and change the URL to the converter category you want (length, area, etc.).</p>
+        <div class="rounded-2xl border border-white/10 bg-dark-900/60 p-4">
+          <code class="text-xs sm:text-sm text-indigo-300 break-all">&lt;iframe src="https://www.omniconverter.cyou/embed/length" width="500" height="600" style="border:0;max-width:100%;" loading="lazy" title="Length Converter"&gt;&lt;/iframe&gt;</code>
+        </div>
+        <ul class="mt-4 space-y-2 text-sm text-gray-400">
+          <li>• Best placement: buying guides, DIY posts, science/education content, travel packing pages, fitness and nutrition articles.</li>
+          <li>• Mobile-friendly by default; use <span class="text-indigo-300">max-width:100%</span> so it fits responsive layouts.</li>
+          <li>• Add near tables and formulas so readers can convert values while reading your content.</li>
+        </ul>
+      </section>
+
+      <section class="rounded-3xl border border-indigo-500/20 bg-indigo-500/5 p-6 sm:p-8 mb-8">
+        <h2 class="text-2xl font-bold text-white mb-3">Why bloggers and site owners choose Omni Converter</h2>
+        <p class="text-sm text-gray-300 leading-relaxed">Omni Converter helps you turn passive content into interactive utility. Readers stay longer, share more often, and return when they know your page is not just informative — it is useful. If your audience reads measurements, specs, recipes, distances, or dimensions, adding a free converter is one of the easiest wins you can deploy today.</p>
+      </section>
+    </div>
+  `;
+}
+
 function renderLandingPage() {
   updateNavActive('');
   updateSEO({
